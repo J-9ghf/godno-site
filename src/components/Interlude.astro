@@ -1,0 +1,53 @@
+---
+// Визуальная пауза: крупная типографика между отзывами и процессом.
+// Фраза взята из ответа в FAQ, смысл не меняется.
+---
+
+<section class="interlude" aria-label="Принцип">
+  <div class="container grid">
+    <p class="interlude__label label" data-reveal>
+      <span class="section-tag__num">—</span> Принцип
+    </p>
+    <p class="interlude__text serif" data-reveal style="--reveal-delay: 100">
+      Иногда вам нужен не новый человек, а&nbsp;работающая <em>система</em> вокруг него.
+    </p>
+  </div>
+</section>
+
+<style>
+  .interlude {
+    padding-block: var(--space-section-s) var(--space-section);
+  }
+
+  .interlude__label {
+    grid-column: 1 / span 2;
+    padding-top: 1.2rem;
+    color: var(--ink-3);
+  }
+
+  .interlude__text {
+    grid-column: 3 / -1;
+    font-size: clamp(2.4rem, 1rem + 5.4vw, 7rem);
+    font-weight: 330;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .interlude__text em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    .interlude__label,
+    .interlude__text {
+      grid-column: 1 / -1;
+    }
+
+    .interlude__label {
+      padding-top: 0;
+      margin-bottom: 1.5rem;
+    }
+  }
+</style>

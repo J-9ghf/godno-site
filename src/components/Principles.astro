@@ -1,0 +1,170 @@
+---
+import SectionTag from './SectionTag.astro';
+import { principles } from '../data/content';
+---
+
+<section class="principles" id="approach" aria-labelledby="principles-title">
+  <div class="container grid">
+    <div class="principles__aside">
+      <div class="principles__sticky">
+        <SectionTag num="03" label="Подход" />
+        <h2 class="h2 principles__title" id="principles-title" data-reveal>Чем мы отличаемся</h2>
+        <p class="principles__index label" aria-hidden="true">
+          {principles.map((_, i) => <span data-principle-dot={i}>{String(i + 1).padStart(2, '0')}</span>)}
+        </p>
+      </div>
+    </div>
+
+    <ol class="principles__list">
+      {
+        principles.map((p, i) => (
+          <li class="principle" data-reveal data-principle={i}>
+            <span class="principle__num serif" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3 class="principle__title serif">{p.title}</h3>
+            <p class="principle__text">{p.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .principles {
+    padding-block: var(--space-section);
+    background: var(--paper-2);
+  }
+
+  .principles__aside {
+    grid-column: 1 / span 4;
+  }
+
+  .principles__sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .principles__title {
+    max-width: 8ch;
+  }
+
+  .principles__index {
+    display: flex;
+    gap: 1rem;
+    color: var(--ink-3);
+  }
+
+  .principles__index span {
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 0.4s var(--ease),
+      border-color 0.4s var(--ease);
+  }
+
+  .principles__index span.is-active {
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+
+  .principles__list {
+    grid-column: 6 / -1;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .principle {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
+    grid-template-areas:
+      'num title'
+      'num text';
+    column-gap: var(--gutter);
+    row-gap: 1.25rem;
+    padding-block: clamp(2.25rem, 4vw, 3.75rem);
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .principle::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 100%;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .principle:hover::before {
+    transform: scaleX(1);
+  }
+
+  .principle__num {
+    grid-area: num;
+    font-size: clamp(3.5rem, 2.4rem + 3.4vw, 6.5rem);
+    font-weight: 300;
+    line-height: 0.82;
+    letter-spacing: -0.04em;
+    color: var(--ink-3);
+    font-variant-numeric: lining-nums;
+    transition: color 0.5s var(--ease);
+  }
+
+  .principle:hover .principle__num {
+    color: var(--accent);
+  }
+
+  .principle__title {
+    grid-area: title;
+    max-width: 20ch;
+    font-size: var(--fs-h3);
+    font-weight: 450;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .principle__text {
+    grid-area: text;
+    max-width: 48ch;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .principles__aside,
+    .principles__list {
+      grid-column: 1 / -1;
+    }
+
+    .principles__sticky {
+      position: static;
+      margin-bottom: 3rem;
+    }
+
+    .principles__index {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .principle {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'num'
+        'title'
+        'text';
+      row-gap: 1rem;
+    }
+
+    .principle__num {
+      font-size: 3rem;
+    }
+  }
+</style>

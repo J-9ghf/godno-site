@@ -1,0 +1,198 @@
+---
+import SectionTag from './SectionTag.astro';
+import { about } from '../data/content';
+
+const [p1, p2, p3, p4] = about.paragraphs;
+// Первый абзац: вторая фраза — тезис позиционирования, выделяем её типографически.
+const [p1Lead, p1Claim] = p1.split(/(?<=агентства\.) /);
+---
+
+<section class="about" id="about" aria-labelledby="about-title">
+  <div class="container grid about__grid">
+    <div class="about__aside">
+      <SectionTag num="02" label="О нас" class="about__tag" />
+    </div>
+
+    <div class="about__main">
+      <h2 class="h2 about__title" id="about-title" data-reveal>{about.title}</h2>
+
+      <p class="about__lead lead" data-reveal>
+        {p1Lead} <span class="about__claim serif">{p1Claim}</span>
+      </p>
+
+      <div class="about__cols">
+        <p data-reveal>{p2}</p>
+        <p data-reveal style="--reveal-delay: 120">{p3}</p>
+      </div>
+
+      <div class="about__contrast" data-reveal>
+        <div class="about__contrast-item about__contrast-item--no">
+          <span class="label muted">Как обычно</span>
+          <span class="about__big serif"><s>40</s></span>
+          <span class="about__caption">резюме с просьбой выбрать</span>
+        </div>
+        <div class="about__contrast-item about__contrast-item--yes">
+          <span class="label">Как у нас</span>
+          <span class="about__big about__big--word serif">Несколько</span>
+          <span class="about__caption">проверенных кандидатов и разбор по каждому: кто это, что им движет, где риски</span>
+        </div>
+      </div>
+
+      <p class="about__closing" data-reveal>{p4}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding-block: var(--space-section);
+  }
+
+  .about__grid {
+    row-gap: 2rem;
+  }
+
+  .about__aside {
+    grid-column: 1 / span 3;
+  }
+
+  :global(.about__tag) {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    padding-top: 0.9rem;
+  }
+
+  .about__main {
+    grid-column: 4 / -1;
+  }
+
+  .about__title {
+    max-width: 18ch;
+  }
+
+  .about__lead {
+    max-width: 36ch;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    color: var(--ink-2);
+  }
+
+  .about__claim {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: 1.12em;
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  .about__cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 4vw, 4.5rem);
+    margin-top: clamp(3rem, 5vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+
+  .about__cols p {
+    max-width: 44ch;
+  }
+
+  .about__contrast {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    margin-top: clamp(4rem, 7vw, 6.5rem);
+    border-block: 1px solid var(--line-strong);
+  }
+
+  .about__contrast-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 2rem 2.25rem 0;
+  }
+
+  .about__contrast-item--yes {
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .about__contrast-item--yes .label {
+    color: var(--accent);
+  }
+
+  .about__big {
+    font-size: clamp(3.5rem, 2rem + 5vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+    font-weight: 350;
+  }
+
+  .about__big s {
+    color: var(--ink-3);
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--accent);
+  }
+
+  .about__big--word {
+    font-size: clamp(2.5rem, 1.5rem + 3.4vw, 5.25rem);
+    font-style: italic;
+    line-height: 1.02;
+    padding-top: calc((clamp(3.5rem, 2rem + 5vw, 7.5rem) - clamp(2.5rem, 1.5rem + 3.4vw, 5.25rem)) * 0.9);
+  }
+
+  .about__caption {
+    max-width: 30ch;
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  .about__closing {
+    max-width: 52ch;
+    margin-top: 2.5rem;
+    margin-left: auto;
+    font-size: var(--fs-body);
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .about__aside,
+    .about__main {
+      grid-column: 1 / -1;
+    }
+
+    :global(.about__tag) {
+      position: static;
+    }
+
+    .about__closing {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .about__cols {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .about__contrast {
+      grid-template-columns: 1fr;
+    }
+
+    .about__contrast-item {
+      padding: 1.75rem 0;
+    }
+
+    .about__contrast-item--yes {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .about__big--word {
+      padding-top: 0;
+    }
+  }
+</style>

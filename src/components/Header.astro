@@ -1,0 +1,289 @@
+---
+import Logo from './Logo.astro';
+import Arrow from './Arrow.astro';
+import { nav } from '../data/content';
+---
+
+<header class="header" data-header>
+  <div class="container header__inner">
+    <a class="header__logo" href="#top" aria-label="Институт кадровых решений — в начало">
+      <Logo />
+    </a>
+
+    <nav class="header__nav" aria-label="Основная навигация">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} data-nav-link>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="header__cta" href="#contact">
+      Обсудить задачу
+      <Arrow class="header__cta-arrow" />
+    </a>
+
+    <button
+      class="header__burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <span class="visually-hidden" data-menu-label>Открыть меню</span>
+      <span class="header__burger-line header__burger-line--top"></span>
+      <span class="header__burger-line header__burger-line--bottom"></span>
+    </button>
+  </div>
+
+  <div class="menu" id="mobile-menu" data-menu hidden>
+    <nav class="container menu__inner" aria-label="Мобильная навигация">
+      <ol class="menu__list">
+        {
+          nav.map((item, i) => (
+            <li>
+              <a href={item.href} data-menu-link>
+                <span class="menu__num label">{String(i + 1).padStart(2, '0')}</span>
+                <span class="menu__text">{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      <a class="btn menu__cta" href="#contact" data-menu-link>
+        Обсудить задачу
+        <Arrow class="btn__arrow" />
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    background: transparent;
+    transition:
+      background-color 0.4s var(--ease),
+      box-shadow 0.4s var(--ease);
+  }
+
+  .header.is-scrolled,
+  .header.is-open {
+    background: rgb(242 239 233 / 0.94);
+    box-shadow: 0 1px 0 var(--line);
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .header.is-scrolled {
+      background: rgb(242 239 233 / 0.86);
+      backdrop-filter: saturate(1.2) blur(12px);
+    }
+
+    /* backdrop-filter создаёт containing block для fixed-меню — снимаем его, пока меню открыто */
+    .header.is-open {
+      background: var(--paper);
+      backdrop-filter: none;
+    }
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    height: 100%;
+  }
+
+  .header__logo {
+    text-decoration: none;
+    flex: none;
+  }
+
+  .header__nav ul {
+    display: flex;
+    gap: clamp(1.25rem, 2.2vw, 2.4rem);
+  }
+
+  .header__nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.4rem;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+    text-decoration: none;
+    transition: color 0.3s var(--ease);
+  }
+
+  .header__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease);
+  }
+
+  .header__nav a:hover,
+  .header__nav a.is-active {
+    color: var(--ink);
+  }
+
+  .header__nav a:hover::after,
+  .header__nav a.is-active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .header__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.95rem 0.7rem 1.1rem;
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      background-color 0.35s var(--ease),
+      color 0.35s var(--ease);
+  }
+
+  .header__cta:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  :global(.header__cta-arrow) {
+    width: 16px;
+    height: 16px;
+  }
+
+  .header__burger {
+    display: none;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .header__burger-line {
+    position: absolute;
+    left: 11px;
+    right: 11px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.4s var(--ease);
+  }
+
+  .header__burger-line--top {
+    top: 17px;
+  }
+
+  .header__burger-line--bottom {
+    top: 25px;
+  }
+
+  .is-open .header__burger-line--top {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .is-open .header__burger-line--bottom {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  /* Mobile menu */
+  .menu {
+    position: fixed;
+    inset: var(--header-h) 0 0;
+    background: var(--paper);
+    overflow-y: auto;
+    animation: menu-in 0.45s var(--ease);
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .menu__inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    padding-block: 1.5rem 2rem;
+  }
+
+  .menu__list li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .menu__list a {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding-block: 1rem;
+    text-decoration: none;
+  }
+
+  .menu__num {
+    color: var(--accent);
+    width: 1.5rem;
+  }
+
+  .menu__text {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .menu__cta {
+    justify-content: space-between;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 1100px) {
+    .header__nav ul {
+      gap: 1.1rem;
+    }
+
+    .header__nav a {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .header__nav,
+    .header__cta {
+      display: none;
+    }
+
+    .header__burger {
+      display: block;
+    }
+  }
+
+  @media (min-width: 961px) {
+    .menu {
+      display: none;
+    }
+  }
+</style>

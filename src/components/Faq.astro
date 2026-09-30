@@ -1,0 +1,204 @@
+---
+import SectionTag from './SectionTag.astro';
+import { faq } from '../data/content';
+---
+
+<section class="faq" id="faq" aria-labelledby="faq-title">
+  <div class="container grid">
+    <div class="faq__aside">
+      <div class="faq__sticky">
+        <SectionTag num="07" label="FAQ" />
+        <h2 class="h2 faq__title" id="faq-title" data-reveal>Частые вопросы</h2>
+      </div>
+    </div>
+
+    <ul class="faq__list">
+      {
+        faq.map((item, i) => (
+          <li class="qa" data-accordion>
+            <h3 class="qa__heading">
+              <button
+                class="qa__trigger"
+                id={`faq-${i}-btn`}
+                type="button"
+                aria-expanded="false"
+                aria-controls={`faq-${i}-panel`}
+                data-accordion-trigger
+              >
+                <span class="qa__num label">{String(i + 1).padStart(2, '0')}</span>
+                <span class="qa__q">{item.q}</span>
+                <span class="qa__icon" aria-hidden="true" />
+              </button>
+            </h3>
+            <div
+              class="qa__panel"
+              id={`faq-${i}-panel`}
+              role="region"
+              aria-labelledby={`faq-${i}-btn`}
+              data-accordion-panel
+            >
+              <div class="qa__panel-inner">
+                <p class="qa__a">{item.a}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-block: var(--space-section-s);
+  }
+
+  .faq__aside {
+    grid-column: 1 / span 4;
+  }
+
+  .faq__sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .faq__title {
+    max-width: 8ch;
+    font-size: clamp(2rem, 1.2rem + 2.4vw, 3.5rem);
+  }
+
+  .faq__list {
+    grid-column: 6 / -1;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .qa {
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .qa__heading {
+    font: inherit;
+  }
+
+  .qa__trigger {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr 1rem;
+    align-items: baseline;
+    gap: 1rem;
+    width: 100%;
+    padding-block: 1.4rem;
+    border: 0;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .qa__num {
+    color: var(--ink-3);
+    transition: color 0.4s var(--ease);
+  }
+
+  .qa__q {
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+
+  .qa__icon {
+    position: relative;
+    width: 0.9rem;
+    height: 0.9rem;
+    align-self: center;
+  }
+
+  .qa__icon::before,
+  .qa__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.4px;
+    background: var(--ink);
+    transition: transform 0.45s var(--ease);
+  }
+
+  .qa__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .qa__trigger:hover .qa__num,
+  .qa__trigger[aria-expanded='true'] .qa__num {
+    color: var(--accent);
+  }
+
+  .qa__trigger[aria-expanded='true'] .qa__icon::after {
+    transform: rotate(0deg);
+  }
+
+  .qa__panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.5s var(--ease);
+  }
+
+  :global(.js) .qa__panel {
+    grid-template-rows: 0fr;
+  }
+
+  :global(.js) .qa.is-open .qa__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .qa__panel-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  :global(.js) .qa__panel-inner {
+    visibility: hidden;
+    transition: visibility 0s 0.5s;
+  }
+
+  :global(.js) .qa.is-open .qa__panel-inner {
+    visibility: visible;
+    transition: visibility 0s;
+  }
+
+  .qa__a {
+    max-width: 56ch;
+    padding: 0 2rem 1.75rem calc(2.75rem + 1rem);
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .faq__aside,
+    .faq__list {
+      grid-column: 1 / -1;
+    }
+
+    .faq__sticky {
+      position: static;
+      margin-bottom: 2.5rem;
+    }
+
+    .faq__title {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .qa__trigger {
+      grid-template-columns: 2rem 1fr 1rem;
+      gap: 0.75rem;
+    }
+
+    .qa__a {
+      padding: 0 0 1.5rem 2.75rem;
+    }
+  }
+</style>

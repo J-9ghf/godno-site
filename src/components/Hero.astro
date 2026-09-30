@@ -1,0 +1,376 @@
+---
+import Arrow from './Arrow.astro';
+import { hero } from '../data/content';
+
+// Разбиваем заголовок, чтобы выделить вторую половину курсивом (текст не меняется).
+const [titleStart, titleEnd] = hero.title.split(' и понимаем');
+
+const dossier = [
+  { label: 'Мотивация', value: 0.82 },
+  { label: 'Устойчивость', value: 0.64 },
+  { label: 'Риски', value: 0.38 },
+  { label: 'Горизонт работы', value: 0.9 },
+];
+
+const facts = [
+  { value: '0', text: 'замен по гарантии за год работы' },
+  { value: '5–7', text: 'рабочих дней до первых кандидатов' },
+  { value: '1 мес.', text: 'в среднем до закрытия вместе с адаптацией' },
+];
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__guides container" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container hero__inner">
+    <div class="hero__meta" data-reveal>
+      <p class="label">Кадровое и управленческое бюро</p>
+      <p class="label hero__meta-mid">Подбор ключевых сотрудников<span aria-hidden="true"> · </span>Управленческий консалтинг</p>
+      <p class="label hero__meta-end"><span class="section-tag__num">01</span> / 08</p>
+    </div>
+
+    <div class="hero__main grid">
+      <h1 class="hero__title" id="hero-title" data-reveal style="--reveal-delay: 80">
+        {titleStart} <em>и понимаем{titleEnd}</em>
+      </h1>
+
+      <figure class="dossier" data-reveal style="--reveal-delay: 360" aria-label="Из чего состоит разбор кандидата">
+        <div class="dossier__head">
+          <span class="label">Разбор кандидата</span>
+          <span class="label dossier__no">Лист 1</span>
+        </div>
+        <ol class="dossier__rows">
+          {
+            dossier.map((row, i) => (
+              <li class="dossier__row">
+                <span class="dossier__idx">{String(i + 1).padStart(2, '0')}</span>
+                <span class="dossier__label">{row.label}</span>
+                <span class="dossier__bar" aria-hidden="true">
+                  <span style={`--v: ${row.value}; --i: ${i}`} />
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+        <figcaption class="dossier__foot">
+          Кто это, что им движет, где риски — по каждому кандидату.
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="hero__bottom grid">
+      <div class="hero__intro" data-reveal style="--reveal-delay: 220">
+        <p class="hero__subtitle">{hero.subtitle}</p>
+        <a class="btn" href="#contact">
+          {hero.cta}
+          <Arrow class="btn__arrow" />
+        </a>
+      </div>
+    </div>
+
+    <ul class="hero__facts" data-reveal style="--reveal-delay: 480">
+      {
+        facts.map((f) => (
+          <li>
+            <span class="hero__fact-value serif">{f.value}</span>
+            <span class="hero__fact-text">{f.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: calc(100svh - var(--header-h));
+    display: flex;
+    margin-top: calc(var(--header-h) * -1);
+    padding-top: var(--header-h);
+  }
+
+  /* Тонкие вертикальные линии — архитектурная сетка */
+  .hero__guides {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    pointer-events: none;
+  }
+
+  .hero__guides span {
+    border-left: 1px solid var(--line);
+    opacity: 0.55;
+  }
+
+  .hero__guides span:first-child {
+    border-left-color: transparent;
+  }
+
+  .hero__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-block: clamp(2rem, 4vh, 3.5rem) 0;
+  }
+
+  .hero__meta {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: var(--gutter);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line-strong);
+    color: var(--ink-2);
+  }
+
+  .hero__meta-mid {
+    text-align: center;
+  }
+
+  .hero__meta-end {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero__main {
+    align-items: end;
+    row-gap: 2.5rem;
+    margin-top: clamp(2.5rem, 7vh, 5.5rem);
+  }
+
+  .hero__title {
+    grid-column: 1 / span 8;
+    max-width: 21ch;
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 1rem + 5.2vw, 6rem);
+    font-weight: 380;
+    line-height: 0.98;
+    letter-spacing: -0.028em;
+    font-variation-settings: 'opsz' 60;
+    text-wrap: balance;
+  }
+
+  .hero__title em {
+    font-style: italic;
+    font-weight: 340;
+    color: var(--ink-2);
+  }
+
+  .hero__bottom {
+    margin-top: auto;
+    padding-top: clamp(2.5rem, 6vh, 4rem);
+  }
+
+  .hero__intro {
+    grid-column: 1 / span 6;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .hero__subtitle {
+    max-width: 26ch;
+    font-size: var(--fs-lead);
+    line-height: 1.4;
+    color: var(--ink-2);
+  }
+
+  /* Досье */
+  .dossier {
+    grid-column: 9 / span 4;
+    margin-bottom: 0.6rem;
+    padding: 1.25rem 1.25rem 1.1rem;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+  }
+
+  .dossier__head {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .dossier__no {
+    color: var(--ink-3);
+  }
+
+  .dossier__row {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr 38%;
+    align-items: center;
+    gap: 0.5rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px dotted var(--line-strong);
+    font-size: 0.9375rem;
+  }
+
+  .dossier__idx {
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dossier__bar {
+    position: relative;
+    height: 2px;
+    background: var(--line);
+  }
+
+  .dossier__bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: scaleX(var(--v));
+    transform-origin: left;
+  }
+
+  :global(.js) .dossier:not(.is-visible) .dossier__bar span {
+    transform: scaleX(0);
+  }
+
+  :global(.js) .dossier .dossier__bar span {
+    transition: transform 1.4s var(--ease);
+    transition-delay: calc(600ms + var(--i) * 140ms);
+  }
+
+  .dossier__foot {
+    padding-top: 0.9rem;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--ink-2);
+  }
+
+  /* Факты */
+  .hero__facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gutter);
+    margin-top: clamp(2.5rem, 6vh, 4rem);
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .hero__facts li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 1.25rem 1.75rem;
+  }
+
+  .hero__fact-value {
+    font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: lining-nums;
+  }
+
+  .hero__fact-text {
+    max-width: 18ch;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 1200px) {
+    .hero__title {
+      grid-column: 1 / -1;
+    }
+
+    .dossier {
+      grid-column: 7 / span 6;
+    }
+
+    .hero__intro {
+      grid-column: 1 / span 9;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      min-height: auto;
+    }
+
+    .hero__guides {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero__meta {
+      grid-template-columns: 1fr auto;
+    }
+
+    .hero__meta-mid {
+      display: none;
+    }
+
+    .hero__main {
+      margin-top: 2.75rem;
+    }
+
+    .hero__title {
+      line-height: 1.02;
+    }
+
+    .hero__bottom {
+      padding-top: 2.5rem;
+    }
+
+    .hero__intro,
+    .dossier {
+      grid-column: 1 / -1;
+    }
+
+    .hero__intro {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* На мобильном: сначала подзаголовок и CTA, затем досье */
+    .hero__main {
+      display: contents;
+    }
+
+    .hero__title {
+      order: 1;
+      margin-top: 2.75rem;
+    }
+
+    .hero__bottom {
+      order: 2;
+    }
+
+    .dossier {
+      order: 3;
+      margin: 2.5rem 0 0;
+    }
+
+    .hero__facts {
+      order: 4;
+    }
+
+    .hero__intro .btn {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .hero__facts {
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin-top: 2.5rem;
+    }
+
+    .hero__facts li {
+      padding-block: 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero__fact-value {
+      min-width: 4.5rem;
+    }
+  }
+</style>

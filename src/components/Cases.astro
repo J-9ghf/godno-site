@@ -1,0 +1,309 @@
+---
+import SectionTag from './SectionTag.astro';
+import CaseRow from './CaseRow.astro';
+import { caseGroups } from '../data/content';
+
+// Сквозная нумерация кейсов
+let counter = 0;
+const groups = caseGroups.map((g) => ({
+  ...g,
+  cases: g.cases.map((c) => ({ ...c, num: String(++counter).padStart(2, '0') })),
+}));
+
+const plural = (n: number) =>
+  n % 10 === 1 && n % 100 !== 11 ? 'кейс' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'кейса' : 'кейсов';
+
+const [featured, ...hiringRest] = groups[0].cases;
+---
+
+<section class="cases" id="cases" aria-labelledby="cases-title">
+  <div class="container">
+    <header class="cases__head grid">
+      <div class="cases__head-tag">
+        <SectionTag num="04" label="Опыт" />
+      </div>
+      <h2 class="cases__title serif" id="cases-title" data-reveal>Опыт</h2>
+      <nav class="cases__index" aria-label="Категории кейсов" data-reveal style="--reveal-delay: 120">
+        <ol>
+          {
+            groups.map((g, i) => (
+              <li>
+                <a href={`#cases-${g.id}`}>
+                  <span class="cases__index-num label">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="cases__index-title">{g.title}</span>
+                  <span class="cases__index-count label">{g.cases.length}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+    </header>
+
+    <!-- Избранный кейс -->
+    <article class="featured" id={`cases-${groups[0].id}`} aria-labelledby={`case-${featured.id}-title`} data-reveal>
+      <div class="featured__top">
+        <p class="label featured__kicker">
+          <span class="section-tag__num">Кейс {featured.num}</span>
+          <span aria-hidden="true">·</span>
+          <span>{groups[0].title}</span>
+        </p>
+        <dl class="featured__meta">
+          <div><dt class="label">Сфера</dt><dd>{featured.sphere}</dd></div>
+          <div><dt class="label">{featured.metaLabel}</dt><dd>{featured.metaValue}</dd></div>
+        </dl>
+      </div>
+      <h3 class="featured__title serif" id={`case-${featured.id}-title`}>{featured.title}</h3>
+      <div class="featured__body">
+        {featured.body.map((p, i) => <p class:list={{ featured__first: i === 0 }}>{p}</p>)}
+      </div>
+    </article>
+
+    {
+      groups.map((g, gi) => {
+        const list = gi === 0 ? hiringRest : g.cases;
+        return (
+          <div class="group grid" id={gi === 0 ? undefined : `cases-${g.id}`}>
+            <div class="group__aside">
+              <div class="group__sticky">
+                <span class="label section-tag__num">{String(gi + 1).padStart(2, '0')}</span>
+                <h3 class="group__title">{g.title}</h3>
+                <span class="label muted">
+                  {g.cases.length} {plural(g.cases.length)}
+                </span>
+              </div>
+            </div>
+            <ul class="group__list">
+              {list.map((c) => (
+                <li>
+                  <CaseRow item={c} num={c.num} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })
+    }
+  </div>
+</section>
+
+<style>
+  .cases {
+    padding-block: var(--space-section) var(--space-section-s);
+  }
+
+  .cases__head {
+    align-items: end;
+    row-gap: 1.5rem;
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .cases__head-tag {
+    grid-column: 1 / -1;
+  }
+
+  .cases__title {
+    grid-column: 1 / span 7;
+    font-size: clamp(5rem, 2rem + 13vw, 15rem);
+    font-weight: 300;
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    margin-left: -0.05em;
+  }
+
+  .cases__index {
+    grid-column: 8 / -1;
+  }
+
+  .cases__index li {
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .cases__index li:last-child {
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .cases__index a {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: baseline;
+    padding-block: 0.95rem;
+    text-decoration: none;
+    transition: padding 0.4s var(--ease);
+  }
+
+  .cases__index a:hover {
+    padding-left: 0.5rem;
+  }
+
+  .cases__index-num {
+    color: var(--accent);
+  }
+
+  .cases__index-title {
+    font-size: 1.0625rem;
+    font-weight: 500;
+  }
+
+  .cases__index-count {
+    color: var(--ink-3);
+  }
+
+  /* Featured */
+  .featured {
+    padding: clamp(1.5rem, 3.5vw, 3.5rem);
+    background: var(--ink);
+    color: var(--night-ink);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  .featured__top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem 3rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--night-line);
+  }
+
+  .featured__kicker {
+    display: flex;
+    gap: 0.6rem;
+    color: var(--night-ink-2);
+  }
+
+  .featured__kicker .section-tag__num {
+    color: #d9765f;
+  }
+
+  .featured__meta {
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  .featured__meta div {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+
+  .featured__meta dt {
+    color: var(--night-ink-2);
+  }
+
+  .featured__meta dd {
+    font-size: 0.9375rem;
+  }
+
+  .featured__title {
+    max-width: 24ch;
+    margin-block: clamp(2.5rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 1.2rem + 3vw, 3.75rem);
+    font-weight: 380;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .featured__body {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: clamp(2rem, 4vw, 4.5rem);
+    color: var(--night-ink-2);
+  }
+
+  .featured__body p {
+    max-width: 58ch;
+  }
+
+  .featured__first {
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.5;
+    color: var(--night-ink);
+  }
+
+  /* Groups */
+  .group {
+    padding-top: clamp(4rem, 7vw, 6.5rem);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  .group__aside {
+    grid-column: 1 / span 3;
+  }
+
+  .group__sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding-top: 1.4rem;
+  }
+
+  .group__title {
+    max-width: 14ch;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+
+  .group__list {
+    grid-column: 4 / -1;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .group__list > li {
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  @media (max-width: 900px) {
+    .cases__title,
+    .cases__index,
+    .group__aside,
+    .group__list {
+      grid-column: 1 / -1;
+    }
+
+    .cases__index {
+      margin-top: 1.5rem;
+    }
+
+    .group__sticky {
+      position: static;
+      flex-direction: row;
+      align-items: baseline;
+      flex-wrap: wrap;
+      padding-top: 0;
+      margin-bottom: 1.25rem;
+    }
+
+    .group__title {
+      max-width: none;
+    }
+
+    .group__sticky .muted {
+      margin-left: auto;
+    }
+
+    .featured__body {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .featured {
+      margin-inline: calc(var(--pad) * -1);
+      padding: 2rem var(--pad);
+    }
+
+    .featured__meta {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+  }
+</style>

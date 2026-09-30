@@ -1,0 +1,200 @@
+---
+import Arrow from './Arrow.astro';
+import { finalCta } from '../data/content';
+
+// Адрес обработчика заявок (CRM, Formspree, собственный backend и т.п.).
+// Задаётся переменной окружения PUBLIC_FORM_ENDPOINT при сборке.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+---
+
+<section class="cta" id="contact" aria-labelledby="cta-title">
+  <div class="container grid cta__grid">
+    <div class="cta__text">
+      <p class="label cta__tag">
+        <span>08</span>
+        <span class="cta__rule" aria-hidden="true"></span>
+        <span>Заявка</span>
+      </p>
+      <h2 class="cta__title serif" id="cta-title" data-reveal>{finalCta.title}</h2>
+      <p class="cta__subtitle" data-reveal style="--reveal-delay: 120">{finalCta.subtitle}</p>
+    </div>
+
+    <form class="form" data-form data-endpoint={endpoint} novalidate data-reveal style="--reveal-delay: 200">
+      <div class="form__fields">
+        <label class="field">
+          <span class="field__label label">Как к вам обращаться</span>
+          <input class="field__input" type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="field">
+          <span class="field__label label">Телефон или Telegram</span>
+          <input class="field__input" type="text" name="contact" autocomplete="tel" required />
+        </label>
+        <label class="field">
+          <span class="field__label label">Кого ищете и что уже пробовали</span>
+          <textarea class="field__input field__input--area" name="message" rows="3"></textarea>
+        </label>
+      </div>
+
+      <button class="btn btn--light form__submit" type="submit">
+        {finalCta.button}
+        <Arrow class="btn__arrow" />
+      </button>
+
+      <p class="form__status" role="status" aria-live="polite" data-form-status></p>
+      <p class="form__consent">
+        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
+      </p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding-block: var(--space-section);
+    background: var(--accent);
+    color: var(--accent-ink);
+    overflow: hidden;
+  }
+
+  .cta__grid {
+    row-gap: 3.5rem;
+    align-items: end;
+  }
+
+  .cta__text {
+    grid-column: 1 / span 7;
+  }
+
+  .cta__tag {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    opacity: 0.8;
+  }
+
+  .cta__rule {
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .cta__title {
+    font-size: clamp(2.5rem, 1.2rem + 4.6vw, 6rem);
+    font-weight: 360;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .cta__subtitle {
+    max-width: 34ch;
+    margin-top: 2.25rem;
+    font-size: var(--fs-lead);
+    line-height: 1.4;
+    opacity: 0.88;
+  }
+
+  /* Form */
+  .form {
+    grid-column: 9 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .field__label {
+    opacity: 0.75;
+  }
+
+  .field__input {
+    width: 100%;
+    padding: 0.55rem 0 0.7rem;
+    border: 0;
+    border-bottom: 1px solid rgb(246 239 232 / 0.45);
+    border-radius: 0;
+    background: transparent;
+    color: var(--accent-ink);
+    font: inherit;
+    font-size: 1.0625rem;
+    transition: border-color 0.3s var(--ease);
+    resize: vertical;
+  }
+
+  .field__input:focus {
+    outline: none;
+    border-bottom-color: var(--accent-ink);
+  }
+
+  .field__input[aria-invalid='true'] {
+    border-bottom-color: var(--ink);
+    border-bottom-width: 2px;
+  }
+
+  .field__input--area {
+    min-height: 5.5rem;
+  }
+
+  .form__submit {
+    justify-content: space-between;
+  }
+
+  .form__submit[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .form__status:empty {
+    display: none;
+  }
+
+  .form__status {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+
+  .form__consent {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    opacity: 0.7;
+  }
+
+  .cta :global(.btn--light:hover),
+  .cta :global(.btn--light:focus-visible) {
+    border-color: var(--ink);
+  }
+
+  :global(.cta :focus-visible) {
+    outline-color: var(--accent-ink);
+  }
+
+  @media (max-width: 1024px) {
+    .cta__text {
+      grid-column: 1 / -1;
+    }
+
+    .form {
+      grid-column: 1 / span 8;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .form {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+interface Props {
+  tone?: 'ink' | 'light';
+}
+const { tone = 'ink' } = Astro.props;
+---
+
+<span class:list={['logo', `logo--${tone}`]}>
+  <svg class="logo__mark" viewBox="0 0 22 22" aria-hidden="true">
+    <rect x="3" y="3" width="2" height="16"></rect>
+    <rect x="10" y="3" width="2" height="16"></rect>
+    <rect class="logo__accent" x="17" y="3" width="2" height="16"></rect>
+  </svg>
+  <span class="logo__text">
+    <span>Институт</span>
+    <span>кадровых решений</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .logo__mark {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+    flex: none;
+  }
+
+  .logo__accent {
+    fill: var(--accent);
+  }
+
+  .logo__text {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+  }
+
+  .logo--light {
+    color: var(--night-ink);
+  }
+</style>

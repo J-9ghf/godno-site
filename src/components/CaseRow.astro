@@ -1,0 +1,270 @@
+---
+import type { Case } from '../data/content';
+
+interface Props {
+  item: Case;
+  num: string;
+}
+
+const { item, num } = Astro.props;
+const panelId = `case-${item.id}-panel`;
+const btnId = `case-${item.id}-btn`;
+---
+
+<article class="case" id={`case-${item.id}`} data-accordion>
+  <h4 class="case__heading">
+    <button
+      class="case__trigger"
+      id={btnId}
+      type="button"
+      aria-expanded="false"
+      aria-controls={panelId}
+      data-accordion-trigger
+    >
+      <span class="case__num label">{num}</span>
+      <span class="case__title serif">{item.title}</span>
+      <span class="case__sphere label">{item.sphere}</span>
+      <span class="case__icon" aria-hidden="true"></span>
+    </button>
+  </h4>
+
+  <div class="case__panel" id={panelId} role="region" aria-labelledby={btnId} data-accordion-panel>
+    <div class="case__panel-inner">
+      <div class="case__content">
+        <aside class="case__side">
+          <dl class="case__meta">
+            <div>
+              <dt class="label">Сфера</dt>
+              <dd>{item.sphere}</dd>
+            </div>
+            <div>
+              <dt class="label">{item.metaLabel}</dt>
+              <dd>{item.metaValue}</dd>
+            </div>
+          </dl>
+          {
+            item.figure && (
+              <p class="case__figure">
+                <span class="case__figure-value serif">{item.figure.value}</span>
+                <span class="case__figure-caption">{item.figure.caption}</span>
+              </p>
+            )
+          }
+        </aside>
+        <div class="case__body">
+          {item.body.map((p, i) => <p class:list={{ case__lead: i === 0 && item.body.length > 1 }}>{p}</p>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .case__heading {
+    font: inherit;
+  }
+
+  .case__trigger {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 13rem) 2rem;
+    align-items: baseline;
+    gap: var(--gutter);
+    width: 100%;
+    padding: clamp(1.4rem, 2.2vw, 2rem) 0;
+    border: 0;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .case__num {
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.4s var(--ease);
+  }
+
+  .case__title {
+    font-size: clamp(1.35rem, 1.05rem + 1.1vw, 2.1rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .case__sphere {
+    color: var(--ink-3);
+    text-align: right;
+  }
+
+  .case__icon {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    justify-self: end;
+    align-self: center;
+  }
+
+  .case__icon::before,
+  .case__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.4px;
+    background: var(--ink);
+    transition: transform 0.45s var(--ease);
+  }
+
+  .case__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .case__trigger:hover .case__num,
+  .case__trigger[aria-expanded='true'] .case__num {
+    color: var(--accent);
+  }
+
+  .case__trigger:hover .case__title {
+    transform: translateX(6px);
+  }
+
+  .case__trigger[aria-expanded='true'] .case__icon::after {
+    transform: rotate(0deg);
+  }
+
+  /* Раскрытие: grid-rows 0fr → 1fr */
+  .case__panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.6s var(--ease);
+  }
+
+  :global(.js) .case__panel {
+    grid-template-rows: 0fr;
+  }
+
+  :global(.js) .case.is-open .case__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .case__panel-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  :global(.js) .case__panel-inner {
+    visibility: hidden;
+    transition: visibility 0s 0.6s;
+  }
+
+  :global(.js) .case.is-open .case__panel-inner {
+    visibility: visible;
+    transition: visibility 0s;
+  }
+
+  .case__content {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--gutter);
+    padding: 0.5rem 0 clamp(2rem, 3.5vw, 3rem) calc(3rem + var(--gutter));
+  }
+
+  .case__side {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .case__meta div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .case__meta dt {
+    color: var(--ink-3);
+  }
+
+  .case__meta dd {
+    font-size: var(--fs-small);
+  }
+
+  .case__figure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .case__figure-value {
+    font-size: clamp(2.75rem, 2rem + 2.2vw, 4rem);
+    font-weight: 350;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+  }
+
+  .case__figure-caption {
+    max-width: 20ch;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--ink-3);
+  }
+
+  .case__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-width: 62ch;
+    color: var(--ink-2);
+  }
+
+  .case__lead {
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  @media (max-width: 1024px) {
+    .case__trigger {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 1.5rem;
+    }
+
+    .case__sphere {
+      display: none;
+    }
+
+    .case__content {
+      padding-left: calc(2.5rem + var(--gutter));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .case__trigger {
+      grid-template-columns: 2rem minmax(0, 1fr) 1.25rem;
+      gap: 0.75rem;
+    }
+
+    .case__content {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding-left: 0;
+    }
+
+    .case__side {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .case__meta {
+      flex: 1 1 12rem;
+    }
+  }
+</style>

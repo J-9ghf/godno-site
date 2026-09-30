@@ -1,0 +1,122 @@
+---
+import Logo from './Logo.astro';
+import Arrow from './Arrow.astro';
+import { nav } from '../data/content';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top grid">
+      <div class="footer__brand">
+        <Logo tone="light" />
+        <p class="footer__desc">Подбор ключевых сотрудников и управленческий консалтинг для собственников бизнеса.</p>
+      </div>
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <ul>
+          {nav.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <a class="footer__up" href="#top">
+        Наверх
+        <Arrow direction="up-right" class="footer__up-arrow" />
+      </a>
+    </div>
+    <div class="footer__bottom">
+      <p>© {year} Институт кадровых решений</p>
+      <p>Подбор · Диагностика · Управленческий консалтинг</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 4rem 2rem;
+    background: var(--night);
+    color: var(--night-ink);
+  }
+
+  .footer__top {
+    row-gap: 2.5rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .footer__brand {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .footer__desc {
+    max-width: 32ch;
+    font-size: var(--fs-small);
+    color: var(--night-ink-2);
+  }
+
+  .footer__nav {
+    grid-column: 7 / span 4;
+  }
+
+  .footer__nav ul {
+    columns: 2;
+    column-gap: var(--gutter);
+  }
+
+  .footer__nav li {
+    margin-bottom: 0.6rem;
+  }
+
+  .footer__nav a,
+  .footer__up {
+    font-size: var(--fs-small);
+    color: var(--night-ink);
+    text-decoration: none;
+    transition: color 0.3s var(--ease);
+  }
+
+  .footer__nav a:hover,
+  .footer__up:hover {
+    color: #e79a86;
+  }
+
+  .footer__up {
+    grid-column: 11 / -1;
+    justify-self: end;
+    align-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  :global(.footer__up-arrow) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--night-line);
+    font-size: 0.8125rem;
+    color: var(--night-ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .footer__brand,
+    .footer__nav {
+      grid-column: 1 / -1;
+    }
+
+    .footer__up {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>
