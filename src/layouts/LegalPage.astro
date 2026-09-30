@@ -162,9 +162,14 @@ const { title, pending = false, current } = Astro.props;
     color: var(--c-blue);
   }
 
+  .legal__title {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
   @media (max-width: 900px) {
     .legal__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .legal__aside {

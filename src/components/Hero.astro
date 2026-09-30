@@ -51,7 +51,7 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
 
     <!-- Нижняя строка со смещением по сетке: номер · подзаголовок · CTA · scroll -->
     <div class="hero__bottom grid" data-reveal style="--d: 200">
-      <p class="hero__num eyebrow num" aria-hidden="true"><span>01</span> / 09</p>
+      <p class="hero__num eyebrow num" aria-hidden="true"><span>01</span> / 10</p>
 
       <p class="hero__subtitle">{hero.subtitle}</p>
 
@@ -321,6 +321,26 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
 
     .hero__cta .btn {
       width: 100%;
+    }
+  }
+
+  /* Самые маленькие телефоны (320–360 px, низкие экраны) */
+  @media (max-width: 360px), (max-width: 640px) and (max-height: 600px) {
+    .hero__top {
+      padding-top: 0.75rem;
+    }
+
+    .hero__title {
+      font-size: 1.875rem;
+    }
+
+    .hero__bottom {
+      margin-top: 1rem;
+      padding-top: 1rem;
+    }
+
+    .hero__subtitle {
+      font-size: 0.9375rem;
     }
   }
 </style>

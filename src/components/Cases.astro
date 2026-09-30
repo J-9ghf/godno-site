@@ -12,13 +12,13 @@ const also = caseGroups.find((g) => g.id === 'also')!;
 const pad = (n: number) => String(n).padStart(2, '0');
 const alsoStart = hiring.cases.length + consulting.cases.length;
 const index = [
-  { title: hiring.title, href: '#cases-hiring', range: `01–${pad(hiring.cases.length)}` },
+  { title: hiring.title, href: '#experience-list', range: `01–${pad(hiring.cases.length)}` },
   { title: consulting.title, href: '#consulting', range: `${pad(hiring.cases.length + 1)}–${pad(alsoStart)}` },
-  { title: also.title, href: '#cases-also', range: `${pad(alsoStart + 1)}–${pad(alsoStart + also.cases.length)}` },
+  { title: also.title, href: '#also', range: `${pad(alsoStart + 1)}–${pad(alsoStart + also.cases.length)}` },
 ];
 ---
 
-<section class="section cases" id="cases" aria-labelledby="cases-title">
+<section class="section cases" id="experience" aria-labelledby="cases-title">
   <div class="container">
     <SectionTag num="04" label="Опыт" aside={`${hiring.cases.length + consulting.cases.length + also.cases.length} кейсов`} />
 
@@ -44,18 +44,8 @@ const index = [
       </nav>
     </div>
 
-    <div class="cases__list" id="cases-hiring">
+    <div class="cases__list" id="experience-list">
       {hiring.cases.map((c, i) => <CaseRow item={c} num={pad(i + 1)} open={i === 0} />)}
-    </div>
-
-    <div class="cases__also" id="cases-also">
-      <p class="shead cases__also-head">
-        <span class="eyebrow shead__num num">{pad(alsoStart + 1)}–{pad(alsoStart + also.cases.length)}</span>
-        <span class="eyebrow">{also.title}</span>
-      </p>
-      <div class="cases__list cases__list--compact">
-        {also.cases.map((c, i) => <CaseRow item={c} num={pad(alsoStart + i + 1)} compact />)}
-      </div>
     </div>
   </div>
 </section>
@@ -115,17 +105,6 @@ const index = [
   .cases__list {
     border-top: 1px solid var(--c-black);
     scroll-margin-top: calc(var(--header-h) + 1rem);
-  }
-
-  .cases__also {
-    margin-top: clamp(5rem, 9vw, 8rem);
-    scroll-margin-top: calc(var(--header-h) + 1rem);
-  }
-
-  .cases__also-head {
-    border-top: 0;
-    padding-top: 0;
-    margin-bottom: 1.25rem;
   }
 
   @media (max-width: 960px) {

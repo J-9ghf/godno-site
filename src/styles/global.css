@@ -290,7 +290,8 @@ video {
   color: var(--c-ink-3);
 }
 
-.shead .eyebrow {
+.shead__num,
+.shead__aside {
   white-space: nowrap;
 }
 

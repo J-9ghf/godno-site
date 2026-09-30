@@ -3,7 +3,7 @@
 export const nav = [
   { href: '#about', label: 'О нас' },
   { href: '#approach', label: 'Подход' },
-  { href: '#cases', label: 'Опыт' },
+  { href: '#experience', label: 'Опыт' },
   { href: '#reviews', label: 'Отзывы' },
   { href: '#process', label: 'Как работаем' },
   { href: '#faq', label: 'FAQ' },
@@ -287,5 +287,4 @@ export const finalCta = {
 /** Юридические документы. Тексты — в src/content/legal/*.md (только из документов компании). */
 export const legalDocs = [
   { href: '/privacy', title: 'Политика конфиденциальности' },
-  { href: '/personal-data', title: 'Согласие на обработку персональных данных' },
 ];

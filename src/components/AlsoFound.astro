@@ -1,0 +1,36 @@
+---
+import SectionTag from './SectionTag.astro';
+import CaseRow from './CaseRow.astro';
+import { caseGroups } from '../data/content';
+
+const also = caseGroups.find((g) => g.id === 'also')!;
+// Сквозная нумерация продолжается после консалтинга: 07–09
+const start = caseGroups.filter((g) => g.id !== 'also').reduce((n, g) => n + g.cases.length, 0);
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section class="section also" id="also" aria-labelledby="also-title">
+  <div class="container">
+    <SectionTag num="06" label={also.title} aside={`${pad(start + 1)}–${pad(start + also.cases.length)}`} />
+
+    <h2 class="h2 also__title" id="also-title" data-reveal>
+      Также <span class="hl">находили</span>
+    </h2>
+
+    <div class="also__list">
+      {also.cases.map((c, i) => <CaseRow item={c} num={pad(start + i + 1)} compact />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .also__title {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+    font-size: var(--fs-display);
+  }
+
+  .also__list {
+    border-top: 1px solid var(--c-black);
+  }
+</style>

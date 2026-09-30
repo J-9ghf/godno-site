@@ -141,44 +141,6 @@ function initHeaderState() {
   window.addEventListener('resize', update);
 }
 
-/* ── Reviews slider: стрелки, счётчик, прогресс ───────────── */
-function initSlider() {
-  document.querySelectorAll<HTMLElement>('[data-slider]').forEach((slider) => {
-    const track = slider.querySelector<HTMLElement>('[data-slider-track]');
-    const bar = slider.querySelector<HTMLElement>('[data-slider-progress]');
-    const current = slider.querySelector<HTMLElement>('[data-slider-current]');
-    const prev = slider.querySelector<HTMLButtonElement>('[data-slider-prev]');
-    const next = slider.querySelector<HTMLButtonElement>('[data-slider-next]');
-    const slides = [...slider.querySelectorAll<HTMLElement>('[data-slide]')];
-    if (!track || !slides.length) return;
-
-    const update = () => {
-      const max = track.scrollWidth - track.clientWidth;
-      const ratio = max > 0 ? track.scrollLeft / max : 1;
-      const visible = track.clientWidth / track.scrollWidth;
-      bar?.style.setProperty('--p', (visible + (1 - visible) * ratio).toFixed(3));
-
-      const left = track.getBoundingClientRect().left;
-      let idx = slides.findIndex((s) => s.getBoundingClientRect().left >= left - 8);
-      if (ratio > 0.99) idx = slides.length - 1;
-      if (current) current.textContent = String(Math.max(idx, 0) + 1).padStart(2, '0');
-      if (prev) prev.disabled = track.scrollLeft <= 2;
-      if (next) next.disabled = track.scrollLeft >= max - 2;
-    };
-
-    const step = (dir: number) => {
-      const w = slides[0].getBoundingClientRect().width;
-      track.scrollBy({ left: dir * w, behavior: reduceMotion ? 'auto' : 'smooth' });
-    };
-
-    prev?.addEventListener('click', () => step(-1));
-    next?.addEventListener('click', () => step(1));
-    track.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  });
-}
-
 /* ── Process: «Шаг N из 5» + прогресс по скроллу ─────────── */
 function initProcess() {
   const steps = [...document.querySelectorAll<HTMLElement>('[data-step]')];
@@ -204,52 +166,46 @@ function initProcess() {
   setCurrent(1);
 }
 
-/* ── Form ─────────────────────────────────────────────────── */
+/* ── Form: пока только интерфейс — данные никуда не отправляются ── */
 function initForm() {
   const form = document.querySelector<HTMLFormElement>('[data-form]');
   const status = form?.querySelector<HTMLElement>('[data-form-status]');
-  if (!form || !status) return;
+  const done = document.querySelector<HTMLElement>('[data-form-done]');
+  const again = document.querySelector<HTMLButtonElement>('[data-form-again]');
+  if (!form || !status || !done) return;
 
-  form.addEventListener('submit', async (e) => {
+  const fields = [...form.querySelectorAll<HTMLInputElement>('[required]')];
+
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    let firstInvalid: HTMLInputElement | null = null;
-    form.querySelectorAll<HTMLInputElement>('[required]').forEach((field) => {
-      const ok = field.type === 'checkbox' ? field.checked : field.value.trim().length > 0;
-      field.setAttribute('aria-invalid', String(!ok));
-      if (!ok && !firstInvalid) firstInvalid = field;
-    });
-    if (firstInvalid) {
-      (firstInvalid as HTMLInputElement).focus();
-      status.textContent = 'Пожалуйста, укажите имя, способ связи и подтвердите согласие на обработку данных.';
+    const invalid = fields.filter((f) => (f.type === 'checkbox' ? !f.checked : !f.value.trim()));
+    fields.forEach((f) => f.setAttribute('aria-invalid', String(invalid.includes(f))));
+
+    if (invalid.length) {
+      const needsConsent = invalid.some((f) => f.type === 'checkbox');
+      const needsFields = invalid.some((f) => f.type !== 'checkbox');
+      status.textContent = needsFields
+        ? 'Пожалуйста, укажите, как к вам обращаться, и телефон или Telegram.'
+        : needsConsent
+          ? 'Пожалуйста, подтвердите согласие на обработку персональных данных.'
+          : '';
+      invalid[0].focus();
       return;
     }
 
-    const endpoint = form.dataset.endpoint;
-    if (!endpoint) {
-      status.textContent = 'Форма ещё не подключена к обработчику заявок (PUBLIC_FORM_ENDPOINT).';
-      console.warn('[form] PUBLIC_FORM_ENDPOINT не задан — заявка не отправлена.');
-      return;
-    }
+    // Отправка не подключена намеренно: показываем состояние «Спасибо»
+    status.textContent = '';
+    form.reset();
+    form.hidden = true;
+    done.hidden = false;
+    done.focus();
+  });
 
-    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]');
-    submit?.setAttribute('disabled', '');
-    status.textContent = 'Отправляем…';
-
-    try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: new FormData(form),
-      });
-      if (!res.ok) throw new Error(String(res.status));
-      form.reset();
-      status.textContent = 'Спасибо. Мы свяжемся с вами в ближайшее время.';
-    } catch {
-      status.textContent = 'Не удалось отправить заявку. Попробуйте ещё раз чуть позже.';
-    } finally {
-      submit?.removeAttribute('disabled');
-    }
+  again?.addEventListener('click', () => {
+    done.hidden = true;
+    form.hidden = false;
+    form.querySelector<HTMLInputElement>('input')?.focus();
   });
 
   form.querySelectorAll('input, textarea').forEach((f) => {
@@ -264,6 +220,5 @@ initActiveNav();
 initMenu();
 initVideo();
 initHeaderState();
-initSlider();
 initProcess();
 initForm();

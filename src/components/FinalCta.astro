@@ -3,14 +3,12 @@ import SectionTag from './SectionTag.astro';
 import Icon from './Icon.astro';
 import { finalCta } from '../data/content';
 
-// Адрес обработчика заявок задаётся при сборке: PUBLIC_FORM_ENDPOINT
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 const splitAt = finalCta.title.indexOf('и что');
 ---
 
 <section class="section cta" id="contact" aria-labelledby="cta-title">
   <div class="container">
-    <SectionTag num="09" label="Заявка" />
+    <SectionTag num="10" label="Заявка" />
 
     <div class="cta__grid grid">
       <div class="cta__text">
@@ -20,36 +18,45 @@ const splitAt = finalCta.title.indexOf('и что');
         <p class="cta__subtitle lead" data-reveal style="--d: 120">{finalCta.subtitle}</p>
       </div>
 
-      <form class="form" data-form data-endpoint={endpoint} novalidate data-reveal style="--d: 180">
-        <label class="field">
-          <span class="field__label eyebrow">01 · Как к вам обращаться</span>
-          <input class="field__input" type="text" name="name" autocomplete="name" required />
-        </label>
-        <label class="field">
-          <span class="field__label eyebrow">02 · Телефон или Telegram</span>
-          <input class="field__input" type="text" name="contact" autocomplete="tel" required />
-        </label>
-        <label class="field">
-          <span class="field__label eyebrow">03 · Кого ищете и что уже пробовали</span>
-          <textarea class="field__input field__input--area" name="message" rows="2"></textarea>
-        </label>
+      <!-- Форма пока работает только как интерфейс: данные никуда не отправляются -->
+      <div class="form-wrap" data-reveal style="--d: 180">
+        <form class="form" data-form novalidate>
+          <label class="field">
+            <span class="field__label eyebrow">01 · Как к вам обращаться</span>
+            <input class="field__input" type="text" name="name" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span class="field__label eyebrow">02 · Телефон или Telegram</span>
+            <input class="field__input" type="text" name="contact" autocomplete="tel" required />
+          </label>
+          <label class="field">
+            <span class="field__label eyebrow">03 · Кого ищете и что уже пробовали</span>
+            <textarea class="field__input field__input--area" name="message" rows="2"></textarea>
+          </label>
 
-        <label class="consent">
-          <input class="consent__box" type="checkbox" name="consent" required />
-          <span class="consent__mark" aria-hidden="true"><Icon name="check" /></span>
-          <span class="consent__text">
-            Я даю <a href="/personal-data">согласие на обработку персональных данных</a> и ознакомлен(а)
-            с{' '}<a href="/privacy">политикой конфиденциальности</a>
-          </span>
-        </label>
+          <label class="consent">
+            <input class="consent__box" type="checkbox" name="consent" required />
+            <span class="consent__mark" aria-hidden="true"><Icon name="check" /></span>
+            <span class="consent__text">
+              Я соглашаюсь на обработку персональных данных в соответствии
+              с{' '}<a href="/privacy">политикой конфиденциальности</a>
+            </span>
+          </label>
 
-        <button class="btn form__submit" type="submit">
-          {finalCta.button}
-          <Icon name="arrow-up-right" class="btn__icon" />
-        </button>
+          <button class="btn form__submit" type="submit">
+            {finalCta.button}
+            <Icon name="arrow-up-right" class="btn__icon" />
+          </button>
 
-        <p class="form__status" role="status" aria-live="polite" data-form-status></p>
-      </form>
+          <p class="form__status" role="alert" data-form-status></p>
+        </form>
+
+        <div class="form-done" data-form-done hidden tabindex="-1">
+          <span class="form-done__mark" aria-hidden="true"><Icon name="check" /></span>
+          <p class="form-done__title">Спасибо. Мы свяжемся с вами.</p>
+          <button class="form-done__again link-arrow" type="button" data-form-again>Заполнить ещё раз</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -86,8 +93,11 @@ const splitAt = finalCta.title.indexOf('и что');
   }
 
   /* Форма без панели: поля — тонкие линии */
-  .form {
+  .form-wrap {
     grid-column: 9 / -1;
+  }
+
+  .form {
     display: flex;
     flex-direction: column;
     gap: 1.75rem;
@@ -205,6 +215,64 @@ const splitAt = finalCta.title.indexOf('и что');
     cursor: progress;
   }
 
+  /* Состояние после отправки */
+  .form-done {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--c-black);
+    animation: done-in var(--t-slow) var(--ease);
+  }
+
+  .form[hidden],
+  .form-done[hidden] {
+    display: none;
+  }
+
+  .form-done:focus {
+    outline: none;
+  }
+
+  @keyframes done-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .form-done__mark {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--r-md);
+    background: var(--c-blue);
+    color: var(--c-white);
+  }
+
+  :global(.form-done__mark svg) {
+    width: 26px;
+    height: 26px;
+  }
+
+  .form-done__title {
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .form-done__again {
+    padding: 0 0 2px;
+    border: 0;
+    background-color: transparent;
+    font-size: var(--fs-small);
+    color: var(--c-blue);
+    cursor: pointer;
+  }
+
   .form__status:empty {
     display: none;
   }
@@ -219,11 +287,11 @@ const splitAt = finalCta.title.indexOf('и что');
 
   @media (max-width: 1024px) {
     .cta__text,
-    .form {
+    .form-wrap {
       grid-column: 1 / -1;
     }
 
-    .form {
+    .form-wrap {
       max-width: 36rem;
     }
   }
