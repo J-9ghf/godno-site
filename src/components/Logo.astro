@@ -1,40 +1,30 @@
 ---
 /**
- * Логотип Института кадровых решений — из оригинального файла заказчика (public/brand/*.png).
- * Форма и пропорции не изменены: файл используется как альфа-маска, меняется только заливка.
- *   color — бруски справа синие (--c-blue), остальное чёрное (как в цветной версии логотипа);
- *   mono  — весь логотип цветом currentColor.
- * Clear space: не меньше 1/4 высоты логотипа со всех сторон (задаётся в местах использования).
+ * Логотип ИКР (знак + «ИКР») — из оригинального файла заказчика, public/brand/mark-*.png.
+ * Строка «Институт кадровых решений» вынесена из логотипа в отдельный текстовый элемент (см. Brand.astro).
+ * Файл используется как альфа-маска: форма и пропорции не меняются, меняется только заливка.
+ * Цвета слоёв задаются переменными --logo-ink (буквы и левые бруски) и --logo-accent (правые бруски).
  */
 interface Props {
-  variant?: 'color' | 'mono';
   class?: string;
 }
-const { variant = 'color', class: className } = Astro.props;
+const { class: className } = Astro.props;
 ---
 
-<span class:list={['logo', `logo--${variant}`, className]} role="img" aria-label="Институт кадровых решений">
-  {
-    variant === 'color' ? (
-      <>
-        <span class="logo__layer logo__layer--dark" />
-        <span class="logo__layer logo__layer--accent" />
-      </>
-    ) : (
-      <span class="logo__layer logo__layer--mono" />
-    )
-  }
+<span class:list={['logo', className]} role="img" aria-label="ИКР">
+  <span class="logo__layer logo__layer--ink"></span>
+  <span class="logo__layer logo__layer--accent"></span>
 </span>
 
 <style>
   .logo {
-    --logo-h: 56px;
+    --logo-h: 48px;
     position: relative;
     display: block;
     flex: none;
     height: var(--logo-h);
-    /* исходные пропорции файла 638 × 509 */
-    aspect-ratio: 638 / 509;
+    /* пропорции знака из исходного файла: 406 × 448 */
+    aspect-ratio: 406 / 448;
   }
 
   .logo__layer {
@@ -42,20 +32,16 @@ const { variant = 'color', class: className } = Astro.props;
     inset: 0;
     -webkit-mask: var(--mask) center / contain no-repeat;
     mask: var(--mask) center / contain no-repeat;
+    transition: background-color var(--t-base) var(--ease);
   }
 
-  .logo__layer--dark {
-    --mask: url('/brand/logo-dark.png');
-    background: var(--c-black);
+  .logo__layer--ink {
+    --mask: url('/brand/mark-dark.png');
+    background: var(--logo-ink, var(--c-black));
   }
 
   .logo__layer--accent {
-    --mask: url('/brand/logo-accent.png');
-    background: var(--c-blue);
-  }
-
-  .logo__layer--mono {
-    --mask: url('/brand/logo-mask.png');
-    background: currentColor;
+    --mask: url('/brand/mark-accent.png');
+    background: var(--logo-accent, var(--c-blue));
   }
 </style>

@@ -1,126 +1,156 @@
 ---
 import SectionTag from './SectionTag.astro';
 import Icon from './Icon.astro';
-import { steps } from '../data/content';
+import { steps, hero } from '../data/content';
 ---
 
-<section class="section process" id="process" aria-labelledby="process-title">
-  <div class="container grid">
-    <aside class="process__aside">
-      <div class="process__sticky">
-        <SectionTag num="06" label="Как работаем" />
-        <h2 class="h2" id="process-title" data-reveal>Как мы <span class="hl">работаем</span></h2>
+<section class="section section--soft process" id="process" aria-labelledby="process-title">
+  <div class="container">
+    <SectionTag num="07" label="Как работаем" aside={`${steps.length} шагов`} />
 
-        <div class="process__meter" aria-hidden="true">
-          <span class="process__chip num">
-            Шаг <span data-step-current>1</span> из {steps.length}
-          </span>
-          <span class="process__bar"><span data-step-bar></span></span>
-        </div>
+    <div class="process__grid grid">
+      <aside class="process__aside">
+        <div class="process__sticky">
+          <h2 class="h2 process__title" id="process-title" data-reveal>Как мы <span class="hl">работаем</span></h2>
 
-        <a class="btn process__cta" href="#contact">
-          Обсудить вашу задачу
-          <Icon name="arrow-up-right" class="btn__icon" />
-        </a>
-      </div>
-    </aside>
-
-    <ol class="process__steps">
-      {
-        steps.map((s, i) => (
-          <li class="step" data-step={i + 1} data-reveal>
-            <span class="step__num num" aria-hidden="true">
-              {String(i + 1).padStart(2, '0')}
+          <div class="process__meter" aria-hidden="true">
+            <span class="eyebrow num process__meter-label">
+              Шаг <span data-step-current>1</span> / {steps.length}
             </span>
-            <div class="step__body">
-              <h3 class="h3 step__title">
-                <span class="visually-hidden">Шаг {i + 1}. </span>
-                {s.title}
-              </h3>
-              <p class="step__text">{s.text}</p>
-              {s.mark && <span class="step__mark">{s.mark}</span>}
-            </div>
-          </li>
-        ))
-      }
-    </ol>
+            <span class="process__bar"><span data-step-bar></span></span>
+          </div>
+
+          <a class="btn process__cta" href="#contact">
+            {hero.cta}
+            <Icon name="arrow-up-right" class="btn__icon" />
+          </a>
+        </div>
+      </aside>
+
+      <ol class="timeline">
+        {
+          steps.map((s, i) => (
+            <li class="step" data-step={i + 1} data-reveal>
+              <span class="step__num bignum" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div class="step__body">
+                <h3 class="step__title">
+                  <span class="visually-hidden">Шаг {i + 1}. </span>
+                  {s.title}
+                </h3>
+                <p class="step__text">{s.text}</p>
+                {s.mark && <span class="step__mark eyebrow">{s.mark}</span>}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
   </div>
 </section>
 
 <style>
+  .process__grid {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
   .process__aside {
     grid-column: 1 / span 5;
   }
 
   .process__sticky {
     position: sticky;
-    top: calc(var(--header-h) + 2.5rem);
+    top: calc(var(--header-h) + 3rem);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.75rem;
+    gap: 2.25rem;
+  }
+
+  .process__title {
+    max-width: 8ch;
+    font-size: var(--fs-display);
   }
 
   .process__meter {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: min(100%, 22rem);
-    margin-top: 0.5rem;
+    flex-direction: column;
+    gap: 0.875rem;
+    width: min(100%, 18rem);
   }
 
-  .process__chip {
-    flex: none;
-    padding: 0.375rem 0.75rem;
-    border-radius: 999px;
-    background: var(--c-blue-light);
+  .process__meter-label {
     color: var(--c-blue);
-    font-size: var(--fs-meta);
-    font-weight: 700;
   }
 
   .process__bar {
     position: relative;
-    flex: 1;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--c-blue-light);
+    height: 2px;
+    background: var(--c-blue-light-2);
     overflow: hidden;
   }
 
   .process__bar span {
     position: absolute;
     inset: 0;
-    border-radius: inherit;
     background: var(--c-blue);
     transform: scaleX(var(--p, 0.2));
     transform-origin: left;
     transition: transform var(--t-slow) var(--ease);
   }
 
-  .process__cta {
-    margin-top: 0.5rem;
+  /* Вертикальный timeline: тонкая линия через все номера */
+  .timeline {
+    position: relative;
+    grid-column: 7 / -1;
   }
 
-  .process__steps {
-    grid-column: 7 / -1;
-    border-top: 1px solid var(--c-line);
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--c-line-strong);
   }
 
   .step {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr);
+    grid-template-columns: minmax(5.5rem, 9rem) minmax(0, 1fr);
     gap: var(--gutter);
-    padding-block: clamp(2rem, 3.5vw, 3rem);
-    border-bottom: 1px solid var(--c-line);
+    padding: 0 0 clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .step:last-child {
+    padding-bottom: 0;
+  }
+
+  /* Маркер на линии */
+  .step::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 0.35rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-soft);
+    box-shadow: inset 0 0 0 1px var(--c-line-strong);
+    transition:
+      background-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease);
+  }
+
+  .step.is-current::before {
+    background: var(--c-blue);
+    box-shadow: 0 0 0 4px var(--c-blue-light);
   }
 
   .step__num {
-    font-size: clamp(3rem, 2.2rem + 2.6vw, 5.25rem);
-    font-weight: 800;
-    line-height: 0.85;
-    letter-spacing: -0.05em;
-    color: var(--c-blue-light-2);
+    color: var(--c-blue-muted);
     transition: color var(--t-slow) var(--ease);
   }
 
@@ -132,37 +162,42 @@ import { steps } from '../data/content';
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.875rem;
+    gap: 1rem;
     padding-top: 0.25rem;
   }
 
+  .step__title {
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .step__text {
-    max-width: 44ch;
+    max-width: 42ch;
     color: var(--c-ink-2);
   }
 
   .step__mark {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.25rem;
-    padding: 0.375rem 0.75rem;
-    border-radius: 999px;
-    background: var(--c-blue-light);
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--c-blue);
     color: var(--c-blue);
-    font-size: var(--fs-meta);
-    font-weight: 700;
   }
 
   @media (max-width: 960px) {
     .process__aside,
-    .process__steps {
+    .timeline {
       grid-column: 1 / -1;
     }
 
     .process__sticky {
       position: static;
-      margin-bottom: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .process__title {
+      max-width: none;
     }
 
     .process__meter,
@@ -173,12 +208,11 @@ import { steps } from '../data/content';
 
   @media (max-width: 640px) {
     .step {
-      grid-template-columns: 4.5rem minmax(0, 1fr);
+      grid-template-columns: 1fr;
       gap: 1rem;
     }
 
     .step__num {
-      font-size: 2.75rem;
       color: var(--c-blue);
     }
   }

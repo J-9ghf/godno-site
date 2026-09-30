@@ -1,4 +1,5 @@
 ---
+import SectionTag from './SectionTag.astro';
 import { caseGroups, about } from '../data/content';
 
 const group = caseGroups.find((g) => g.id === 'consulting')!;
@@ -10,36 +11,32 @@ const heading = quote.slice(0, quote.indexOf(':'));
 const hlFrom = heading.indexOf('сломана');
 ---
 
-<section class="consulting" id="consulting" aria-labelledby="consulting-title">
+<section class="section consulting" id="consulting" aria-labelledby="consulting-title">
   <div class="container">
-    <header class="consulting__head grid">
-      <p class="tag consulting__tag">
-        <span class="tag__num">04</span>
-        {group.title}
-      </p>
-      <h2 class="h2 consulting__title" id="consulting-title" data-reveal>
-        {heading.slice(0, hlFrom)}<span class="consulting__hl">{heading.slice(hlFrom)}</span>
-      </h2>
-    </header>
+    <SectionTag num="05" label={group.title} aside={`${group.cases.length} проекта`} />
 
-    <div class="consulting__cases">
+    <h2 class="h2 consulting__title" id="consulting-title" data-reveal>
+      {heading.slice(0, hlFrom)}<span class="hl">{heading.slice(hlFrom)}</span>
+    </h2>
+
+    <div class="consulting__cases grid">
       {
         group.cases.map((c, i) => (
           <article class="dossier" id={`case-${c.id}`} aria-labelledby={`case-${c.id}-title`} data-reveal style={`--d: ${i * 140}`}>
             <div class="dossier__top">
-              <span class="dossier__num num">{String(hiringCount + i + 1).padStart(2, '0')}</span>
-              <span class="dossier__status">Проект продолжается</span>
+              <span class="dossier__num bignum">{String(hiringCount + i + 1).padStart(2, '0')}</span>
+              <span class="dossier__status eyebrow">Проект продолжается</span>
             </div>
 
             <h3 class="h3 dossier__title" id={`case-${c.id}-title`}>{c.title}</h3>
 
             <dl class="dossier__meta">
               <div>
-                <dt>{c.metaLabel}</dt>
+                <dt class="eyebrow">{c.metaLabel}</dt>
                 <dd>{c.metaValue}</dd>
               </div>
               <div>
-                <dt>Сфера</dt>
+                <dt class="eyebrow">Сфера</dt>
                 <dd>{c.sphere}</dd>
               </div>
             </dl>
@@ -47,7 +44,7 @@ const hlFrom = heading.indexOf('сломана');
             <ol class="dossier__steps">
               {c.body.map((p, j) => (
                 <li>
-                  <span class="dossier__step-num num" aria-hidden="true">{j + 1}</span>
+                  <span class="dossier__step-num eyebrow num" aria-hidden="true">{String(j + 1).padStart(2, '0')}</span>
                   <p>{p}</p>
                 </li>
               ))}
@@ -61,83 +58,45 @@ const hlFrom = heading.indexOf('сломана');
 
 <style>
   .consulting {
-    padding-block: var(--section);
-    background: var(--c-black);
-    color: var(--c-on-dark);
+    background: var(--c-blue-light);
     scroll-margin-top: var(--header-h);
   }
 
-  .consulting__head {
-    row-gap: 1.75rem;
-    margin-bottom: clamp(3rem, 6vw, 5rem);
-  }
-
-  .consulting__tag {
-    grid-column: 1 / -1;
-    justify-self: start;
-    border-color: var(--c-line-dark);
-    background: transparent;
-    color: var(--c-on-dark);
-  }
-
-  .consulting__tag .tag__num {
-    background: var(--c-blue);
-    color: var(--c-white);
-  }
-
   .consulting__title {
-    grid-column: 1 / span 10;
-    max-width: 22ch;
-  }
-
-  .consulting__hl {
-    color: var(--c-blue-on-dark);
+    max-width: 18ch;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    font-size: var(--fs-display);
   }
 
   .consulting__cases {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--gutter);
+    row-gap: 4rem;
+    margin-top: clamp(3.5rem, 7vw, 6rem);
   }
 
   .dossier {
+    grid-column: span 6;
     display: flex;
     flex-direction: column;
-    padding: clamp(1.75rem, 3vw, 2.75rem);
-    border: 1px solid var(--c-line-dark);
-    border-radius: var(--r-xl);
-    transition:
-      opacity var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
-      transform var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
-      border-color var(--t-base) var(--ease) 0s;
-  }
-
-  .dossier:hover {
-    border-color: rgb(125 156 255 / 0.5);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-black);
   }
 
   .dossier__top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 1rem;
   }
 
   .dossier__num {
-    font-size: var(--fs-small);
-    font-weight: 800;
-    color: var(--c-blue-on-dark);
+    color: var(--c-blue);
   }
 
   .dossier__status {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.375rem 0.75rem;
-    border-radius: 999px;
-    background: rgb(125 156 255 / 0.14);
-    color: var(--c-blue-on-dark);
-    font-size: var(--fs-meta);
-    font-weight: 700;
+    color: var(--c-blue);
   }
 
   .dossier__status::before {
@@ -149,105 +108,93 @@ const hlFrom = heading.indexOf('сломана');
   }
 
   .dossier__title {
+    max-width: 20ch;
     margin-top: clamp(2rem, 4vw, 3rem);
-    max-width: 22ch;
   }
 
   .dossier__meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--gutter);
-    margin-top: 1.75rem;
-    padding-block: 1.25rem;
-    border-block: 1px solid var(--c-line-dark);
+    margin-top: 2rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--c-blue-light-2);
   }
 
   .dossier__meta dt {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--c-on-dark-2);
+    color: var(--c-ink-3);
   }
 
   .dossier__meta dd {
-    margin-top: 0.2rem;
+    margin-top: 0.35rem;
     font-size: var(--fs-small);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .dossier__meta dd::first-letter {
     text-transform: uppercase;
   }
 
-  /* Вертикальная структура: абзацы как этапы */
+  /* Абзацы — этапы на вертикальной тонкой линии */
   .dossier__steps {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 2rem;
+    gap: 1.75rem;
+    margin-top: 2.25rem;
+    padding-left: 3.25rem;
   }
 
   .dossier__steps::before {
     content: '';
     position: absolute;
-    left: 13px;
-    top: 14px;
-    bottom: 14px;
+    left: 0.6875rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
     width: 1px;
-    background: var(--c-line-dark);
+    background: var(--c-blue-light-2);
   }
 
   .dossier__steps li {
     position: relative;
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    gap: 1.25rem;
     font-size: var(--fs-small);
-    line-height: 1.65;
-    color: var(--c-on-dark-2);
+    line-height: 1.7;
+    color: var(--c-ink-2);
   }
 
   .dossier__steps li:first-child p {
-    color: var(--c-on-dark);
+    font-size: var(--fs-body);
+    font-weight: 500;
+    color: var(--c-black);
   }
 
   .dossier__step-num {
-    position: relative;
+    position: absolute;
+    left: -3.25rem;
+    top: 0.1rem;
     display: grid;
     place-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--r-sm);
-    background: var(--c-black);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--c-on-dark);
-  }
-
-  .dossier__steps li:last-child .dossier__step-num {
-    background: var(--c-blue);
-    box-shadow: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    background: var(--c-blue-light);
+    color: var(--c-blue);
+    letter-spacing: 0;
   }
 
   @media (max-width: 960px) {
-    .consulting__title {
+    .dossier {
       grid-column: 1 / -1;
-    }
-
-    .consulting__cases {
-      grid-template-columns: 1fr;
     }
   }
 
   @media (max-width: 640px) {
-    .dossier {
-      padding: 1.5rem 1.25rem;
-      border-radius: var(--r-lg);
+    .dossier__steps {
+      padding-left: 2.5rem;
     }
 
-    .dossier__steps li {
-      gap: 1rem;
+    .dossier__step-num {
+      left: -2.5rem;
     }
   }
 </style>

@@ -1,166 +1,141 @@
 ---
+import SectionTag from './SectionTag.astro';
 import Icon from './Icon.astro';
 import { finalCta } from '../data/content';
 
 // Адрес обработчика заявок задаётся при сборке: PUBLIC_FORM_ENDPOINT
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const splitAt = finalCta.title.indexOf('и что');
 ---
 
-<section class="cta" id="contact" aria-labelledby="cta-title">
-  <div class="container cta__grid">
-    <div class="cta__text">
-      <p class="tag cta__tag">
-        <span class="tag__num">08</span>
-        Заявка
-      </p>
-      <h2 class="h2 cta__title" id="cta-title" data-reveal>{finalCta.title}</h2>
-      <p class="cta__subtitle lead" data-reveal style="--d: 120">{finalCta.subtitle}</p>
-    </div>
+<section class="section cta" id="contact" aria-labelledby="cta-title">
+  <div class="container">
+    <SectionTag num="09" label="Заявка" />
 
-    <form class="form panel" data-form data-endpoint={endpoint} novalidate data-reveal style="--d: 180">
-      <div class="form__fields">
+    <div class="cta__grid grid">
+      <div class="cta__text">
+        <h2 class="cta__title" id="cta-title" data-reveal>
+          {finalCta.title.slice(0, splitAt)}<span class="hl">{finalCta.title.slice(splitAt)}</span>
+        </h2>
+        <p class="cta__subtitle lead" data-reveal style="--d: 120">{finalCta.subtitle}</p>
+      </div>
+
+      <form class="form" data-form data-endpoint={endpoint} novalidate data-reveal style="--d: 180">
         <label class="field">
-          <span class="field__label">Как к вам обращаться</span>
+          <span class="field__label eyebrow">01 · Как к вам обращаться</span>
           <input class="field__input" type="text" name="name" autocomplete="name" required />
         </label>
         <label class="field">
-          <span class="field__label">Телефон или Telegram</span>
+          <span class="field__label eyebrow">02 · Телефон или Telegram</span>
           <input class="field__input" type="text" name="contact" autocomplete="tel" required />
         </label>
         <label class="field">
-          <span class="field__label">Кого ищете и что уже пробовали</span>
-          <textarea class="field__input field__input--area" name="message" rows="3"></textarea>
+          <span class="field__label eyebrow">03 · Кого ищете и что уже пробовали</span>
+          <textarea class="field__input field__input--area" name="message" rows="2"></textarea>
         </label>
-      </div>
 
-      <label class="consent">
-        <input class="consent__box" type="checkbox" name="consent" required />
-        <span class="consent__mark" aria-hidden="true"><Icon name="check" /></span>
-        <span class="consent__text">
-          Я даю <a href="/personal-data">согласие на обработку персональных данных</a> и ознакомлен(а)
-          с{' '}<a href="/privacy">политикой конфиденциальности</a>
-        </span>
-      </label>
+        <label class="consent">
+          <input class="consent__box" type="checkbox" name="consent" required />
+          <span class="consent__mark" aria-hidden="true"><Icon name="check" /></span>
+          <span class="consent__text">
+            Я даю <a href="/personal-data">согласие на обработку персональных данных</a> и ознакомлен(а)
+            с{' '}<a href="/privacy">политикой конфиденциальности</a>
+          </span>
+        </label>
 
-      <button class="btn form__submit" type="submit">
-        {finalCta.button}
-        <Icon name="arrow-up-right" class="btn__icon" />
-      </button>
+        <button class="btn form__submit" type="submit">
+          {finalCta.button}
+          <Icon name="arrow-up-right" class="btn__icon" />
+        </button>
 
-      <p class="form__status" role="status" aria-live="polite" data-form-status></p>
-    </form>
+        <p class="form__status" role="status" aria-live="polite" data-form-status></p>
+      </form>
+    </div>
   </div>
 </section>
 
 <style>
   .cta {
-    padding-block: var(--section);
-    background: var(--c-blue);
-    color: var(--c-white);
+    background: var(--c-blue-light);
   }
 
   .cta__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(2.5rem, 5vw, 5rem);
-    align-items: center;
+    row-gap: 3.5rem;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
   }
 
   .cta__text {
+    grid-column: 1 / span 7;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1.75rem;
-  }
-
-  .cta__tag {
-    border-color: rgb(255 255 255 / 0.3);
-    background: transparent;
-    color: var(--c-white);
-  }
-
-  .cta__tag .tag__num {
-    background: var(--c-white);
-    color: var(--c-blue);
+    gap: 2rem;
   }
 
   .cta__title {
-    max-width: 16ch;
-    font-size: clamp(2.25rem, 1.3rem + 3vw, 4.25rem);
-    line-height: 1.04;
-    letter-spacing: var(--tr-display);
+    max-width: 14ch;
+    font-size: var(--fs-display);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
   }
 
   .cta__subtitle {
-    max-width: 34ch;
-    color: rgb(255 255 255 / 0.82);
+    max-width: 32ch;
+    color: var(--c-ink-2);
   }
 
-  /* Form */
+  /* Форма без панели: поля — тонкие линии */
   .form {
+    grid-column: 9 / -1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    color: var(--c-black);
-    box-shadow: none;
-  }
-
-  .form__fields {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    gap: 1.75rem;
+    padding-top: 0.5rem;
   }
 
   .field {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 
   .field__label {
-    font-size: var(--fs-meta);
-    font-weight: 700;
+    color: var(--c-ink-3);
   }
 
   .field__input {
     width: 100%;
-    min-height: 52px;
-    padding: 0.875rem 1rem;
-    border: 1px solid var(--c-line);
-    border-radius: var(--r-md);
-    background: var(--c-soft);
-    font-size: 1rem;
-    font-weight: 500;
-    transition:
-      border-color var(--t-fast) var(--ease),
-      background-color var(--t-fast) var(--ease);
-  }
-
-  .field__input:hover {
-    border-color: var(--c-line-strong);
+    padding: 0.625rem 0 0.75rem;
+    border: 0;
+    border-bottom: 1px solid var(--c-black);
+    border-radius: 0;
+    background: transparent;
+    font-size: 1.125rem;
+    font-weight: 600;
+    transition: border-color var(--t-fast) var(--ease);
   }
 
   .field__input:focus {
     outline: none;
-    border-color: var(--c-blue);
-    background: var(--c-white);
+    border-bottom-color: var(--c-blue);
+    box-shadow: 0 1px 0 var(--c-blue);
   }
 
   .field__input[aria-invalid='true'] {
-    border-color: var(--c-blue);
-    box-shadow: 0 0 0 3px var(--c-blue-light);
+    border-bottom-color: var(--c-blue);
+    box-shadow: 0 1px 0 var(--c-blue);
   }
 
   .field__input--area {
-    min-height: 96px;
+    min-height: 4.5rem;
     resize: vertical;
   }
 
   .consent {
     position: relative;
     display: grid;
-    grid-template-columns: 22px 1fr;
+    grid-template-columns: 20px 1fr;
     gap: 0.75rem;
     font-size: var(--fs-meta);
     line-height: 1.5;
@@ -171,18 +146,18 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .consent__box {
     position: absolute;
     opacity: 0;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     margin: 0;
   }
 
   .consent__mark {
     display: grid;
     place-items: center;
-    width: 22px;
-    height: 22px;
-    border: 1.5px solid var(--c-line-strong);
-    border-radius: 6px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--c-black);
+    border-radius: 4px;
     color: transparent;
     transition:
       background-color var(--t-fast) var(--ease),
@@ -190,8 +165,8 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   :global(.consent__mark svg) {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
 
   .consent__box:checked + .consent__mark {
@@ -207,12 +182,11 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 
   .consent__box[aria-invalid='true'] + .consent__mark {
     border-color: var(--c-blue);
-    box-shadow: 0 0 0 3px var(--c-blue-light);
+    box-shadow: 0 0 0 3px var(--c-blue-light-2);
   }
 
   .consent a {
     color: var(--c-black);
-    text-decoration-color: var(--c-line-strong);
     text-underline-offset: 2px;
   }
 
@@ -221,7 +195,9 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .form__submit {
-    width: 100%;
+    align-self: flex-start;
+    min-width: 15rem;
+    justify-content: space-between;
   }
 
   .form__submit[disabled] {
@@ -234,24 +210,27 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .form__status {
-    padding: 0.875rem 1rem;
-    border-radius: var(--r-md);
-    background: var(--c-blue-light);
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-blue);
     font-size: var(--fs-small);
     font-weight: 600;
     color: var(--c-blue-dark);
   }
 
-  @media (max-width: 960px) {
-    .cta__grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 1024px) {
+    .cta__text,
+    .form {
+      grid-column: 1 / -1;
+    }
+
+    .form {
+      max-width: 36rem;
     }
   }
 
   @media (max-width: 640px) {
-    .form {
-      border-radius: var(--r-lg);
-      margin-inline: calc(var(--pad) * -0.5);
+    .form__submit {
+      width: 100%;
     }
   }
 </style>

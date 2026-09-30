@@ -2,7 +2,7 @@
 import Icon from './Icon.astro';
 import { hero } from '../data/content';
 
-// Синим выделяется вторая половина заголовка — текст не меняется
+// Светло-голубым выделяется вторая половина заголовка — текст не меняется
 const splitAt = hero.title.indexOf('почему');
 const titleA = hero.title.slice(0, splitAt);
 const titleB = hero.title.slice(splitAt);
@@ -12,7 +12,7 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
 ---
 
 <section class="hero" id="top" aria-labelledby="hero-title">
-  <!-- 1. Видео — фон всего первого экрана -->
+  <!-- Видео — фон всего первого экрана, без рамок и контейнеров -->
   <video
     class="hero__video"
     autoplay
@@ -30,42 +30,42 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
     <source src="/media/hero.mp4" type="video/mp4" />
   </video>
 
-  <!-- 2. Overlay — только для читаемости: светлый слева (зона текста) и сверху (навигация) -->
-  <div class="hero__overlay" aria-hidden="true"></div>
+  <!-- Лёгкое равномерное затемнение — только для читаемости белого текста -->
+  <div class="hero__shade" aria-hidden="true"></div>
 
-  <!-- 3. Контент -->
   <div class="container hero__content">
-    <div class="hero__main">
-      <p class="hero__label" data-reveal>
+    <!-- Верхняя строка: идентификация слева, направления справа -->
+    <div class="hero__top grid" data-reveal>
+      <p class="hero__label eyebrow">
         <span class="hero__label-line" aria-hidden="true"></span>
         Кадровое и управленческое бюро
       </p>
+      <ul class="hero__dirs eyebrow" aria-label="Направления работы">
+        {directions.map((d) => <li>{d}</li>)}
+      </ul>
+    </div>
 
-      <h1 class="hero__title display" id="hero-title" data-reveal style="--d: 80">
-        {titleA}<span class="hl">{titleB}</span>
-      </h1>
+    <h1 class="hero__title" id="hero-title" data-reveal style="--d: 80">
+      {titleA}<span class="hero__hl">{titleB}</span>
+    </h1>
 
-      <p class="hero__subtitle lead" data-reveal style="--d: 160">{hero.subtitle}</p>
+    <!-- Нижняя строка со смещением по сетке: номер · подзаголовок · CTA · scroll -->
+    <div class="hero__bottom grid" data-reveal style="--d: 200">
+      <p class="hero__num eyebrow num" aria-hidden="true"><span>01</span> / 09</p>
 
-      <div class="hero__actions" data-reveal style="--d: 240">
+      <p class="hero__subtitle">{hero.subtitle}</p>
+
+      <div class="hero__cta">
         <a class="btn" href="#contact">
           {hero.cta}
           <Icon name="arrow-up-right" class="btn__icon" />
         </a>
       </div>
-    </div>
 
-    <div class="hero__bottom" data-reveal style="--d: 360">
-      <a class="hero__scroll" href="#about">
-        <span class="hero__scroll-line" aria-hidden="true"></span>
+      <a class="hero__scroll eyebrow" href="#about">
         Scroll
+        <span class="hero__scroll-line" aria-hidden="true"></span>
       </a>
-
-      <ul class="hero__dirs" aria-label="Направления работы">
-        {directions.map((d) => <li>{d}</li>)}
-      </ul>
-
-      <p class="hero__count num" aria-hidden="true"><span>01</span> / 08</p>
     </div>
   </div>
 </section>
@@ -73,13 +73,13 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
 <style>
   .hero {
     position: relative;
-    /* ровно первый viewport, с учётом мобильных панелей браузера */
     height: 100vh;
     height: 100svh;
     min-height: 600px;
     overflow: hidden;
     isolation: isolate;
-    background: #b9bcbf; /* цвет кадра до загрузки poster */
+    background: #6f7478; /* тон кадра до загрузки poster */
+    color: var(--c-white);
   }
 
   .hero__video {
@@ -90,35 +90,28 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
     height: 100%;
     max-width: none;
     object-fit: cover;
-    /* кадр: светлая стена слева, люди — в правой половине */
     object-position: 50% 50%;
     pointer-events: none;
   }
 
-  /* Никакого UI браузера поверх фонового видео */
   .hero__video::-webkit-media-controls,
   .hero__video::-webkit-media-controls-start-playback-button {
     display: none !important;
     -webkit-appearance: none;
   }
 
-  .hero__overlay {
+  /* Не «кинотрейлер»: 25–50 % затемнения, сильнее только в зоне текста (низ-лево) */
+  .hero__shade {
     position: absolute;
     inset: 0;
     z-index: -1;
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.62) 0, rgb(255 255 255 / 0) 190px),
-      linear-gradient(
-        90deg,
-        rgb(255 255 255 / 0.9) 0%,
-        rgb(255 255 255 / 0.78) 28%,
-        rgb(255 255 255 / 0.38) 46%,
-        rgb(255 255 255 / 0) 60%
-      );
+      linear-gradient(180deg, rgb(10 12 17 / 0.34) 0, rgb(10 12 17 / 0) 200px),
+      linear-gradient(0deg, rgb(10 12 17 / 0.42) 0%, rgb(10 12 17 / 0) 45%),
+      linear-gradient(90deg, rgb(10 12 17 / 0.4) 0%, rgb(10 12 17 / 0.2) 55%, rgb(10 12 17 / 0.1) 100%);
   }
 
   .hero__content {
-    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -126,132 +119,125 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .hero__main {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    max-width: min(48rem, 56%);
-    margin-block: auto;
-    padding-block: clamp(0.5rem, 2.5vh, 2rem);
+  /* Верхняя строка */
+  .hero__top {
+    align-items: center;
+    padding-top: clamp(1.25rem, 3.5vh, 2.25rem);
   }
 
   .hero__label {
+    grid-column: 1 / span 6;
     display: flex;
     align-items: center;
     gap: 0.875rem;
-    font-size: var(--fs-small);
-    font-weight: 700;
   }
 
   .hero__label-line {
     width: 40px;
-    height: 2px;
-    background: var(--c-blue);
-  }
-
-  .hero__title {
-    margin-top: clamp(1rem, 2.6vh, 2rem);
-    /* зависит и от ширины, и от высоты экрана — hero всегда помещается в один viewport */
-    font-size: min(clamp(2.5rem, 1.2rem + 3.4vw, 4.5rem), 8vh);
-  }
-
-  .hero__subtitle {
-    max-width: 26ch;
-    margin-top: clamp(1rem, 2.4vh, 1.75rem);
-    color: var(--c-black);
-  }
-
-  .hero__actions {
-    margin-top: clamp(1.25rem, 3.4vh, 2.5rem);
-  }
-
-  /* Нижняя строка: направления · scroll · номер экрана */
-  .hero__bottom {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 2rem;
-    padding-block: clamp(0.75rem, 1.6vh, 1.25rem) clamp(1rem, 2.4vh, 1.75rem);
+    height: 1px;
+    background: var(--c-white);
   }
 
   .hero__dirs {
+    grid-column: 7 / -1;
+    justify-self: end;
     display: flex;
+    color: rgb(255 255 255 / 0.85);
   }
 
   .hero__dirs li {
     padding-inline: 1rem;
-    font-size: var(--fs-meta);
-    font-weight: 700;
-    line-height: 1.2;
   }
 
-  .hero__dirs li:first-child {
-    padding-left: 0;
+  .hero__dirs li:last-child {
+    padding-right: 0;
   }
 
   .hero__dirs li + li {
-    border-left: 1px solid rgb(10 12 17 / 0.3);
+    border-left: 1px solid rgb(255 255 255 / 0.4);
+  }
+
+  /* H1 — главный визуальный элемент */
+  .hero__title {
+    max-width: 13.5ch;
+    margin-top: auto;
+    font-size: min(var(--fs-hero), 9.4vh);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  .hero__hl {
+    color: var(--c-blue-light-2);
+  }
+
+  /* Нижняя строка */
+  .hero__bottom {
+    align-items: end;
+    row-gap: 1.25rem;
+    margin-top: clamp(1.75rem, 4.5vh, 3.25rem);
+    padding-block: 1.25rem clamp(1.5rem, 3.5vh, 2.5rem);
+    border-top: 1px solid rgb(255 255 255 / 0.4);
+  }
+
+  .hero__num {
+    grid-column: 1 / span 2;
+    align-self: start;
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  .hero__num span {
+    color: var(--c-white);
+  }
+
+  .hero__subtitle {
+    grid-column: 3 / span 4;
+    align-self: start;
+    max-width: 24ch;
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  .hero__cta {
+    grid-column: 7 / span 3;
   }
 
   .hero__scroll {
+    grid-column: 10 / -1;
+    justify-self: end;
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    padding-right: 2rem;
-    border-right: 1px solid rgb(10 12 17 / 0.3);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    gap: 0.875rem;
     text-decoration: none;
   }
 
   .hero__scroll-line {
     position: relative;
-    width: 1px;
-    height: 22px;
+    width: 56px;
+    height: 1px;
     overflow: hidden;
-    background: rgb(10 12 17 / 0.2);
+    background: rgb(255 255 255 / 0.35);
   }
 
   .hero__scroll-line::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--c-blue);
-    transform: translateY(-100%);
-    animation: scroll-hint 2.4s var(--ease) infinite;
+    background: var(--c-white);
+    transform: translateX(-100%);
+    animation: scroll-hint 2.6s var(--ease) infinite;
   }
 
   @keyframes scroll-hint {
     0% {
-      transform: translateY(-100%);
+      transform: translateX(-100%);
     }
-    55%,
+    60%,
     100% {
-      transform: translateY(100%);
-    }
-  }
-
-  .hero__count {
-    grid-column: 3;
-    justify-self: end;
-    padding: 0.5rem 0.875rem;
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.9);
-    font-size: var(--fs-meta);
-    font-weight: 700;
-    color: var(--c-ink-3);
-  }
-
-  .hero__count span {
-    color: var(--c-blue);
-  }
-
-  /* Низкие экраны: убираем нижнюю строку, чтобы сохранить воздух вокруг заголовка */
-  @media (max-height: 720px) and (min-width: 641px) {
-    .hero__bottom {
-      display: none;
+      transform: translateX(100%);
     }
   }
 
@@ -262,45 +248,43 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
     }
   }
 
-  /* Laptop */
-  @media (max-width: 1280px) {
-    .hero__main {
-      max-width: min(40rem, 56%);
+  @media (max-width: 1100px) {
+    .hero__subtitle {
+      grid-column: 3 / span 5;
+    }
+
+    .hero__cta {
+      grid-column: 8 / span 5;
+      justify-self: end;
+    }
+
+    .hero__scroll {
+      display: none;
     }
   }
 
-  /* Tablet: текст внизу, люди в кадре сверху */
+  /* Tablet: кадр сдвинут к кандидатке, текст — снизу */
   @media (max-width: 960px) {
-    /* кандидатка большую часть цикла — около 57% ширины кадра */
     .hero__video {
       object-position: 64% 50%;
     }
 
-    .hero__overlay {
+    .hero__shade {
       background:
-        linear-gradient(180deg, rgb(255 255 255 / 0.7) 0, rgb(255 255 255 / 0) 160px),
-        linear-gradient(
-          0deg,
-          rgb(255 255 255 / 0.94) 0%,
-          rgb(255 255 255 / 0.86) 36%,
-          rgb(255 255 255 / 0.3) 58%,
-          rgb(255 255 255 / 0) 70%
-        );
-    }
-
-    .hero__main {
-      max-width: 36rem;
-      margin-top: auto;
-      margin-bottom: 0;
-      padding-bottom: 1rem;
+        linear-gradient(180deg, rgb(10 12 17 / 0.36) 0, rgb(10 12 17 / 0) 180px),
+        linear-gradient(0deg, rgb(10 12 17 / 0.62) 0%, rgb(10 12 17 / 0.3) 55%, rgb(10 12 17 / 0.12) 100%);
     }
 
     .hero__dirs {
       display: none;
     }
 
-    .hero__scroll {
-      border-right: 0;
+    .hero__num {
+      display: none;
+    }
+
+    .hero__subtitle {
+      grid-column: 1 / span 7;
     }
   }
 
@@ -310,62 +294,33 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
       min-height: 560px;
     }
 
-    /* Узкий кадр: держим в центре кандидатку и собеседника */
     .hero__video {
       object-position: 60% 50%;
     }
 
-    .hero__overlay {
-      background:
-        linear-gradient(180deg, rgb(255 255 255 / 0.75) 0, rgb(255 255 255 / 0) 120px),
-        linear-gradient(
-          0deg,
-          rgb(255 255 255 / 0.96) 0%,
-          rgb(255 255 255 / 0.9) 42%,
-          rgb(255 255 255 / 0.35) 60%,
-          rgb(255 255 255 / 0) 70%
-        );
-    }
-
-    .hero__main {
-      max-width: none;
-      padding-block: 0 0.5rem;
-    }
-
-    .hero__label {
-      font-size: var(--fs-meta);
-    }
-
-    .hero__label-line {
-      width: 28px;
-    }
-
     .hero__title {
-      margin-top: 0.875rem;
-      font-size: clamp(2rem, 1.1rem + 4.6vw, 2.625rem);
-      line-height: 1.05;
-    }
-
-    .hero__subtitle {
-      margin-top: 1rem;
-      font-size: 1.0625rem;
-    }
-
-    .hero__actions {
-      width: 100%;
-      margin-top: 1.5rem;
-    }
-
-    .hero__actions .btn {
-      width: 100%;
+      max-width: none;
+      font-size: clamp(2.25rem, 1.2rem + 5.2vw, 2.875rem);
+      line-height: 1.02;
     }
 
     .hero__bottom {
-      display: none;
+      margin-top: 1.5rem;
+      padding-block: 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
     }
 
-    .hero__main {
-      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    .hero__subtitle,
+    .hero__cta {
+      grid-column: 1 / -1;
+      justify-self: stretch;
+    }
+
+    .hero__subtitle {
+      font-size: 1.0625rem;
+    }
+
+    .hero__cta .btn {
+      width: 100%;
     }
   }
 </style>

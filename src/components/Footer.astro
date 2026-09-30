@@ -1,5 +1,5 @@
 ---
-import Logo from './Logo.astro';
+import Brand from './Brand.astro';
 import { nav, legalDocs } from '../data/content';
 
 interface Props {
@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer__top">
       <div class="footer__brand">
-        <Logo variant="mono" class="footer__logo" />
+        <Brand class="footer__brand-mark" />
         <p class="footer__descr">Подбор ключевых сотрудников, бизнес-аналитика и управленческий консалтинг.</p>
       </div>
 
@@ -64,9 +64,11 @@ const year = new Date().getFullYear();
     gap: 1.25rem;
   }
 
-  .footer :global(.footer__logo) {
-    --logo-h: 88px;
-    color: var(--c-white);
+  .footer :global(.footer__brand-mark) {
+    --brand-logo-h: 64px;
+    --brand-color: var(--c-white);
+    --logo-ink: var(--c-white);
+    --logo-accent: var(--c-blue-light-2);
   }
 
   .footer__descr {

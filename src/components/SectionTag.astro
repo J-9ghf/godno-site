@@ -1,14 +1,16 @@
 ---
+/** Шапка секции в духе референса: тонкая линия, номер, метка, опционально — подпись справа. */
 interface Props {
   num: string;
   label: string;
-  onSoft?: boolean;
+  aside?: string;
   class?: string;
 }
-const { num, label, onSoft = false, class: className } = Astro.props;
+const { num, label, aside, class: className } = Astro.props;
 ---
 
-<p class:list={['tag', { 'tag--on-soft': onSoft }, className]}>
-  <span class="tag__num">{num}</span>
-  {label}
+<p class:list={['shead', className]}>
+  <span class="eyebrow shead__num">{num}</span>
+  <span class="eyebrow">{label}</span>
+  {aside && <span class="eyebrow shead__aside">{aside}</span>}
 </p>

@@ -1,97 +1,130 @@
 ---
 import SectionTag from './SectionTag.astro';
-import Icon from './Icon.astro';
 import { about } from '../data/content';
 
 const [intro, ...rest] = about.paragraphs;
+
+// Крупный editorial-заголовок — фраза из первого абзаца, без изменений
+const claim = intro.slice(intro.indexOf('Мы закрываем'));
+const claimHl = claim.indexOf('что до нас');
 
 // Первая фраза каждого абзаца — полужирным (сам текст не меняется)
 const points = rest.map((p) => {
   const i = p.indexOf('. ');
   return { strong: p.slice(0, i + 1), text: p.slice(i + 2) };
 });
-
-const splitAt = about.title.indexOf('уже');
 ---
 
 <section class="section about" id="about" aria-labelledby="about-title">
   <div class="container">
-    <div class="about__head grid">
-      <div class="about__title-wrap">
-        <SectionTag num="02" label="О нас" />
-        <h2 class="h2 about__title" id="about-title" data-reveal>
-          {about.title.slice(0, splitAt)}<span class="hl">{about.title.slice(splitAt)}</span>
-        </h2>
-      </div>
-      <p class="about__intro lead" data-reveal style="--d: 120">{intro}</p>
+    <SectionTag num="02" label="О нас" aside="Институт кадровых решений" />
+
+    <p class="about__claim" data-reveal aria-hidden="true">
+      {claim.slice(0, claimHl)}<span class="hl">{claim.slice(claimHl)}</span>
+    </p>
+
+    <div class="about__intro grid">
+      <h2 class="about__title h3" id="about-title" data-reveal>{about.title}</h2>
+      <p class="about__lead lead" data-reveal style="--d: 100">{intro}</p>
     </div>
 
-    <ul class="about__points">
+    <ol class="about__points grid">
       {
         points.map((p, i) => (
           <li class="about__point" data-reveal style={`--d: ${i * 100}`}>
-            <span class="check">
-              <Icon name="check" />
-            </span>
-            <p>
+            <span class="about__point-num eyebrow num">{String(i + 1).padStart(2, '0')}</span>
+            {i === 0 && (
+              <p class="about__fact" aria-hidden="true">
+                <span class="about__fact-value">0</span>
+                <span class="about__fact-caption eyebrow">замен по гарантии за 1 год</span>
+              </p>
+            )}
+            <p class="about__point-text">
               <strong>{p.strong}</strong> {p.text}
             </p>
           </li>
         ))
       }
-    </ul>
+    </ol>
   </div>
 </section>
 
 <style>
-  .about__head {
-    align-items: end;
-    row-gap: 2rem;
-  }
-
-  .about__title-wrap {
-    grid-column: 1 / span 7;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.75rem;
-  }
-
-  .about__title {
-    max-width: 16ch;
+  .about__claim {
+    max-width: 15ch;
+    margin-top: clamp(3rem, 7vw, 6rem);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
   }
 
   .about__intro {
-    grid-column: 9 / -1;
+    row-gap: 1.5rem;
+    margin-top: clamp(3.5rem, 7vw, 6.5rem);
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .about__title {
+    grid-column: 1 / span 4;
+    max-width: 14ch;
+  }
+
+  .about__lead {
+    grid-column: 6 / -1;
+    max-width: 38ch;
     color: var(--c-ink-2);
   }
 
   .about__points {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: clamp(3rem, 6vw, 5rem);
-    padding: clamp(1.75rem, 3vw, 2.75rem) 0;
-    border-radius: var(--r-xl);
-    background: var(--c-soft);
+    row-gap: 2.5rem;
+    margin-top: clamp(4rem, 8vw, 7rem);
   }
 
   .about__point {
+    grid-column: span 4;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    padding-inline: clamp(1.5rem, 2.8vw, 2.75rem);
+    gap: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--c-black);
+  }
+
+  .about__point-num {
+    color: var(--c-blue);
+  }
+
+  .about__fact {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+
+  .about__fact-value {
+    font-size: var(--fs-num);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: var(--c-blue);
+  }
+
+  .about__fact-caption {
+    max-width: 14ch;
+    color: var(--c-ink-3);
+  }
+
+  .about__point-text {
+    max-width: 36ch;
     font-size: var(--fs-small);
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--c-ink-2);
   }
 
-  .about__point + .about__point {
-    border-left: 1px solid var(--c-line-strong);
-  }
-
-  .about__point strong {
+  .about__point-text strong {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.625rem;
     font-size: var(--fs-h4);
     font-weight: 700;
     line-height: 1.35;
@@ -100,40 +133,13 @@ const splitAt = about.title.indexOf('уже');
   }
 
   @media (max-width: 960px) {
-    .about__title-wrap,
-    .about__intro {
+    .about__title,
+    .about__lead {
       grid-column: 1 / -1;
     }
 
-    .about__intro {
-      max-width: 40ch;
-    }
-
-    .about__points {
-      grid-template-columns: 1fr;
-      padding: 0.5rem 0;
-    }
-
     .about__point {
-      flex-direction: row;
-      padding-block: 1.75rem;
-    }
-
-    .about__point + .about__point {
-      border-left: 0;
-      border-top: 1px solid var(--c-line-strong);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .about__points {
-      border-radius: var(--r-lg);
-    }
-
-    .about__point {
-      flex-direction: column;
-      gap: 1rem;
-      padding-inline: 1.25rem;
+      grid-column: 1 / -1;
     }
   }
 </style>

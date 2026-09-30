@@ -5,22 +5,21 @@ import { principles } from '../data/content';
 
 <section class="section section--soft principles" id="approach" aria-labelledby="principles-title">
   <div class="container">
-    <header class="principles__head">
-      <SectionTag num="03" label="Подход" onSoft />
-      <h2 class="h2" id="principles-title" data-reveal>Чем мы <span class="hl">отличаемся</span></h2>
-    </header>
+    <SectionTag num="03" label="Подход" aside="4 принципа" />
 
-    <ol class="principles__grid">
+    <h2 class="h2 principles__title" id="principles-title" data-reveal>
+      Чем мы <span class="hl">отличаемся</span>
+    </h2>
+
+    <ol class="principles__list">
       {
         principles.map((p, i) => (
-          <li class:list={['principle panel', `principle--${i + 1}`]} data-reveal style={`--d: ${(i % 2) * 120}`}>
-            <span class="principle__num num" aria-hidden="true">
+          <li class:list={['principle grid', { 'principle--shift': i % 2 === 1 }]} data-reveal>
+            <span class="principle__num bignum" aria-hidden="true">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <div class="principle__body">
-              <h3 class="h3 principle__title">{p.title}</h3>
-              <p class="principle__text">{p.text}</p>
-            </div>
+            <h3 class="principle__title h3">{p.title}</h3>
+            <p class="principle__text">{p.text}</p>
           </li>
         ))
       }
@@ -29,106 +28,78 @@ import { principles } from '../data/content';
 </section>
 
 <style>
-  .principles__head {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    text-align: center;
-    margin-bottom: clamp(3rem, 5vw, 4.5rem);
+  .principles__title {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    font-size: var(--fs-display);
   }
 
-  .principles__grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--gutter);
+  .principles__list {
+    margin-top: clamp(3.5rem, 7vw, 6rem);
+    border-top: 1px solid var(--c-black);
   }
 
   .principle {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 3rem;
-    min-height: 22rem;
-    padding: clamp(1.75rem, 3vw, 2.75rem);
-    transition:
-      opacity var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
-      transform var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
-      box-shadow var(--t-base) var(--ease) 0s;
-  }
-
-  .principle:hover {
-    box-shadow:
-      0 0 0 1px var(--c-blue-light-2),
-      var(--shadow-panel);
-  }
-
-  /* Асимметрия: 7/5, 5/7 */
-  .principle--1,
-  .principle--4 {
-    grid-column: span 7;
-  }
-
-  .principle--2,
-  .principle--3 {
-    grid-column: span 5;
+    align-items: start;
+    row-gap: 1.25rem;
+    padding-block: clamp(2.25rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--c-line-strong);
   }
 
   .principle__num {
-    font-size: clamp(3rem, 2.2rem + 2.4vw, 5rem);
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.05em;
+    grid-column: 1 / span 2;
     color: var(--c-blue);
-  }
-
-  .principle__body {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 34rem;
+    transition: transform var(--t-base) var(--ease);
   }
 
   .principle__title {
-    max-width: 18ch;
-    transition: color var(--t-base) var(--ease);
-  }
-
-  .principle:hover .principle__title {
-    color: var(--c-blue);
+    grid-column: 3 / span 5;
+    max-width: 16ch;
+    padding-top: 0.25rem;
   }
 
   .principle__text {
+    grid-column: 8 / span 4;
+    max-width: 40ch;
+    padding-top: 0.5rem;
     color: var(--c-ink-2);
   }
 
-  @media (max-width: 900px) {
-    .principle--1,
-    .principle--2,
-    .principle--3,
-    .principle--4 {
-      grid-column: 1 / -1;
+  /* Намеренное смещение чётных строк на одну колонку */
+  .principle--shift .principle__title {
+    grid-column: 4 / span 5;
+  }
+
+  .principle--shift .principle__text {
+    grid-column: 9 / span 4;
+  }
+
+  .principle:hover .principle__num {
+    transform: translateX(6px);
+  }
+
+  @media (max-width: 1024px) {
+    .principle__title,
+    .principle--shift .principle__title {
+      grid-column: 3 / -1;
     }
 
-    .principle {
-      min-height: 0;
-      gap: 2rem;
+    .principle__text,
+    .principle--shift .principle__text {
+      grid-column: 3 / -1;
+      padding-top: 0;
     }
   }
 
   @media (max-width: 640px) {
-    .principles__head {
-      align-items: flex-start;
-      text-align: left;
+    .principle__num {
+      grid-column: 1 / -1;
     }
 
-    .principles__grid {
-      gap: 12px;
-    }
-
-    .principle {
-      border-radius: var(--r-lg);
-      padding: 1.5rem;
+    .principle__title,
+    .principle--shift .principle__title,
+    .principle__text,
+    .principle--shift .principle__text {
+      grid-column: 1 / -1;
     }
   }
 </style>

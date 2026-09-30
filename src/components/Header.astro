@@ -1,5 +1,5 @@
 ---
-import Logo from './Logo.astro';
+import Brand from './Brand.astro';
 import Icon from './Icon.astro';
 import { nav } from '../data/content';
 
@@ -14,8 +14,8 @@ const { base = '', overlay = false } = Astro.props;
 
 <header class:list={['header', { 'header--overlay': overlay, 'is-solid': !overlay }]} data-header>
   <div class="container header__inner">
-    <a class="header__brand" href={base || '#top'} aria-label="Институт кадровых решений — на главную">
-      <Logo class="header__logo" />
+    <a class="header__brand" href={base || '#top'} aria-label="ИКР — Институт кадровых решений, на главную">
+      <Brand />
     </a>
 
     <nav class="header__nav" aria-label="Основная навигация">
@@ -108,14 +108,34 @@ const { base = '', overlay = false } = Astro.props;
     text-decoration: none;
   }
 
-  .header :global(.header__logo) {
-    --logo-h: var(--logo-hero);
-    transition: height var(--t-base) var(--ease);
+  .header {
+    --brand-logo-h: var(--logo-hero);
   }
 
-  .header.is-solid :global(.header__logo),
-  .header.is-open :global(.header__logo) {
-    --logo-h: var(--logo-solid);
+  .header.is-solid,
+  .header.is-open {
+    --brand-logo-h: var(--logo-solid);
+  }
+
+  /* Поверх видео: белый интерфейс, правые бруски логотипа — светло-голубые */
+  .header--overlay:not(.is-solid):not(.is-open) {
+    --brand-color: var(--c-white);
+    --logo-ink: var(--c-white);
+    --logo-accent: var(--c-blue-light-2);
+    color: var(--c-white);
+  }
+
+  .header--overlay:not(.is-solid):not(.is-open) .header__nav a {
+    color: var(--c-white);
+  }
+
+  .header--overlay:not(.is-solid):not(.is-open) .header__burger-line {
+    background: var(--c-white);
+  }
+
+  /* Тонкая линия под header поверх видео */
+  .header--overlay:not(.is-solid):not(.is-open) .header__inner {
+    background: linear-gradient(rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.3)) center bottom / calc(100% - 2 * var(--pad)) 1px no-repeat;
   }
 
   .header__nav {
@@ -131,8 +151,9 @@ const { base = '', overlay = false } = Astro.props;
     position: relative;
     display: block;
     padding: 0.5rem 0.75rem;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 600;
+    letter-spacing: 0.01em;
     color: var(--c-black);
     text-decoration: none;
   }

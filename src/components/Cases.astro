@@ -10,33 +10,31 @@ const also = caseGroups.find((g) => g.id === 'also')!;
 
 // Сквозная нумерация: подбор 01–04, консалтинг 05–06, также находили 07–09
 const pad = (n: number) => String(n).padStart(2, '0');
-const index = [
-  { title: hiring.title, href: '#cases-hiring', count: hiring.cases.length },
-  { title: consulting.title, href: '#consulting', count: consulting.cases.length },
-  { title: also.title, href: '#cases-also', count: also.cases.length },
-];
 const alsoStart = hiring.cases.length + consulting.cases.length;
+const index = [
+  { title: hiring.title, href: '#cases-hiring', range: `01–${pad(hiring.cases.length)}` },
+  { title: consulting.title, href: '#consulting', range: `${pad(hiring.cases.length + 1)}–${pad(alsoStart)}` },
+  { title: also.title, href: '#cases-also', range: `${pad(alsoStart + 1)}–${pad(alsoStart + also.cases.length)}` },
+];
 ---
 
 <section class="section cases" id="cases" aria-labelledby="cases-title">
   <div class="container">
-    <header class="cases__head grid">
-      <div class="cases__title-wrap">
-        <SectionTag num="04" label="Опыт" />
-        <h2 class="h2" id="cases-title" data-reveal>
-          Подбор ключевых сотрудников и <span class="hl">управленческий консалтинг</span>
-        </h2>
-      </div>
+    <SectionTag num="04" label="Опыт" aside={`${hiring.cases.length + consulting.cases.length + also.cases.length} кейсов`} />
+
+    <div class="cases__head grid">
+      <h2 class="h2 cases__title" id="cases-title" data-reveal>
+        Подбор <span class="hl">ключевых сотрудников</span>
+      </h2>
 
       <nav class="cases__index" aria-label="Разделы опыта" data-reveal style="--d: 120">
         <ol>
           {
-            index.map((it, i) => (
+            index.map((it) => (
               <li>
                 <a href={it.href}>
-                  <span class="cases__index-num num">{pad(i + 1)}</span>
+                  <span class="cases__index-range eyebrow num">{it.range}</span>
                   <span class="cases__index-title">{it.title}</span>
-                  <span class="cases__index-count num">{it.count}</span>
                   <Icon name="arrow-down" class="cases__index-icon" />
                 </a>
               </li>
@@ -44,24 +42,18 @@ const alsoStart = hiring.cases.length + consulting.cases.length;
           }
         </ol>
       </nav>
-    </header>
-
-    <div class="cases__group" id="cases-hiring">
-      <h3 class="cases__group-title">
-        <span class="check"><Icon name="check" /></span>
-        {hiring.title}
-      </h3>
-      <div class="cases__list">
-        {hiring.cases.map((c, i) => <CaseRow item={c} num={pad(i + 1)} open={i === 0} />)}
-      </div>
     </div>
 
-    <div class="cases__group cases__group--also" id="cases-also">
-      <h3 class="cases__group-title">
-        <span class="check"><Icon name="check" /></span>
-        {also.title}
-      </h3>
-      <div class="cases__list">
+    <div class="cases__list" id="cases-hiring">
+      {hiring.cases.map((c, i) => <CaseRow item={c} num={pad(i + 1)} open={i === 0} />)}
+    </div>
+
+    <div class="cases__also" id="cases-also">
+      <p class="shead cases__also-head">
+        <span class="eyebrow shead__num num">{pad(alsoStart + 1)}–{pad(alsoStart + also.cases.length)}</span>
+        <span class="eyebrow">{also.title}</span>
+      </p>
+      <div class="cases__list cases__list--compact">
         {also.cases.map((c, i) => <CaseRow item={c} num={pad(alsoStart + i + 1)} compact />)}
       </div>
     </div>
@@ -72,31 +64,35 @@ const alsoStart = hiring.cases.length + consulting.cases.length;
   .cases__head {
     align-items: end;
     row-gap: 2.5rem;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
     margin-bottom: clamp(3rem, 6vw, 5rem);
   }
 
-  .cases__title-wrap {
-    grid-column: 1 / span 7;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.75rem;
+  .cases__title {
+    grid-column: 1 / span 8;
+    max-width: 13ch;
+    font-size: var(--fs-display);
   }
 
   .cases__index {
-    grid-column: 8 / -1;
+    grid-column: 9 / -1;
   }
 
-  .cases__index li + li {
-    border-top: 1px solid var(--c-line);
+  .cases__index li {
+    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .cases__index li:last-child {
+    border-bottom: 1px solid var(--c-line-strong);
   }
 
   .cases__index a {
     display: grid;
-    grid-template-columns: 2.5rem 1fr auto 20px;
+    grid-template-columns: 4.5rem 1fr 18px;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.9rem 0;
+    padding-block: 0.875rem;
+    font-size: var(--fs-small);
     font-weight: 700;
     text-decoration: none;
     transition: color var(--t-fast) var(--ease);
@@ -106,20 +102,8 @@ const alsoStart = hiring.cases.length + consulting.cases.length;
     color: var(--c-blue);
   }
 
-  .cases__index-num {
-    font-size: var(--fs-meta);
+  .cases__index-range {
     color: var(--c-blue);
-  }
-
-  .cases__index-count {
-    display: grid;
-    place-items: center;
-    min-width: 1.75rem;
-    height: 1.5rem;
-    border-radius: 999px;
-    background: var(--c-soft);
-    font-size: 0.75rem;
-    color: var(--c-ink-2);
   }
 
   :global(.cases__index-icon) {
@@ -128,30 +112,24 @@ const alsoStart = hiring.cases.length + consulting.cases.length;
     color: var(--c-ink-3);
   }
 
-  .cases__group {
+  .cases__list {
+    border-top: 1px solid var(--c-black);
     scroll-margin-top: calc(var(--header-h) + 1rem);
   }
 
-  .cases__group--also {
-    margin-top: clamp(4rem, 7vw, 6rem);
+  .cases__also {
+    margin-top: clamp(5rem, 9vw, 8rem);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
   }
 
-  .cases__group-title {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
+  .cases__also-head {
+    border-top: 0;
+    padding-top: 0;
     margin-bottom: 1.25rem;
-    font-size: var(--fs-h4);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-  }
-
-  .cases__list {
-    border-bottom: 1px solid var(--c-line);
   }
 
   @media (max-width: 960px) {
-    .cases__title-wrap,
+    .cases__title,
     .cases__index {
       grid-column: 1 / -1;
     }

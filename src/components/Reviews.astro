@@ -1,297 +1,194 @@
 ---
 import SectionTag from './SectionTag.astro';
-import Icon from './Icon.astro';
 import { reviews } from '../data/content';
 
-// Раскладка: крупная цитата + две короткие рядом, остальные — в слайдере
 const items = reviews.items;
-const side = [items[1], items[4]];
-const slides = [items[0], items[2], items[3], items[5], items[6]];
+const total = items.length + 1;
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// Асимметричная раскладка: у каждой цитаты своё место в 12-колоночной сетке и свой размер текста
+const layout = [
+  { item: items[0], place: 'q-a', size: 'l' },
+  { item: items[2], place: 'q-b', size: 'm' },
+  { item: items[1], place: 'q-c', size: 's' },
+  { item: items[4], place: 'q-d', size: 's' },
+  { item: items[5], place: 'q-e', size: 's' },
+  { item: items[3], place: 'q-f', size: 'm' },
+  { item: items[6], place: 'q-g', size: 's' },
+];
 ---
 
-<section class="section section--soft reviews" id="reviews" aria-labelledby="reviews-title">
+<section class="section reviews" id="reviews" aria-labelledby="reviews-title">
   <div class="container">
-    <header class="reviews__head">
-      <SectionTag num="05" label="Отзывы" onSoft />
-      <h2 class="h2" id="reviews-title" data-reveal>Отзывы <span class="hl">клиентов</span></h2>
-    </header>
+    <SectionTag num="06" label="Отзывы" aside="Дословно" />
+    <h2 class="visually-hidden" id="reviews-title">Отзывы клиентов</h2>
 
-    <div class="reviews__top">
-      <figure class="reviews__main panel" data-reveal>
-        <span class="reviews__mark"><Icon name="quote" /></span>
-        <blockquote>
-          <p>{reviews.featured}</p>
-        </blockquote>
-      </figure>
+    <figure class="lead-quote grid" data-reveal>
+      <span class="lead-quote__mark" aria-hidden="true">«</span>
+      <blockquote class="lead-quote__text">
+        <p>{reviews.featured}</p>
+      </blockquote>
+      <figcaption class="lead-quote__cap eyebrow num"><span>01</span> / {pad(total)}</figcaption>
+    </figure>
 
-      <div class="reviews__side">
-        {
-          side.map((r, i) => (
-            <figure class="quote panel" data-reveal style={`--d: ${100 + i * 100}`}>
-              <blockquote class="quote__text">
-                <p>{r.text}</p>
-              </blockquote>
-            </figure>
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="slider" data-slider>
-      <div class="slider__bar">
-        <p class="slider__count meta num" aria-hidden="true">
-          <span data-slider-current>01</span> / {String(slides.length).padStart(2, '0')}
-        </p>
-        <span class="slider__progress" aria-hidden="true"><span data-slider-progress></span></span>
-        <div class="slider__nav">
-          <button class="slider__btn" type="button" data-slider-prev aria-label="Предыдущий отзыв">
-            <Icon name="arrow-left" />
-          </button>
-          <button class="slider__btn" type="button" data-slider-next aria-label="Следующий отзыв">
-            <Icon name="arrow-right" />
-          </button>
-        </div>
-      </div>
-
-      <ul class="slider__track" data-slider-track tabindex="0" aria-label="Отзывы клиентов, прокрутка">
-        {
-          slides.map((r) => (
-            <li class:list={['quote panel', `quote--${r.size}`]} data-slide>
-              <blockquote class="quote__text">
-                <p>{r.text}</p>
-              </blockquote>
-            </li>
-          ))
-        }
-      </ul>
+    <div class="quotes grid">
+      {
+        layout.map((q, i) => (
+          <figure class:list={['quote', q.place, `quote--${q.size}`]} data-reveal style={`--d: ${(i % 3) * 90}`}>
+            <figcaption class="quote__num eyebrow num">{pad(i + 2)}</figcaption>
+            <blockquote class="quote__text">
+              <p>{q.item.text}</p>
+            </blockquote>
+          </figure>
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
-  .reviews__head {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    text-align: center;
-    margin-bottom: clamp(3rem, 5vw, 4.5rem);
+  .lead-quote {
+    align-items: start;
+    row-gap: 2rem;
+    margin-top: clamp(3rem, 6vw, 5.5rem);
   }
 
-  .reviews__top {
-    display: grid;
-    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-    gap: var(--gutter);
+  .lead-quote__mark {
+    grid-column: 1;
+    font-size: clamp(4rem, 2.5rem + 5vw, 8rem);
+    font-weight: 700;
+    line-height: 0.75;
+    color: var(--c-blue);
   }
 
-  .reviews__main {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding: clamp(2rem, 4vw, 3.5rem);
-  }
-
-  .reviews__mark {
-    display: grid;
-    place-items: center;
-    width: 56px;
-    height: 56px;
-    border-radius: var(--r-md);
-    background: var(--c-blue);
-    color: var(--c-white);
-  }
-
-  :global(.reviews__mark svg) {
-    width: 26px;
-    height: 26px;
-  }
-
-  .reviews__main blockquote {
-    font-size: clamp(1.375rem, 1.05rem + 1.1vw, 2.125rem);
+  .lead-quote__text {
+    grid-column: 2 / span 10;
+    font-size: clamp(1.625rem, 1rem + 2vw, 3rem);
     font-weight: 600;
-    line-height: 1.32;
-    letter-spacing: -0.022em;
+    line-height: 1.18;
+    letter-spacing: -0.03em;
     text-wrap: pretty;
   }
 
-  .reviews__side {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: var(--gutter);
+  .lead-quote__cap {
+    grid-column: 2 / span 10;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-black);
+    color: var(--c-ink-3);
+  }
+
+  .lead-quote__cap span {
+    color: var(--c-blue);
+  }
+
+  /* Мозаика */
+  .quotes {
+    row-gap: clamp(3rem, 5vw, 4.5rem);
+    margin-top: clamp(4.5rem, 9vw, 8rem);
   }
 
   .quote {
     display: flex;
-    padding: 1.75rem;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .q-a {
+    grid-column: 1 / span 6;
+    border-top-color: var(--c-black);
+  }
+
+  .q-b {
+    grid-column: 8 / span 5;
+  }
+
+  .q-c {
+    grid-column: 1 / span 3;
+  }
+
+  .q-d {
+    grid-column: 5 / span 4;
+  }
+
+  .q-e {
+    grid-column: 10 / span 3;
+  }
+
+  .q-f {
+    grid-column: 3 / span 6;
+  }
+
+  .q-g {
+    grid-column: 10 / span 3;
+  }
+
+  .quote__num {
+    color: var(--c-blue);
   }
 
   .quote__text {
     white-space: pre-line;
-    font-size: var(--fs-body);
-    font-weight: 500;
-    line-height: 1.55;
+  }
+
+  .quote--l .quote__text {
+    font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+  }
+
+  .quote--m .quote__text {
+    font-size: clamp(1.125rem, 1.02rem + 0.35vw, 1.375rem);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+  }
+
+  .quote--s .quote__text {
+    font-size: var(--fs-small);
+    line-height: 1.6;
     color: var(--c-ink-2);
   }
 
-  .reviews__side .quote__text {
-    font-size: var(--fs-h4);
-    font-weight: 600;
-    line-height: 1.45;
-    letter-spacing: -0.012em;
-    color: var(--c-black);
-  }
-
-  /* Slider */
-  .slider {
-    margin-top: clamp(3rem, 5vw, 4rem);
-  }
-
-  .slider__bar {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .slider__count {
-    color: var(--c-black);
-  }
-
-  .slider__progress {
-    position: relative;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--c-blue-light-2);
-    overflow: hidden;
-  }
-
-  .slider__progress span {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--c-blue);
-    transform: scaleX(var(--p, 0.2));
-    transform-origin: left;
-    transition: transform var(--t-base) var(--ease);
-  }
-
-  .slider__nav {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .slider__btn {
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border: 0;
-    border-radius: var(--r-md);
-    background: var(--c-white);
-    color: var(--c-black);
-    cursor: pointer;
-    transition:
-      background-color var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease);
-  }
-
-  .slider__btn:hover {
-    background: var(--c-blue);
-    color: var(--c-white);
-  }
-
-  .slider__btn:disabled {
-    opacity: 0.4;
-    cursor: default;
-    background: var(--c-white);
-    color: var(--c-black);
-  }
-
-  :global(.slider__btn svg) {
-    width: 20px;
-    height: 20px;
-  }
-
-  .slider__track {
-    display: flex;
-    gap: var(--gutter);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
-
-  .slider__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .slider__track .quote {
-    flex: 0 0 calc((100% - var(--gutter) * 2) / 3);
-    scroll-snap-align: start;
-    min-height: 16rem;
-  }
-
-  .slider__track .quote--l {
-    flex-basis: calc((100% - var(--gutter) * 2) / 3 * 1.35);
-  }
-
   @media (max-width: 1024px) {
-    .reviews__top {
-      grid-template-columns: 1fr;
+    .q-a,
+    .q-f {
+      grid-column: 1 / span 7;
     }
 
-    .reviews__side {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: none;
+    .q-b {
+      grid-column: 1 / span 7;
     }
 
-    .slider__track .quote,
-    .slider__track .quote--l {
-      flex-basis: calc((100% - var(--gutter)) / 2);
+    .q-c,
+    .q-d,
+    .q-e,
+    .q-g {
+      grid-column: span 6;
     }
   }
 
   @media (max-width: 640px) {
-    .reviews__head {
-      align-items: flex-start;
-      text-align: left;
+    .lead-quote__mark,
+    .lead-quote__text,
+    .lead-quote__cap {
+      grid-column: 1 / -1;
     }
 
-    .reviews__side {
-      grid-template-columns: 1fr;
-      gap: 12px;
+    .lead-quote {
+      row-gap: 1rem;
     }
 
-    .reviews__top {
-      gap: 12px;
-    }
-
-    .reviews__main,
-    .quote {
-      padding: 1.5rem;
-      border-radius: var(--r-lg);
-    }
-
-    .slider__bar {
-      grid-template-columns: auto 1fr;
-    }
-
-    .slider__nav {
-      display: none;
-    }
-
-    .slider__track {
-      margin-inline: calc(var(--pad) * -1);
-      padding-inline: var(--pad);
-      scroll-padding-inline: var(--pad);
-      gap: 12px;
-    }
-
-    .slider__track .quote,
-    .slider__track .quote--l {
-      flex-basis: 86%;
+    .q-a,
+    .q-b,
+    .q-c,
+    .q-d,
+    .q-e,
+    .q-f,
+    .q-g {
+      grid-column: 1 / -1;
     }
   }
 </style>
