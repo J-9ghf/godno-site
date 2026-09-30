@@ -6,16 +6,16 @@ import { nav } from '../data/content';
 interface Props {
   /** '' на главной, '/' на внутренних страницах — чтобы якоря вели на главную */
   base?: string;
+  /** true — header лежит поверх hero-видео (главная) */
+  overlay?: boolean;
 }
-const { base = '' } = Astro.props;
+const { base = '', overlay = false } = Astro.props;
 ---
 
-<header class="header" data-header>
+<header class:list={['header', { 'header--overlay': overlay, 'is-solid': !overlay }]} data-header>
   <div class="container header__inner">
     <a class="header__brand" href={base || '#top'} aria-label="Институт кадровых решений — на главную">
-      <Logo />
-      <span class="header__divider" aria-hidden="true"></span>
-      <span class="header__descr">Подбор ключевых сотрудников<br />и управленческий консалтинг</span>
+      <Logo class="header__logo" />
     </a>
 
     <nav class="header__nav" aria-label="Основная навигация">
@@ -69,25 +69,28 @@ const { base = '' } = Astro.props;
 
 <style>
   .header {
-    position: sticky;
-    top: 0;
+    --h: var(--header-h);
+    position: fixed;
+    inset: 0 0 auto;
     z-index: 50;
-    height: var(--header-h);
-    background: rgb(255 255 255 / 0.96);
-    border-bottom: 1px solid var(--c-line);
+    height: calc(var(--h) + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    transition:
+      height var(--t-base) var(--ease),
+      background-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease);
   }
 
-  @supports (backdrop-filter: blur(1px)) {
-    .header {
-      background: rgb(255 255 255 / 0.85);
-      backdrop-filter: saturate(1.4) blur(14px);
-    }
+  /* Поверх видео: без панели, чуть выше */
+  .header--overlay {
+    --h: var(--header-h-hero);
+  }
 
-    /* backdrop-filter создаёт containing block для fixed-меню — снимаем, пока меню открыто */
-    .header.is-open {
-      background: var(--c-white);
-      backdrop-filter: none;
-    }
+  .header.is-solid,
+  .header.is-open {
+    --h: var(--header-h);
+    background: var(--c-white);
+    box-shadow: 0 1px 0 var(--c-line);
   }
 
   .header__inner {
@@ -98,24 +101,21 @@ const { base = '' } = Astro.props;
   }
 
   .header__brand {
-    display: flex;
-    align-items: center;
-    gap: 1.125rem;
+    display: block;
     flex: none;
+    /* clear space вокруг логотипа */
+    padding-block: 6px;
     text-decoration: none;
   }
 
-  .header__divider {
-    width: 1px;
-    height: 32px;
-    background: var(--c-line-strong);
+  .header :global(.header__logo) {
+    --logo-h: var(--logo-hero);
+    transition: height var(--t-base) var(--ease);
   }
 
-  .header__descr {
-    font-size: 0.75rem;
-    font-weight: 500;
-    line-height: 1.3;
-    color: var(--c-ink-3);
+  .header.is-solid :global(.header__logo),
+  .header.is-open :global(.header__logo) {
+    --logo-h: var(--logo-solid);
   }
 
   .header__nav {
@@ -128,21 +128,32 @@ const { base = '' } = Astro.props;
   }
 
   .header__nav a {
+    position: relative;
     display: block;
     padding: 0.5rem 0.75rem;
-    border-radius: var(--r-sm);
     font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--c-ink-2);
+    color: var(--c-black);
     text-decoration: none;
-    transition:
-      color var(--t-fast) var(--ease),
-      background-color var(--t-fast) var(--ease);
   }
 
-  .header__nav a:hover {
-    color: var(--c-black);
-    background: var(--c-soft);
+  /* Hover — тонкая линия, без плашек поверх видео */
+  .header__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.2rem;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--t-base) var(--ease);
+  }
+
+  .header__nav a:hover::after,
+  .header__nav a.is-active::after {
+    transform: scaleX(1);
   }
 
   .header__nav a.is-active {
@@ -196,7 +207,7 @@ const { base = '' } = Astro.props;
 
   .menu {
     position: fixed;
-    inset: var(--header-h) 0 0;
+    inset: calc(var(--header-h) + env(safe-area-inset-top)) 0 0;
     background: var(--c-white);
     overflow-y: auto;
     animation: fade-in var(--t-base) var(--ease);
@@ -213,7 +224,7 @@ const { base = '' } = Astro.props;
     flex-direction: column;
     justify-content: space-between;
     min-height: 100%;
-    padding-block: 0.5rem 1.5rem;
+    padding-block: 0.5rem calc(1.5rem + env(safe-area-inset-bottom));
   }
 
   .menu__list li {
@@ -251,14 +262,7 @@ const { base = '' } = Astro.props;
     margin-top: 2rem;
   }
 
-  @media (max-width: 1240px) {
-    .header__descr,
-    .header__divider {
-      display: none;
-    }
-  }
-
-  @media (max-width: 1060px) {
+  @media (max-width: 1100px) {
     .header__nav,
     .header__cta {
       display: none;
@@ -267,21 +271,9 @@ const { base = '' } = Astro.props;
     .header__burger {
       display: block;
     }
-
-    .header__descr,
-    .header__divider {
-      display: block;
-    }
   }
 
-  @media (max-width: 560px) {
-    .header__descr,
-    .header__divider {
-      display: none;
-    }
-  }
-
-  @media (min-width: 1061px) {
+  @media (min-width: 1101px) {
     .menu {
       display: none;
     }

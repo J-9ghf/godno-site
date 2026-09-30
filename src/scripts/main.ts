@@ -18,7 +18,11 @@ function initReveal() {
     },
     { rootMargin: '0px 0px -6% 0px', threshold: 0.06 },
   );
-  items.forEach((el) => io.observe(el));
+  items.forEach((el) => {
+    // Первый экран появляется сразу после загрузки, не дожидаясь скролла
+    if (el.closest('.hero')) requestAnimationFrame(() => el.classList.add('is-visible'));
+    else io.observe(el);
+  });
 }
 
 /* ── Accordions (кейсы, FAQ) ──────────────────────────────── */
@@ -93,31 +97,48 @@ function initMenu() {
   window.matchMedia('(min-width: 1061px)').addEventListener('change', (e) => e.matches && setOpen(false));
 }
 
-/* ── Hero video: пауза, reduced motion ────────────────────── */
+/* ── Hero video: фоновое, всегда играет, без UI ──────────── */
 function initVideo() {
   const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-  const toggle = document.querySelector<HTMLButtonElement>('[data-video-toggle]');
-  const label = document.querySelector<HTMLElement>('[data-video-label]');
-  if (!video || !toggle) return;
+  if (!video) return;
 
-  const sync = () => {
-    const paused = video.paused;
-    toggle.setAttribute('aria-pressed', String(paused));
-    if (label) label.textContent = paused ? 'Воспроизвести видео' : 'Остановить видео';
+  // Для надёжного autoplay во всех браузерах (iOS Safari требует свойство, а не только атрибут)
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+
+  const play = () => {
+    if (video.paused) video.play().catch(() => {});
   };
 
-  if (reduceMotion) {
-    video.removeAttribute('autoplay');
-    video.pause();
-  }
+  play();
+  video.addEventListener('canplay', play, { once: true });
+  // Если браузер приостановил видео (энергосбережение, вкладка в фоне) — возобновляем
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && play());
+  video.addEventListener('pause', () => document.visibilityState === 'visible' && setTimeout(play, 300));
+  // iOS Low Power Mode блокирует autoplay до первого касания — запускаем при первом взаимодействии
+  const kick = () => {
+    play();
+    window.removeEventListener('touchstart', kick);
+    window.removeEventListener('scroll', kick);
+  };
+  window.addEventListener('touchstart', kick, { passive: true });
+  window.addEventListener('scroll', kick, { passive: true });
+}
 
-  toggle.addEventListener('click', () => {
-    if (video.paused) void video.play();
-    else video.pause();
-  });
-  video.addEventListener('play', sync);
-  video.addEventListener('pause', sync);
-  sync();
+/* ── Header: прозрачный поверх hero, белый после первого экрана ─ */
+function initHeaderState() {
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const hero = document.querySelector<HTMLElement>('.hero');
+  if (!header || !hero || !header.classList.contains('header--overlay')) return;
+
+  const update = () => {
+    const threshold = hero.offsetHeight - header.offsetHeight - 8;
+    header.classList.toggle('is-solid', window.scrollY > threshold);
+  };
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
 }
 
 /* ── Reviews slider: стрелки, счётчик, прогресс ───────────── */
@@ -242,6 +263,7 @@ initAccordions();
 initActiveNav();
 initMenu();
 initVideo();
+initHeaderState();
 initSlider();
 initProcess();
 initForm();

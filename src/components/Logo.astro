@@ -1,43 +1,61 @@
 ---
 /**
- * ЛОГОТИП — ВРЕМЕННАЯ ЗАГЛУШКА.
- * Оригинальный файл логотипа не был получен. Чтобы подключить его:
- *   1. положите файл в public/logo.svg (перекрашенный в --c-blue / --c-black);
- *   2. замените содержимое <span class="logo__slot"> на
- *      <img src="/logo.svg" alt="Институт кадровых решений" width="…" height="…" />
- * Все места использования (header, меню, footer, юридические страницы) обновятся сами.
+ * Логотип Института кадровых решений — из оригинального файла заказчика (public/brand/*.png).
+ * Форма и пропорции не изменены: файл используется как альфа-маска, меняется только заливка.
+ *   color — бруски справа синие (--c-blue), остальное чёрное (как в цветной версии логотипа);
+ *   mono  — весь логотип цветом currentColor.
+ * Clear space: не меньше 1/4 высоты логотипа со всех сторон (задаётся в местах использования).
  */
 interface Props {
-  tone?: 'dark' | 'light';
+  variant?: 'color' | 'mono';
+  class?: string;
 }
-const { tone = 'dark' } = Astro.props;
+const { variant = 'color', class: className } = Astro.props;
 ---
 
-<span class:list={['logo', `logo--${tone}`]}>
-  <span class="logo__slot">
-    <span class="logo__line">Институт</span>
-    <span class="logo__line">кадровых решений</span>
-  </span>
+<span class:list={['logo', `logo--${variant}`, className]} role="img" aria-label="Институт кадровых решений">
+  {
+    variant === 'color' ? (
+      <>
+        <span class="logo__layer logo__layer--dark" />
+        <span class="logo__layer logo__layer--accent" />
+      </>
+    ) : (
+      <span class="logo__layer logo__layer--mono" />
+    )
+  }
 </span>
 
 <style>
   .logo {
-    display: inline-flex;
-    align-items: center;
-    /* clear space: минимум высота строчной буквы со всех сторон */
-    padding: 0.25rem 0;
+    --logo-h: 56px;
+    position: relative;
+    display: block;
+    flex: none;
+    height: var(--logo-h);
+    /* исходные пропорции файла 638 × 509 */
+    aspect-ratio: 638 / 509;
   }
 
-  .logo__slot {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.9375rem;
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+  .logo__layer {
+    position: absolute;
+    inset: 0;
+    -webkit-mask: var(--mask) center / contain no-repeat;
+    mask: var(--mask) center / contain no-repeat;
   }
 
-  .logo--light {
-    color: var(--c-white);
+  .logo__layer--dark {
+    --mask: url('/brand/logo-dark.png');
+    background: var(--c-black);
+  }
+
+  .logo__layer--accent {
+    --mask: url('/brand/logo-accent.png');
+    background: var(--c-blue);
+  }
+
+  .logo__layer--mono {
+    --mask: url('/brand/logo-mask.png');
+    background: currentColor;
   }
 </style>

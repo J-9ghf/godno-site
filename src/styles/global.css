@@ -72,7 +72,18 @@
   --t-base: 0.35s;
   --t-slow: 0.8s;
 
-  --header-h: 76px;
+  --header-h: 72px; /* компактный белый header после первого экрана */
+  --header-h-hero: 112px; /* header поверх видео */
+  --logo-hero: 76px;
+  --logo-solid: 50px;
+}
+
+/* Низкие экраны (ноутбуки): компактнее header поверх видео */
+@media (max-height: 820px) and (min-width: 641px) {
+  :root {
+    --header-h-hero: 96px;
+    --logo-hero: 64px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -87,6 +98,9 @@
     --pad: 20px;
     --gutter: 16px;
     --header-h: 64px;
+    --header-h-hero: 84px;
+    --logo-hero: 60px;
+    --logo-solid: 44px;
     --fs-body: 1rem;
   }
 }

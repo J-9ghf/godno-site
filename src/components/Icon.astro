@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: 'arrow-up-right' | 'arrow-right' | 'arrow-left' | 'arrow-down' | 'check' | 'plus' | 'quote' | 'pause' | 'play';
+  name: 'arrow-up-right' | 'arrow-right' | 'arrow-left' | 'arrow-down' | 'check' | 'plus' | 'quote';
   class?: string;
 }
 const { name, class: className } = Astro.props;
@@ -14,6 +14,4 @@ const { name, class: className } = Astro.props;
   {name === 'check' && <path d="M4.5 10.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />}
   {name === 'plus' && <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />}
   {name === 'quote' && <path d="M3 15.5V11c0-3.6 1.8-5.9 5-6.9l.6 1.5C6.8 6.4 6 7.6 6 9.3h2.6v6.2H3zm8.4 0V11c0-3.6 1.8-5.9 5-6.9l.6 1.5c-1.8.8-2.6 2-2.6 3.7H17v6.2h-5.6z" fill="currentColor" />}
-  {name === 'pause' && <path d="M7 5v10M13 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />}
-  {name === 'play' && <path d="M7 5.5v9l7.5-4.5L7 5.5z" fill="currentColor" />}
 </svg>

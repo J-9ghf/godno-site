@@ -17,8 +17,8 @@ import Footer from '../components/Footer.astro';
   title="Институт кадровых решений — подбор ключевых сотрудников и управленческий консалтинг"
   description="Находим людей, которые остаются, и понимаем, почему предыдущие уходили. Подбор ключевых сотрудников для собственников, которые устали искать."
 >
-  <link slot="head" rel="preload" as="image" href="/media/hero-poster.jpg" />
-  <Header />
+  <link slot="head" rel="preload" as="image" href="/media/hero-poster.jpg" fetchpriority="high" />
+  <Header overlay />
   <main id="main">
     <Hero />
     <About />

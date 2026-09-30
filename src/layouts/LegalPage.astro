@@ -55,7 +55,7 @@ const { title, pending = false, current } = Astro.props;
 
 <style>
   .legal {
-    padding-block: clamp(3rem, 6vw, 5.5rem) var(--section);
+    padding-block: calc(var(--header-h) + clamp(3rem, 6vw, 5.5rem)) var(--section);
   }
 
   .legal__grid {

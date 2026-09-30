@@ -12,19 +12,40 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
 ---
 
 <section class="hero" id="top" aria-labelledby="hero-title">
-  <div class="container hero__grid">
-    <div class="hero__top" data-reveal>
-      <p class="tag tag--on-soft tag--dot">Кадровое и управленческое бюро</p>
-      <ul class="hero__dirs" aria-label="Направления работы">
-        {directions.map((d) => <li>{d}</li>)}
-      </ul>
-    </div>
+  <!-- 1. Видео — фон всего первого экрана -->
+  <video
+    class="hero__video"
+    autoplay
+    muted
+    loop
+    playsinline
+    disablepictureinpicture
+    disableremoteplayback
+    preload="auto"
+    poster="/media/hero-poster.jpg"
+    aria-hidden="true"
+    tabindex="-1"
+    data-hero-video
+  >
+    <source src="/media/hero.webm" type="video/webm" />
+    <source src="/media/hero.mp4" type="video/mp4" />
+  </video>
 
-    <h1 class="hero__title display" id="hero-title" data-reveal style="--d: 80">
-      {titleA}<span class="hl">{titleB}</span>
-    </h1>
+  <!-- 2. Overlay — только для читаемости: светлый слева (зона текста) и сверху (навигация) -->
+  <div class="hero__overlay" aria-hidden="true"></div>
 
-    <div class="hero__text">
+  <!-- 3. Контент -->
+  <div class="container hero__content">
+    <div class="hero__main">
+      <p class="hero__label" data-reveal>
+        <span class="hero__label-line" aria-hidden="true"></span>
+        Кадровое и управленческое бюро
+      </p>
+
+      <h1 class="hero__title display" id="hero-title" data-reveal style="--d: 80">
+        {titleA}<span class="hl">{titleB}</span>
+      </h1>
+
       <p class="hero__subtitle lead" data-reveal style="--d: 160">{hero.subtitle}</p>
 
       <div class="hero__actions" data-reveal style="--d: 240">
@@ -32,297 +53,320 @@ const directions = ['Подбор', 'Бизнес-аналитика', 'Упра
           {hero.cta}
           <Icon name="arrow-up-right" class="btn__icon" />
         </a>
-        <a class="link-arrow hero__more" href="#process">
-          Как мы работаем
-          <Icon name="arrow-down" class="hero__more-icon" />
-        </a>
       </div>
     </div>
 
-    <figure class="hero__media" data-reveal style="--d: 200">
-      <video
-        class="hero__video"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        poster="/media/hero-poster.jpg"
-        aria-label="Разговор с кандидатом в переговорной"
-        data-hero-video
-      >
-        <source src="/media/hero.webm" type="video/webm" />
-        <source src="/media/hero.mp4" type="video/mp4" />
-      </video>
+    <div class="hero__bottom" data-reveal style="--d: 360">
+      <a class="hero__scroll" href="#about">
+        <span class="hero__scroll-line" aria-hidden="true"></span>
+        Scroll
+      </a>
 
-      <figcaption class="hero__chip">
-        <span class="hero__chip-num num">01</span>
-        Разговор-диагностика
-      </figcaption>
+      <ul class="hero__dirs" aria-label="Направления работы">
+        {directions.map((d) => <li>{d}</li>)}
+      </ul>
 
-      <button class="hero__toggle" type="button" aria-pressed="false" data-video-toggle>
-        <span class="visually-hidden" data-video-label>Остановить видео</span>
-        <Icon name="pause" class="hero__toggle-pause" />
-        <Icon name="play" class="hero__toggle-play" />
-      </button>
-    </figure>
+      <p class="hero__count num" aria-hidden="true"><span>01</span> / 08</p>
+    </div>
   </div>
 </section>
 
 <style>
   .hero {
-    padding-block: clamp(1.75rem, 3.5vh, 2.75rem) clamp(2.5rem, 5vh, 4rem);
-    background: var(--c-soft);
+    position: relative;
+    /* ровно первый viewport, с учётом мобильных панелей браузера */
+    height: 100vh;
+    height: 100svh;
+    min-height: 600px;
+    overflow: hidden;
+    isolation: isolate;
+    background: #b9bcbf; /* цвет кадра до загрузки poster */
   }
 
-  .hero__grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-areas:
-      'top   top   top   top   top   top   top   top   top   top   top   top'
-      'title title title title title title title title title title title title'
-      'text  text  text  text  media media media media media media media media';
-    column-gap: var(--gutter);
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    /* кадр: светлая стена слева, люди — в правой половине */
+    object-position: 50% 50%;
+    pointer-events: none;
   }
 
-  .hero__top {
-    grid-area: top;
+  /* Никакого UI браузера поверх фонового видео */
+  .hero__video::-webkit-media-controls,
+  .hero__video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.62) 0, rgb(255 255 255 / 0) 190px),
+      linear-gradient(
+        90deg,
+        rgb(255 255 255 / 0.9) 0%,
+        rgb(255 255 255 / 0.78) 28%,
+        rgb(255 255 255 / 0.38) 46%,
+        rgb(255 255 255 / 0) 60%
+      );
+  }
+
+  .hero__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-top: calc(var(--header-h-hero) + env(safe-area-inset-top));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .hero__main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: min(48rem, 56%);
+    margin-block: auto;
+    padding-block: clamp(0.5rem, 2.5vh, 2rem);
+  }
+
+  .hero__label {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
+    gap: 0.875rem;
+    font-size: var(--fs-small);
+    font-weight: 700;
   }
 
-  /* Направления — тонкие вертикальные разделители, как в референсе */
+  .hero__label-line {
+    width: 40px;
+    height: 2px;
+    background: var(--c-blue);
+  }
+
+  .hero__title {
+    margin-top: clamp(1rem, 2.6vh, 2rem);
+    /* зависит и от ширины, и от высоты экрана — hero всегда помещается в один viewport */
+    font-size: min(clamp(2.5rem, 1.2rem + 3.4vw, 4.5rem), 8vh);
+  }
+
+  .hero__subtitle {
+    max-width: 26ch;
+    margin-top: clamp(1rem, 2.4vh, 1.75rem);
+    color: var(--c-black);
+  }
+
+  .hero__actions {
+    margin-top: clamp(1.25rem, 3.4vh, 2.5rem);
+  }
+
+  /* Нижняя строка: направления · scroll · номер экрана */
+  .hero__bottom {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding-block: clamp(0.75rem, 1.6vh, 1.25rem) clamp(1rem, 2.4vh, 1.75rem);
+  }
+
   .hero__dirs {
     display: flex;
   }
 
   .hero__dirs li {
-    padding-inline: 1.25rem;
+    padding-inline: 1rem;
     font-size: var(--fs-meta);
     font-weight: 700;
-    color: var(--c-ink-2);
+    line-height: 1.2;
+  }
+
+  .hero__dirs li:first-child {
+    padding-left: 0;
   }
 
   .hero__dirs li + li {
-    border-left: 1px solid var(--c-line-strong);
+    border-left: 1px solid rgb(10 12 17 / 0.3);
   }
 
-  .hero__dirs li:last-child {
-    padding-right: 0;
-  }
-
-  .hero__title {
-    grid-area: title;
-    max-width: 24ch;
-    margin-block: clamp(1.5rem, 4vh, 2.75rem) clamp(1.75rem, 4.5vh, 3rem);
-    font-size: clamp(2.25rem, 1.1rem + 3.6vw, 4.5rem);
-  }
-
-  .hero__text {
-    grid-area: text;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 2rem;
-    padding-top: 0.25rem;
-    border-top: 1px solid var(--c-line-strong);
-  }
-
-  .hero__subtitle {
-    max-width: 22ch;
-    padding-top: 1.5rem;
-    color: var(--c-ink-2);
-  }
-
-  .hero__actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.25rem;
-  }
-
-  .hero__more {
-    font-size: var(--fs-small);
-  }
-
-  :global(.hero__more-icon) {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* Видео — внутри композиции, не фоном */
-  .hero__media {
-    grid-area: media;
-    position: relative;
-    aspect-ratio: 16 / 8.6;
-    overflow: hidden;
-    border-radius: var(--r-xl);
-    background: #d9dde2;
-    isolation: isolate;
-  }
-
-  .hero__video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* в кадре: кандидатка — центр, собеседник — справа */
-    object-position: 60% 50%;
-  }
-
-  .hero__chip {
-    position: absolute;
-    left: 1.25rem;
-    bottom: 1.25rem;
+  .hero__scroll {
     display: inline-flex;
     align-items: center;
-    gap: 0.625rem;
-    padding: 0.5rem 1rem 0.5rem 0.5rem;
-    border-radius: 999px;
-    background: var(--c-white);
-    font-size: var(--fs-small);
-    font-weight: 700;
-    box-shadow: 0 8px 24px -12px rgb(10 12 17 / 0.3);
-  }
-
-  .hero__chip-num {
-    display: grid;
-    place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: 50%;
-    background: var(--c-blue);
-    color: var(--c-white);
+    gap: 0.75rem;
+    padding-right: 2rem;
+    border-right: 1px solid rgb(10 12 17 / 0.3);
     font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
   }
 
-  .hero__toggle {
+  .hero__scroll-line {
+    position: relative;
+    width: 1px;
+    height: 22px;
+    overflow: hidden;
+    background: rgb(10 12 17 / 0.2);
+  }
+
+  .hero__scroll-line::after {
+    content: '';
     position: absolute;
-    right: 1.25rem;
-    bottom: 1.25rem;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border: 0;
-    border-radius: 50%;
-    background: rgb(255 255 255 / 0.9);
-    color: var(--c-black);
-    cursor: pointer;
-    transition: background-color var(--t-fast) var(--ease);
+    inset: 0;
+    background: var(--c-blue);
+    transform: translateY(-100%);
+    animation: scroll-hint 2.4s var(--ease) infinite;
   }
 
-  .hero__toggle:hover {
-    background: var(--c-white);
-  }
-
-  :global(.hero__toggle svg) {
-    width: 16px;
-    height: 16px;
-  }
-
-  :global(.hero__toggle-play),
-  .hero__toggle[aria-pressed='true'] :global(.hero__toggle-pause) {
-    display: none;
-  }
-
-  .hero__toggle[aria-pressed='true'] :global(.hero__toggle-play) {
-    display: block;
-  }
-
-  @media (max-width: 1100px) {
-    .hero__grid {
-      grid-template-areas:
-        'top   top   top   top   top   top   top   top   top   top   top   top'
-        'title title title title title title title title title title title title'
-        'text  text  text  text  text  media media media media media media media';
+  @keyframes scroll-hint {
+    0% {
+      transform: translateY(-100%);
+    }
+    55%,
+    100% {
+      transform: translateY(100%);
     }
   }
 
-  /* Tablet: видео на всю ширину под текстом */
-  @media (max-width: 860px) {
-    .hero__grid {
-      grid-template-areas:
-        'top'
-        'title'
-        'text'
-        'media';
-      grid-template-columns: 1fr;
+  .hero__count {
+    grid-column: 3;
+    justify-self: end;
+    padding: 0.5rem 0.875rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.9);
+    font-size: var(--fs-meta);
+    font-weight: 700;
+    color: var(--c-ink-3);
+  }
+
+  .hero__count span {
+    color: var(--c-blue);
+  }
+
+  /* Низкие экраны: убираем нижнюю строку, чтобы сохранить воздух вокруг заголовка */
+  @media (max-height: 720px) and (min-width: 641px) {
+    .hero__bottom {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scroll-line::after {
+      animation: none;
+      transform: none;
+    }
+  }
+
+  /* Laptop */
+  @media (max-width: 1280px) {
+    .hero__main {
+      max-width: min(40rem, 56%);
+    }
+  }
+
+  /* Tablet: текст внизу, люди в кадре сверху */
+  @media (max-width: 960px) {
+    /* кандидатка большую часть цикла — около 57% ширины кадра */
+    .hero__video {
+      object-position: 64% 50%;
+    }
+
+    .hero__overlay {
+      background:
+        linear-gradient(180deg, rgb(255 255 255 / 0.7) 0, rgb(255 255 255 / 0) 160px),
+        linear-gradient(
+          0deg,
+          rgb(255 255 255 / 0.94) 0%,
+          rgb(255 255 255 / 0.86) 36%,
+          rgb(255 255 255 / 0.3) 58%,
+          rgb(255 255 255 / 0) 70%
+        );
+    }
+
+    .hero__main {
+      max-width: 36rem;
+      margin-top: auto;
+      margin-bottom: 0;
+      padding-bottom: 1rem;
     }
 
     .hero__dirs {
       display: none;
     }
 
-    .hero__text {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      margin-bottom: 2rem;
-      border-top: 0;
-      padding-top: 0;
-    }
-
-    .hero__subtitle {
-      padding-top: 0;
-      max-width: 26ch;
-    }
-
-    .hero__media {
-      aspect-ratio: 16 / 10;
+    .hero__scroll {
+      border-right: 0;
     }
   }
 
+  /* Mobile */
   @media (max-width: 640px) {
     .hero {
-      padding-bottom: 2rem;
+      min-height: 560px;
+    }
+
+    /* Узкий кадр: держим в центре кандидатку и собеседника */
+    .hero__video {
+      object-position: 60% 50%;
+    }
+
+    .hero__overlay {
+      background:
+        linear-gradient(180deg, rgb(255 255 255 / 0.75) 0, rgb(255 255 255 / 0) 120px),
+        linear-gradient(
+          0deg,
+          rgb(255 255 255 / 0.96) 0%,
+          rgb(255 255 255 / 0.9) 42%,
+          rgb(255 255 255 / 0.35) 60%,
+          rgb(255 255 255 / 0) 70%
+        );
+    }
+
+    .hero__main {
+      max-width: none;
+      padding-block: 0 0.5rem;
+    }
+
+    .hero__label {
+      font-size: var(--fs-meta);
+    }
+
+    .hero__label-line {
+      width: 28px;
     }
 
     .hero__title {
-      margin-block: 1.5rem 1.25rem;
-      font-size: clamp(2.125rem, 1.2rem + 4.6vw, 2.75rem);
-      line-height: 1.06;
+      margin-top: 0.875rem;
+      font-size: clamp(2rem, 1.1rem + 4.6vw, 2.625rem);
+      line-height: 1.05;
     }
 
-    .hero__text {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1.75rem;
+    .hero__subtitle {
+      margin-top: 1rem;
+      font-size: 1.0625rem;
     }
 
     .hero__actions {
-      align-items: stretch;
+      width: 100%;
+      margin-top: 1.5rem;
     }
 
     .hero__actions .btn {
       width: 100%;
     }
 
-    .hero__more {
-      align-self: flex-start;
+    .hero__bottom {
+      display: none;
     }
 
-    .hero__media {
-      aspect-ratio: 4 / 5;
-      border-radius: var(--r-lg);
-      margin-inline: calc(var(--pad) * -0.5);
-    }
-
-    /* Узкий кадр: держим кандидатку и собеседника в центре */
-    .hero__video {
-      object-position: 72% 50%;
-    }
-
-    .hero__chip {
-      left: 1rem;
-      bottom: 1rem;
-    }
-
-    .hero__toggle {
-      right: 1rem;
-      bottom: 1rem;
+    .hero__main {
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
     }
   }
 </style>

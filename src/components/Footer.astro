@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer__top">
       <div class="footer__brand">
-        <Logo tone="light" />
+        <Logo variant="mono" class="footer__logo" />
         <p class="footer__descr">Подбор ключевых сотрудников, бизнес-аналитика и управленческий консалтинг.</p>
       </div>
 
@@ -62,6 +62,11 @@ const year = new Date().getFullYear();
     flex-direction: column;
     align-items: flex-start;
     gap: 1.25rem;
+  }
+
+  .footer :global(.footer__logo) {
+    --logo-h: 88px;
+    color: var(--c-white);
   }
 
   .footer__descr {

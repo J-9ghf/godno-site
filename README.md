@@ -34,12 +34,23 @@ public/media/              hero.webm / hero.mp4 (без звука), hero-poster
 
 ## Что нужно подключить
 
-- **Логотип** — `src/components/Logo.astro` сейчас выводит текстовую заглушку. Положите файл в `public/logo.svg`
-  и замените разметку в компоненте (инструкция в комментарии). Основной синий `--c-blue` в `global.css`
-  выровнять по цвету логотипа. Favicon — `public/favicon.svg`.
 - **Юридические тексты** — вставьте дословный текст в `src/content/legal/privacy.md` и `personal-data.md`,
   удалите `pending: true`. Пока `pending`, страница показывает заглушку и закрыта от индексации.
 - **Форма** — `PUBLIC_FORM_ENDPOINT`.
+
+## Логотип
+
+Оригинальный файл заказчика (чёрная версия с прозрачным фоном) используется как альфа-маска —
+форма и пропорции не меняются, меняется только заливка (`src/components/Logo.astro`):
+- `public/brand/logo-dark.png` + `logo-accent.png` — цветная версия (правые бруски — `--c-blue`, остальное — `--c-black`);
+- `public/brand/logo-mask.png` — одноцветная версия (белая в footer);
+- favicon / apple-touch-icon — знак (бруски) из того же файла.
+
+## Hero-видео
+
+`public/media/hero.webm` + `hero.mp4` — видео заказчика без звука, перекодировано в бесшовную петлю
+(последняя секунда растворяется в первую, чтобы при `loop` не было скачка), `hero-poster.jpg` — первый кадр.
+Видео — фон всего первого экрана (100svh, `object-fit: cover`), без controls; кроп: desktop 50%, tablet 64%, mobile 60% по горизонтали.
 
 ## Дизайн-система
 
