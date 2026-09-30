@@ -2,8 +2,7 @@
 import Logo from './Logo.astro';
 
 /**
- * Идентификация: логотип ИКР + отдельная текстовая подпись «Институт кадровых решений».
- * Это два самостоятельных элемента, а не изменённый логотип.
+ * Идентификация: логотип ИКР целиком — название «Институт кадровых решений» входит в сам файл логотипа.
  */
 interface Props {
   class?: string;
@@ -13,8 +12,6 @@ const { class: className } = Astro.props;
 
 <span class:list={['brand', className]}>
   <Logo class="brand__logo" />
-  <span class="brand__rule" aria-hidden="true"></span>
-  <span class="brand__name">Институт<br />кадровых<br />решений</span>
 </span>
 
 <style>
@@ -27,21 +24,5 @@ const { class: className } = Astro.props;
 
   .brand :global(.brand__logo) {
     --logo-h: var(--brand-logo-h, 44px);
-  }
-
-  .brand__rule {
-    width: 1px;
-    align-self: stretch;
-    margin-block: 4px;
-    background: currentColor;
-    opacity: 0.35;
-  }
-
-  .brand__name {
-    font-size: 0.625rem;
-    font-weight: 700;
-    line-height: 1.3;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
   }
 </style>

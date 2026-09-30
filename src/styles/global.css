@@ -99,15 +99,15 @@
 
   --header-h: 72px; /* компактный белый header после первого экрана */
   --header-h-hero: 104px; /* header поверх видео */
-  --logo-hero: 52px;
-  --logo-solid: 40px;
+  --logo-hero: 80px;
+  --logo-solid: 58px;
 }
 
 /* Низкие экраны (ноутбуки): компактнее header поверх видео */
 @media (max-height: 820px) and (min-width: 641px) {
   :root {
     --header-h-hero: 92px;
-    --logo-hero: 46px;
+    --logo-hero: 72px;
   }
 }
 
@@ -124,8 +124,8 @@
     --gutter: 16px;
     --header-h: 64px;
     --header-h-hero: 76px;
-    --logo-hero: 40px;
-    --logo-solid: 36px;
+    --logo-hero: 60px;
+    --logo-solid: 50px;
     --fs-body: 1rem;
   }
 }

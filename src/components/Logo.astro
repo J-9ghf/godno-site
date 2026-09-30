@@ -1,9 +1,8 @@
 ---
 /**
- * Логотип ИКР (знак + «ИКР») — из оригинального файла заказчика, public/brand/mark-*.png.
- * Строка «Институт кадровых решений» вынесена из логотипа в отдельный текстовый элемент (см. Brand.astro).
+ * Логотип ИКР целиком (знак «ИКР» + «Институт кадровых решений») — из файла заказчика, public/brand/lockup-*.png.
  * Файл используется как альфа-маска: форма и пропорции не меняются, меняется только заливка.
- * Цвета слоёв задаются переменными --logo-ink (буквы и левые бруски) и --logo-accent (правые бруски).
+ * Цвета слоёв задаются переменными --logo-ink (буквы) и --logo-accent (синяя часть «К» и черта).
  */
 interface Props {
   class?: string;
@@ -11,7 +10,7 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<span class:list={['logo', className]} role="img" aria-label="ИКР">
+<span class:list={['logo', className]} role="img" aria-label="ИКР — Институт кадровых решений">
   <span class="logo__layer logo__layer--ink"></span>
   <span class="logo__layer logo__layer--accent"></span>
 </span>
@@ -23,8 +22,8 @@ const { class: className } = Astro.props;
     display: block;
     flex: none;
     height: var(--logo-h);
-    /* пропорции знака из исходного файла: 406 × 448 */
-    aspect-ratio: 406 / 448;
+    /* пропорции логотипа из исходного файла: 1176 × 864 */
+    aspect-ratio: 1176 / 864;
   }
 
   .logo__layer {
@@ -36,12 +35,12 @@ const { class: className } = Astro.props;
   }
 
   .logo__layer--ink {
-    --mask: url('/brand/mark-dark.png');
-    background: var(--logo-ink, var(--c-black));
+    --mask: url('/brand/lockup-ink.png');
+    background: var(--logo-ink, #18181a);
   }
 
   .logo__layer--accent {
-    --mask: url('/brand/mark-accent.png');
-    background: var(--logo-accent, var(--c-blue));
+    --mask: url('/brand/lockup-accent.png');
+    background: var(--logo-accent, #0d275b);
   }
 </style>
