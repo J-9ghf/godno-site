@@ -1,6 +1,7 @@
 ---
 /**
- * Логотип ИКР целиком (знак «ИКР» + «Институт кадровых решений») — из файла заказчика, public/brand/lockup-*.png.
+ * Логотип ИКР целиком (знак «ИКР» + «Институт кадровых решений») — из файла заказчика, public/brand/lockup-inline-*.png.
+ * Надпись стоит справа от знака, по центру по вертикали; пиксели знака и надписи перенесены из lockup-*.png без масштабирования.
  * Файл используется как альфа-маска: форма и пропорции не меняются, меняется только заливка.
  * Цвета слоёв задаются переменными --logo-ink (буквы) и --logo-accent (синяя часть «К» и черта).
  */
@@ -21,9 +22,11 @@ const { class: className } = Astro.props;
     position: relative;
     display: block;
     flex: none;
-    height: var(--logo-h);
-    /* пропорции логотипа из исходного файла: 1176 × 864 */
-    aspect-ratio: 1176 / 864;
+    /* --logo-h — высота прежнего вертикального логотипа (864 px в файле); строчный файл — 445 px,
+       поэтому знак и надпись остаются того же размера */
+    height: calc(var(--logo-h) * 445 / 864);
+    /* пропорции строчного логотипа: 2053 × 445 */
+    aspect-ratio: 2053 / 445;
   }
 
   .logo__layer {
@@ -35,12 +38,12 @@ const { class: className } = Astro.props;
   }
 
   .logo__layer--ink {
-    --mask: url('/brand/lockup-ink.png');
+    --mask: url('/brand/lockup-inline-ink.png');
     background: var(--logo-ink, #18181a);
   }
 
   .logo__layer--accent {
-    --mask: url('/brand/lockup-accent.png');
+    --mask: url('/brand/lockup-inline-accent.png');
     background: var(--logo-accent, #0d275b);
   }
 </style>
