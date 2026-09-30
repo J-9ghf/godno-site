@@ -5,18 +5,17 @@ import Footer from '../components/Footer.astro';
 import { legalDocs } from '../data/content';
 
 interface Props {
+  /** Название документа — как в PDF */
   title: string;
-  pending?: boolean;
   current: string;
 }
 
-const { title, pending = false, current } = Astro.props;
+const { title, current } = Astro.props;
 const docIndex = Math.max(0, legalDocs.findIndex((d) => d.href === current));
-const docLabel = legalDocs[docIndex]?.title ?? '';
+const doc = legalDocs[docIndex];
 ---
 
 <Base title={`${title} — Институт кадровых решений`} description={title}>
-  <meta slot="head" name="robots" content={pending ? 'noindex' : 'index'} />
   <Header base="/" />
   <main id="main" class="legal">
     <div class="container legal__grid">
@@ -42,18 +41,15 @@ const docLabel = legalDocs[docIndex]?.title ?? '';
         <p class="legal__kind eyebrow num">
           <span class="shead__num">{String(docIndex + 1).padStart(2, '0')}</span>
           <span class="shead__sep" aria-hidden="true">/</span>
-          <span>{docLabel}</span>
+          <span>{doc.title}</span>
         </p>
         <h1 class="h2 legal__title">{title}</h1>
-        {
-          pending ? (
-            <p class="legal__pending">Текст документа будет размещён в ближайшее время.</p>
-          ) : (
-            <div class="legal__body">
-              <slot />
-            </div>
-          )
-        }
+        <p class="legal__source">
+          <a href={doc.pdf} target="_blank" rel="noopener">Оригинал документа (PDF)</a>
+        </p>
+        <div class="legal__body">
+          <slot />
+        </div>
       </article>
     </div>
   </main>
@@ -149,13 +145,23 @@ const docLabel = legalDocs[docIndex]?.title ?? '';
 
   .legal__title {
     margin-bottom: 2.5rem;
+    font-size: clamp(2rem, 1.3rem + 2vw, 3.25rem);
+    line-height: 1.05;
   }
 
-  .legal__pending {
-    padding: 1.5rem;
-    border-radius: var(--r-lg);
-    background: var(--c-soft);
-    color: var(--c-ink-2);
+  .legal__source {
+    margin: -1rem 0 2.5rem;
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+
+  .legal__source a {
+    color: var(--c-accent);
+    text-underline-offset: 3px;
+  }
+
+  .legal__source a:hover {
+    color: var(--c-accent-deep);
   }
 
   /* Типографика юридического текста — строгая, для чтения */
@@ -170,6 +176,16 @@ const docLabel = legalDocs[docIndex]?.title ?? '';
     margin: 1.75rem 0 0.75rem;
     font-size: 1.0625rem;
     font-weight: 700;
+  }
+
+  .legal__body {
+    font-size: var(--fs-body);
+    line-height: 1.75;
+  }
+
+  .legal__body :global(strong) {
+    font-weight: 700;
+    color: var(--c-ink);
   }
 
   .legal__body :global(p),
