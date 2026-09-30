@@ -11,7 +11,7 @@ const heading = quote.slice(0, quote.indexOf(':'));
 const hlFrom = heading.indexOf('сломана');
 ---
 
-<section class="section consulting" id="consulting" aria-labelledby="consulting-title">
+<section class="section section--mist consulting" id="consulting" aria-labelledby="consulting-title">
   <div class="container">
     <SectionTag num="05" label={group.title} aside={`${group.cases.length} проекта`} />
 
@@ -22,10 +22,10 @@ const hlFrom = heading.indexOf('сломана');
     <div class="consulting__cases grid">
       {
         group.cases.map((c, i) => (
-          <article class="dossier" id={`case-${c.id}`} aria-labelledby={`case-${c.id}-title`} data-reveal style={`--d: ${i * 140}`}>
+          <article class:list={['dossier', i % 2 === 1 ? 'dossier--navy' : 'dossier--white']} id={`case-${c.id}`} aria-labelledby={`case-${c.id}-title`} data-reveal style={`--d: ${i * 140}`}>
             <div class="dossier__top">
               <span class="dossier__num bignum">{String(hiringCount + i + 1).padStart(2, '0')}</span>
-              <span class="dossier__status eyebrow">Проект продолжается</span>
+              <span class="dossier__status eyebrow"><span class="node" aria-hidden="true" />Проект продолжается</span>
             </div>
 
             <h3 class="h3 dossier__title" id={`case-${c.id}-title`}>{c.title}</h3>
@@ -58,7 +58,6 @@ const hlFrom = heading.indexOf('сломана');
 
 <style>
   .consulting {
-    background: var(--c-blue-light);
     scroll-margin-top: var(--header-h);
   }
 
@@ -69,16 +68,36 @@ const hlFrom = heading.indexOf('сломана');
   }
 
   .consulting__cases {
-    row-gap: 4rem;
+    row-gap: var(--gutter);
     margin-top: clamp(3.5rem, 7vw, 6rem);
+    align-items: start;
   }
 
+  /* Две поверхности вместо рамок: белая и глубокая */
   .dossier {
     grid-column: span 6;
     display: flex;
     flex-direction: column;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--c-black);
+    padding: clamp(1.75rem, 3.5vw, 3.25rem);
+    background: var(--d-bg);
+    color: var(--d-fg);
+  }
+
+  .dossier--white {
+    --d-bg: var(--c-white);
+    --d-fg: var(--c-ink);
+    --d-muted: var(--c-slate);
+    --d-accent: var(--c-accent);
+    --d-chip: var(--c-accent-tint);
+  }
+
+  .dossier--navy {
+    --d-bg: var(--c-navy);
+    --d-fg: var(--c-white);
+    --d-muted: var(--c-on-navy-2);
+    --d-accent: var(--c-accent-bright);
+    --d-chip: rgb(79 209 197 / 0.14);
+    margin-top: clamp(0rem, 8vw, 7rem);
   }
 
   .dossier__top {
@@ -89,22 +108,18 @@ const hlFrom = heading.indexOf('сломана');
   }
 
   .dossier__num {
-    color: var(--c-blue);
+    color: var(--d-accent);
   }
 
   .dossier__status {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--c-blue);
+    color: var(--d-accent);
   }
 
-  .dossier__status::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
+  .dossier__status :global(.node) {
+    background: var(--d-accent);
   }
 
   .dossier__title {
@@ -113,16 +128,14 @@ const hlFrom = heading.indexOf('сломана');
   }
 
   .dossier__meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--gutter);
-    margin-top: 2rem;
-    padding-block: 1rem;
-    border-block: 1px solid var(--c-blue-light-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 3rem;
+    margin-top: 1.75rem;
   }
 
   .dossier__meta dt {
-    color: var(--c-ink-3);
+    color: var(--d-muted);
   }
 
   .dossier__meta dd {
@@ -135,50 +148,36 @@ const hlFrom = heading.indexOf('сломана');
     text-transform: uppercase;
   }
 
-  /* Абзацы — этапы на вертикальной тонкой линии */
+  /* Абзацы — этапы с номерами-узлами */
   .dossier__steps {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1.75rem;
-    margin-top: 2.25rem;
-    padding-left: 3.25rem;
-  }
-
-  .dossier__steps::before {
-    content: '';
-    position: absolute;
-    left: 0.6875rem;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    width: 1px;
-    background: var(--c-blue-light-2);
+    margin-top: 2.5rem;
   }
 
   .dossier__steps li {
-    position: relative;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 1rem;
     font-size: var(--fs-small);
     line-height: 1.7;
-    color: var(--c-ink-2);
+    color: var(--d-muted);
   }
 
   .dossier__steps li:first-child p {
     font-size: var(--fs-body);
     font-weight: 500;
-    color: var(--c-black);
+    color: var(--d-fg);
   }
 
   .dossier__step-num {
-    position: absolute;
-    left: -3.25rem;
-    top: 0.1rem;
     display: grid;
     place-items: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    padding: 0;
-    background: var(--c-blue-light);
-    color: var(--c-blue);
+    width: 2rem;
+    height: 2rem;
+    background: var(--d-chip);
+    color: var(--d-accent);
     letter-spacing: 0;
   }
 
@@ -186,15 +185,9 @@ const hlFrom = heading.indexOf('сломана');
     .dossier {
       grid-column: 1 / -1;
     }
-  }
 
-  @media (max-width: 640px) {
-    .dossier__steps {
-      padding-left: 2.5rem;
-    }
-
-    .dossier__step-num {
-      left: -2.5rem;
+    .dossier--navy {
+      margin-top: 0;
     }
   }
 </style>

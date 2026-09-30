@@ -1,6 +1,6 @@
 ---
 import SectionTag from './SectionTag.astro';
-import CaseRow from './CaseRow.astro';
+import CaseStory from './CaseStory.astro';
 import Icon from './Icon.astro';
 import { caseGroups } from '../data/content';
 
@@ -45,7 +45,7 @@ const index = [
     </div>
 
     <div class="cases__list" id="experience-list">
-      {hiring.cases.map((c, i) => <CaseRow item={c} num={pad(i + 1)} open={i === 0} />)}
+      {hiring.cases.map((c, i) => <CaseStory item={c} num={pad(i + 1)} index={i} lead={i === 0} />)}
     </div>
   </div>
 </section>
@@ -55,7 +55,7 @@ const index = [
     align-items: end;
     row-gap: 2.5rem;
     margin-top: clamp(2.5rem, 5vw, 4.5rem);
-    margin-bottom: clamp(3rem, 6vw, 5rem);
+    margin-bottom: clamp(4rem, 8vw, 7rem);
   }
 
   .cases__title {
@@ -68,12 +68,10 @@ const index = [
     grid-column: 9 / -1;
   }
 
-  .cases__index li {
-    border-top: 1px solid var(--c-line-strong);
-  }
-
-  .cases__index li:last-child {
-    border-bottom: 1px solid var(--c-line-strong);
+  .cases__index ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
   .cases__index a {
@@ -81,30 +79,36 @@ const index = [
     grid-template-columns: 4.5rem 1fr 18px;
     align-items: center;
     gap: 0.75rem;
-    padding-block: 0.875rem;
+    padding: 0.75rem 1rem;
+    background: var(--c-white);
     font-size: var(--fs-small);
     font-weight: 700;
     text-decoration: none;
-    transition: color var(--t-fast) var(--ease);
+    transition:
+      background-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
   }
 
   .cases__index a:hover {
-    color: var(--c-blue);
+    background: var(--c-accent-tint);
+    color: var(--c-accent-deep);
   }
 
   .cases__index-range {
-    color: var(--c-blue);
+    color: var(--c-accent);
   }
 
   :global(.cases__index-icon) {
     width: 16px;
     height: 16px;
-    color: var(--c-ink-3);
+    color: var(--c-slate-2);
   }
 
   .cases__list {
-    border-top: 1px solid var(--c-black);
-    scroll-margin-top: calc(var(--header-h) + 1rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5rem, 10vw, 9rem);
+    scroll-margin-top: calc(var(--header-h) + 2rem);
   }
 
   @media (max-width: 960px) {

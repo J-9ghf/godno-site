@@ -11,6 +11,8 @@ interface Props {
 }
 
 const { title, pending = false, current } = Astro.props;
+const docIndex = Math.max(0, legalDocs.findIndex((d) => d.href === current));
+const docLabel = legalDocs[docIndex]?.title ?? '';
 ---
 
 <Base title={`${title} — Институт кадровых решений`} description={title}>
@@ -21,7 +23,7 @@ const { title, pending = false, current } = Astro.props;
       <aside class="legal__aside">
         <a class="legal__back" href="/">← На главную</a>
         <nav aria-label="Документы">
-          <p class="legal__label">Документы</p>
+          <p class="legal__label eyebrow"><span class="node" aria-hidden="true"></span>Документы</p>
           <ul>
             {
               legalDocs.map((d) => (
@@ -37,6 +39,11 @@ const { title, pending = false, current } = Astro.props;
       </aside>
 
       <article class="legal__doc">
+        <p class="legal__kind eyebrow num">
+          <span class="shead__num">{String(docIndex + 1).padStart(2, '0')}</span>
+          <span class="shead__sep" aria-hidden="true">/</span>
+          <span>{docLabel}</span>
+        </p>
         <h1 class="h2 legal__title">{title}</h1>
         {
           pending ? (
@@ -87,13 +94,40 @@ const { title, pending = false, current } = Astro.props;
     color: var(--c-ink-3);
   }
 
+  .legal__aside ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
   .legal__aside li {
-    border-top: 1px solid var(--c-line);
+  }
+
+  .legal__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .legal__kind {
+    display: flex;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Реквизиты оператора в тексте согласия — на туманной поверхности */
+  .legal__body :global(.legal-requisites) {
+    margin: 1.25rem 0;
+    padding: 1.25rem 1.5rem;
+    background: var(--c-mist-2);
+    font-weight: 600;
+    line-height: 1.8;
+    color: var(--c-ink);
   }
 
   .legal__aside li a {
     display: block;
-    padding-block: 0.875rem;
+    padding: 0.875rem 1rem;
     font-size: var(--fs-small);
     font-weight: 600;
     text-decoration: none;
@@ -102,7 +136,11 @@ const { title, pending = false, current } = Astro.props;
 
   .legal__aside li a:hover,
   .legal__aside li a[aria-current='page'] {
-    color: var(--c-blue);
+    color: var(--c-accent-deep);
+  }
+
+  .legal__aside li a[aria-current='page'] {
+    background: var(--c-accent-tint);
   }
 
   .legal__doc {

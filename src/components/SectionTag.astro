@@ -1,5 +1,5 @@
 ---
-/** Шапка секции в духе референса: тонкая линия, номер, метка, опционально — подпись справа. */
+/** Индекс раздела: ▪ 03 / Подход (+ служебная подпись справа). Без линий. */
 interface Props {
   num: string;
   label: string;
@@ -10,7 +10,8 @@ const { num, label, aside, class: className } = Astro.props;
 ---
 
 <p class:list={['shead', className]}>
-  <span class="eyebrow shead__num">{num}</span>
+  <span class="eyebrow shead__num num">{num}</span>
+  <span class="eyebrow shead__sep" aria-hidden="true">/</span>
   <span class="eyebrow">{label}</span>
   {aside && <span class="eyebrow shead__aside">{aside}</span>}
 </p>

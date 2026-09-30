@@ -1,6 +1,6 @@
 ---
 import Brand from './Brand.astro';
-import { nav, legalDocs } from '../data/content';
+import { nav, legalDocs, operator } from '../data/content';
 
 interface Props {
   base?: string;
@@ -11,77 +11,105 @@ const year = new Date().getFullYear();
 
 <footer class="footer">
   <div class="container">
-    <div class="footer__top">
+    <div class="footer__top grid">
       <div class="footer__brand">
-        <Brand class="footer__brand-mark" />
+        <a href={base || '#top'} class="footer__home" aria-label="ИКР — Институт кадровых решений, на главную">
+          <Brand class="footer__brand-mark" />
+        </a>
         <p class="footer__descr">Подбор ключевых сотрудников, бизнес-аналитика и управленческий консалтинг.</p>
       </div>
 
-      <nav class="footer__col" aria-label="Разделы сайта">
-        <p class="footer__label">Разделы</p>
+      <nav class="footer__col footer__col--nav" aria-label="Разделы сайта">
+        <p class="footer__label eyebrow"><span class="node" aria-hidden="true"></span>Разделы</p>
         <ul>
           {nav.map((item) => (
             <li><a href={`${base}${item.href}`}>{item.label}</a></li>
           ))}
+          <li><a href={`${base}#contact`}>Заявка</a></li>
         </ul>
       </nav>
 
-      <nav class="footer__col" aria-label="Документы">
-        <p class="footer__label">Документы</p>
+      <nav class="footer__col footer__col--docs" aria-label="Документы">
+        <p class="footer__label eyebrow"><span class="node" aria-hidden="true"></span>Документы</p>
         <ul>
           {legalDocs.map((d) => (
             <li><a href={d.href}>{d.title}</a></li>
           ))}
         </ul>
       </nav>
+
+      <div class="footer__col footer__col--contacts">
+        <p class="footer__label eyebrow"><span class="node" aria-hidden="true"></span>Контакты</p>
+        <a class="footer__mail" href={`mailto:${operator.email}`}>{operator.email}</a>
+      </div>
     </div>
 
-    <div class="footer__bottom">
-      <p>© {year} Институт кадровых решений</p>
-      <a class="footer__up" href={`${base}#top`}>Наверх ↑</a>
+    <div class="footer__legal">
+      <p class="footer__requisites">
+        <span>{operator.name}</span>
+        <span>ОГРНИП {operator.ogrnip}</span>
+        <span>ИНН {operator.inn}</span>
+      </p>
+      <p class="footer__copy">
+        © {year} Институт кадровых решений
+        <a class="footer__up" href={`${base}#top`}>Наверх ↑</a>
+      </p>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding-block: clamp(3.5rem, 6vw, 5rem) 2rem;
-    background: var(--c-black);
-    color: var(--c-on-dark);
+    padding-block: clamp(4rem, 7vw, 6rem) 2rem;
+    background: var(--c-paper);
+    color: var(--c-ink);
   }
 
   .footer__top {
-    display: grid;
-    grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 3fr);
-    gap: var(--gutter);
-    padding-bottom: clamp(3rem, 5vw, 4.5rem);
+    row-gap: 3rem;
+    padding-bottom: clamp(3.5rem, 6vw, 5rem);
   }
 
   .footer__brand {
+    grid-column: 1 / span 4;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .footer__home {
+    text-decoration: none;
   }
 
   .footer :global(.footer__brand-mark) {
-    --brand-logo-h: 64px;
-    --brand-color: var(--c-white);
-    --logo-ink: var(--c-white);
-    --logo-accent: var(--c-blue-light-2);
+    --brand-logo-h: 56px;
   }
 
   .footer__descr {
     max-width: 30ch;
     font-size: var(--fs-small);
-    color: var(--c-on-dark-2);
+    color: var(--c-slate);
+  }
+
+  .footer__col--nav {
+    grid-column: 5 / span 2;
+  }
+
+  .footer__col--docs {
+    grid-column: 7 / span 3;
+  }
+
+  .footer__col--contacts {
+    grid-column: 10 / span 3;
   }
 
   .footer__label {
-    margin-bottom: 1rem;
-    font-size: var(--fs-meta);
-    font-weight: 700;
-    color: var(--c-on-dark-2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--c-slate-2);
   }
 
   .footer__col li + li {
@@ -89,36 +117,80 @@ const year = new Date().getFullYear();
   }
 
   .footer__col a,
-  .footer__up {
+  .footer__up,
+  .footer__mail {
     font-size: var(--fs-small);
     font-weight: 600;
     text-decoration: none;
     transition: color var(--t-fast) var(--ease);
   }
 
-  .footer__col a:hover,
-  .footer__up:hover {
-    color: var(--c-blue-on-dark);
+  .footer__mail {
+    overflow-wrap: anywhere;
   }
 
-  .footer__bottom {
+  .footer__col a:hover,
+  .footer__up:hover,
+  .footer__mail:hover {
+    color: var(--c-accent);
+  }
+
+  /* Реквизиты — на туманной полосе, без линий */
+  .footer__legal {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--c-line-dark);
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--c-mist-2);
     font-size: var(--fs-meta);
-    color: var(--c-on-dark-2);
+    color: var(--c-slate);
   }
 
-  @media (max-width: 760px) {
-    .footer__top {
-      grid-template-columns: 1fr 1fr;
-      row-gap: 2.5rem;
-    }
+  .footer__requisites {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+  }
 
+  .footer__copy {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer__up {
+    font-size: var(--fs-meta);
+    color: var(--c-ink);
+  }
+
+  @media (max-width: 1024px) {
     .footer__brand {
       grid-column: 1 / -1;
+    }
+
+    .footer__col--nav {
+      grid-column: 1 / span 4;
+    }
+
+    .footer__col--docs {
+      grid-column: 5 / span 4;
+    }
+
+    .footer__col--contacts {
+      grid-column: 9 / span 4;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer__col--nav,
+    .footer__col--docs,
+    .footer__col--contacts {
+      grid-column: 1 / -1;
+    }
+
+    .footer__legal {
+      padding: 1.25rem;
     }
   }
 </style>

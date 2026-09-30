@@ -89,8 +89,8 @@ const { base = '', overlay = false } = Astro.props;
   .header.is-solid,
   .header.is-open {
     --h: var(--header-h);
-    background: var(--c-white);
-    box-shadow: 0 1px 0 var(--c-line);
+    background: var(--c-paper);
+    box-shadow: 0 1px 0 var(--c-rule);
   }
 
   .header__inner {
@@ -117,11 +117,11 @@ const { base = '', overlay = false } = Astro.props;
     --brand-logo-h: var(--logo-solid);
   }
 
-  /* Поверх видео: белый интерфейс, правые бруски логотипа — светло-голубые */
+  /* Поверх видео: белый интерфейс, правые бруски логотипа — бирюзовые */
   .header--overlay:not(.is-solid):not(.is-open) {
     --brand-color: var(--c-white);
     --logo-ink: var(--c-white);
-    --logo-accent: var(--c-blue-light-2);
+    --logo-accent: var(--c-accent-bright);
     color: var(--c-white);
   }
 
@@ -131,11 +131,6 @@ const { base = '', overlay = false } = Astro.props;
 
   .header--overlay:not(.is-solid):not(.is-open) .header__burger-line {
     background: var(--c-white);
-  }
-
-  /* Тонкая линия под header поверх видео */
-  .header--overlay:not(.is-solid):not(.is-open) .header__inner {
-    background: linear-gradient(rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.3)) center bottom / calc(100% - 2 * var(--pad)) 1px no-repeat;
   }
 
   .header__nav {
@@ -229,7 +224,7 @@ const { base = '', overlay = false } = Astro.props;
   .menu {
     position: fixed;
     inset: calc(var(--header-h) + env(safe-area-inset-top)) 0 0;
-    background: var(--c-white);
+    background: var(--c-paper);
     overflow-y: auto;
     animation: fade-in var(--t-base) var(--ease);
   }

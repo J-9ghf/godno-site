@@ -3,7 +3,7 @@ import SectionTag from './SectionTag.astro';
 import { principles } from '../data/content';
 ---
 
-<section class="section section--soft principles" id="approach" aria-labelledby="principles-title">
+<section class="section section--navy principles" id="approach" aria-labelledby="principles-title">
   <div class="container">
     <SectionTag num="03" label="Подход" aside="4 принципа" />
 
@@ -34,20 +34,20 @@ import { principles } from '../data/content';
   }
 
   .principles__list {
-    margin-top: clamp(3.5rem, 7vw, 6rem);
-    border-top: 1px solid var(--c-black);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 6vw, 5.5rem);
+    margin-top: clamp(4rem, 8vw, 7rem);
   }
 
   .principle {
     align-items: start;
     row-gap: 1.25rem;
-    padding-block: clamp(2.25rem, 4vw, 3.5rem);
-    border-bottom: 1px solid var(--c-line-strong);
   }
 
   .principle__num {
     grid-column: 1 / span 2;
-    color: var(--c-blue);
+    color: var(--c-accent-bright);
     transition: transform var(--t-base) var(--ease);
   }
 
@@ -55,13 +55,14 @@ import { principles } from '../data/content';
     grid-column: 3 / span 5;
     max-width: 16ch;
     padding-top: 0.25rem;
+    color: var(--c-white);
   }
 
   .principle__text {
     grid-column: 8 / span 4;
     max-width: 40ch;
     padding-top: 0.5rem;
-    color: var(--c-ink-2);
+    color: var(--c-on-navy-2);
   }
 
   /* Намеренное смещение чётных строк на одну колонку */
@@ -79,22 +80,20 @@ import { principles } from '../data/content';
 
   @media (max-width: 1024px) {
     .principle__title,
-    .principle--shift .principle__title {
+    .principle--shift .principle__title,
+    .principle__text,
+    .principle--shift .principle__text {
       grid-column: 3 / -1;
     }
 
     .principle__text,
     .principle--shift .principle__text {
-      grid-column: 3 / -1;
       padding-top: 0;
     }
   }
 
   @media (max-width: 640px) {
-    .principle__num {
-      grid-column: 1 / -1;
-    }
-
+    .principle__num,
     .principle__title,
     .principle--shift .principle__title,
     .principle__text,

@@ -6,7 +6,7 @@ import { finalCta } from '../data/content';
 const splitAt = finalCta.title.indexOf('и что');
 ---
 
-<section class="section cta" id="contact" aria-labelledby="cta-title">
+<section class="section section--navy cta" id="contact" aria-labelledby="cta-title">
   <div class="container">
     <SectionTag num="10" label="Заявка" />
 
@@ -38,8 +38,8 @@ const splitAt = finalCta.title.indexOf('и что');
             <input class="consent__box" type="checkbox" name="consent" required />
             <span class="consent__mark" aria-hidden="true"><Icon name="check" /></span>
             <span class="consent__text">
-              Я соглашаюсь на обработку персональных данных в соответствии
-              с{' '}<a href="/privacy">политикой конфиденциальности</a>
+              Я даю <a href="/consent">согласие на обработку персональных данных</a>
+              и ознакомлен(а) с{' '}<a href="/privacy">политикой конфиденциальности</a>
             </span>
           </label>
 
@@ -63,7 +63,8 @@ const splitAt = finalCta.title.indexOf('и что');
 
 <style>
   .cta {
-    background: var(--c-blue-light);
+    position: relative;
+    overflow: hidden;
   }
 
   .cta__grid {
@@ -118,8 +119,9 @@ const splitAt = finalCta.title.indexOf('и что');
     width: 100%;
     padding: 0.625rem 0 0.75rem;
     border: 0;
-    border-bottom: 1px solid var(--c-black);
+    border-bottom: 1px solid rgb(255 255 255 / 0.4);
     border-radius: 0;
+    color: var(--c-white);
     background: transparent;
     font-size: 1.125rem;
     font-weight: 600;
@@ -166,8 +168,8 @@ const splitAt = finalCta.title.indexOf('и что');
     place-items: center;
     width: 20px;
     height: 20px;
-    border: 1px solid var(--c-black);
-    border-radius: 4px;
+    border: 1px solid rgb(255 255 255 / 0.6);
+    border-radius: 2px;
     color: transparent;
     transition:
       background-color var(--t-fast) var(--ease),
@@ -205,6 +207,9 @@ const splitAt = finalCta.title.indexOf('и что');
   }
 
   .form__submit {
+    --btn-bg: var(--c-accent-bright);
+    --btn-fg: var(--c-navy);
+    --btn-bg-hover: var(--c-white);
     align-self: flex-start;
     min-width: 15rem;
     justify-content: space-between;
@@ -222,7 +227,7 @@ const splitAt = finalCta.title.indexOf('и что');
     align-items: flex-start;
     gap: 1.5rem;
     padding-top: 1.75rem;
-    border-top: 1px solid var(--c-black);
+    padding-left: 0;
     animation: done-in var(--t-slow) var(--ease);
   }
 
@@ -247,8 +252,8 @@ const splitAt = finalCta.title.indexOf('и что');
     place-items: center;
     width: 56px;
     height: 56px;
-    border-radius: var(--r-md);
-    background: var(--c-blue);
+    background: var(--c-accent-bright);
+    color: var(--c-navy);
     color: var(--c-white);
   }
 

@@ -18,7 +18,7 @@ const layout = [
 ];
 ---
 
-<section class="section section--soft reviews" id="reviews" aria-labelledby="reviews-title">
+<section class="section reviews" id="reviews" aria-labelledby="reviews-title">
   <div class="container">
     <SectionTag num="07" label="Отзывы" aside="Дословно" />
     <h2 class="visually-hidden" id="reviews-title">Отзывы клиентов</h2>
@@ -35,7 +35,7 @@ const layout = [
       {
         layout.map((q, i) => (
           <figure class:list={['quote', q.place, `quote--${q.size}`]} data-reveal style={`--d: ${(i % 3) * 90}`}>
-            <figcaption class="quote__num eyebrow num">{pad(i + 2)}</figcaption>
+            <figcaption class="quote__num eyebrow num"><span class="node" aria-hidden="true" />{pad(i + 2)}</figcaption>
             <blockquote class="quote__text">
               <p>{q.item.text}</p>
             </blockquote>
@@ -47,10 +47,14 @@ const layout = [
 </section>
 
 <style>
+  /* Главная цитата — на глубоком цветовом поле */
   .lead-quote {
     align-items: start;
     row-gap: 2rem;
-    margin-top: clamp(3rem, 6vw, 5.5rem);
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding: clamp(2.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 4.5rem);
+    background: var(--c-navy);
+    color: var(--c-white);
   }
 
   .lead-quote__mark {
@@ -58,50 +62,53 @@ const layout = [
     font-size: clamp(4rem, 2.5rem + 5vw, 8rem);
     font-weight: 700;
     line-height: 0.75;
-    color: var(--c-blue);
+    color: var(--c-accent-bright);
   }
 
   .lead-quote__text {
     grid-column: 2 / span 10;
-    font-size: clamp(1.625rem, 1rem + 2vw, 3rem);
+    font-size: clamp(1.5rem, 1rem + 1.8vw, 2.75rem);
     font-weight: 600;
-    line-height: 1.18;
+    line-height: 1.2;
     letter-spacing: -0.03em;
     text-wrap: pretty;
   }
 
   .lead-quote__cap {
     grid-column: 2 / span 10;
-    padding-top: 1rem;
-    border-top: 1px solid var(--c-black);
-    color: var(--c-ink-3);
+    color: var(--c-on-navy-2);
   }
 
   .lead-quote__cap span {
-    color: var(--c-blue);
+    color: var(--c-accent-bright);
   }
 
-  /* Мозаика */
+  /* Мозаика: без линий — поверхность, размер и позиция */
   .quotes {
-    row-gap: clamp(3rem, 5vw, 4.5rem);
-    margin-top: clamp(4.5rem, 9vw, 8rem);
+    row-gap: clamp(2.5rem, 5vw, 4rem);
+    margin-top: clamp(4rem, 8vw, 6.5rem);
+    align-items: start;
   }
 
   .quote {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .quote--m,
+  .quote--l {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--c-white);
   }
 
   .q-a {
     grid-column: 1 / span 6;
-    border-top-color: var(--c-black);
   }
 
   .q-b {
     grid-column: 8 / span 5;
+    margin-top: clamp(0rem, 6vw, 5rem);
   }
 
   .q-c {
@@ -122,10 +129,14 @@ const layout = [
 
   .q-g {
     grid-column: 10 / span 3;
+    align-self: center;
   }
 
   .quote__num {
-    color: var(--c-blue);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--c-accent);
   }
 
   .quote__text {
@@ -149,17 +160,15 @@ const layout = [
   .quote--s .quote__text {
     font-size: var(--fs-small);
     line-height: 1.6;
-    color: var(--c-ink-2);
+    color: var(--c-slate);
   }
 
   @media (max-width: 1024px) {
     .q-a,
+    .q-b,
     .q-f {
-      grid-column: 1 / span 7;
-    }
-
-    .q-b {
-      grid-column: 1 / span 7;
+      grid-column: 1 / span 8;
+      margin-top: 0;
     }
 
     .q-c,
@@ -179,6 +188,7 @@ const layout = [
 
     .lead-quote {
       row-gap: 1rem;
+      margin-inline: calc(var(--pad) * -1);
     }
 
     .q-a,

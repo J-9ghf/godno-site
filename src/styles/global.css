@@ -2,26 +2,45 @@
 
 /* ═════════════════════════════════════════════════════════════
    DESIGN TOKENS
-   Палитра: white + black — основа, blue — акцент, light blue — фон/выделение.
+   Палитра «Институт»: глубокий navy + молочная бумага + холодный туман
+   + один акцент — глубокий бирюзовый (teal), дозированно: CTA, индексы, маркеры, результаты.
    ═════════════════════════════════════════════════════════════ */
 :root {
-  /* Colour */
-  --c-white: #ffffff;
-  --c-black: #0a0c11;
-  --c-ink-2: #3b4250; /* вторичный текст — холодный, в тон чёрному */
-  --c-ink-3: #6b7486; /* подписи, мета */
-  --c-blue: #1447e6; /* основной акцент (заменить на цвет логотипа при получении) */
-  --c-blue-dark: #0d34b0;
-  --c-blue-light: #eef3ff; /* фон секций, hover */
-  --c-blue-light-2: #dde7ff; /* линии/треки на светло-голубом */
-  --c-soft: #f4f7fc; /* светлый фон секций (голубоватый, не бежевый) */
-  --c-line: #e3e8f1;
-  --c-line-strong: #c8d1e0;
-  --c-on-dark: #ffffff;
-  --c-on-dark-2: #a9b1c2;
-  --c-line-dark: rgb(255 255 255 / 0.12);
-  --c-blue-muted: rgb(20 71 230 / 0.3); /* неактивные номера: тот же синий, 30 % */
-  --c-blue-on-dark: #7d9cff; /* синий для текста на чёрном — для контраста */
+  /* Colour — базовые */
+  --c-paper: #f5f3ee; /* молочный тёплый белый — основной фон */
+  --c-white: #ffffff; /* чистые поверхности */
+  --c-ink: #0f1d2e; /* основной текст — почти чёрный navy */
+  --c-navy: #10243a; /* глубокие цветовые поля */
+  --c-navy-2: #1a3350; /* второй уровень на navy */
+  --c-mist: #dfe5ea; /* холодный серо-голубой — поверхности */
+  --c-mist-2: #ebeff2; /* светлый туман */
+  --c-slate: #4f5f71; /* вторичный текст */
+  --c-slate-2: #748396; /* подписи */
+  --c-accent: #0a7a74; /* глубокий бирюзовый — акцент на светлом */
+  --c-accent-deep: #075f5a; /* hover */
+  --c-accent-bright: #4fd1c5; /* акцент на navy / поверх видео */
+  --c-accent-tint: #d6ece9; /* лёгкая бирюзовая поверхность */
+  --c-rule: rgb(15 29 46 / 0.12); /* служебные разделители — только где нужны */
+  --c-on-navy: #ffffff;
+  --c-on-navy-2: #a7b6c6;
+  --c-rule-navy: rgb(255 255 255 / 0.14);
+
+  /* Совместимость со старыми именами (используются в компонентах) */
+  --c-black: var(--c-ink);
+  --c-ink-2: var(--c-slate);
+  --c-ink-3: var(--c-slate-2);
+  --c-blue: var(--c-accent);
+  --c-blue-dark: var(--c-accent-deep);
+  --c-blue-light: var(--c-accent-tint);
+  --c-blue-light-2: var(--c-mist);
+  --c-blue-muted: rgb(10 122 116 / 0.32);
+  --c-blue-on-dark: var(--c-accent-bright);
+  --c-soft: var(--c-mist-2);
+  --c-line: var(--c-rule);
+  --c-line-strong: rgb(15 29 46 / 0.22);
+  --c-on-dark: var(--c-on-navy);
+  --c-on-dark-2: var(--c-on-navy-2);
+  --c-line-dark: var(--c-rule-navy);
 
   /* Typography — один sans-serif на всё */
   --font: 'Manrope Variable', 'Helvetica Neue', Arial, sans-serif;
@@ -133,8 +152,8 @@ html {
 
 body {
   margin: 0;
-  background: var(--c-white);
-  color: var(--c-black);
+  background: var(--c-paper);
+  color: var(--c-ink);
   font-family: var(--font);
   font-size: var(--fs-body);
   font-weight: 450;
@@ -219,7 +238,33 @@ video {
 }
 
 .section--soft {
-  background: var(--c-soft);
+  background: var(--c-mist-2);
+}
+
+.section--white {
+  background: var(--c-white);
+}
+
+.section--mist {
+  background: var(--c-mist);
+}
+
+/* Глубокое цветовое поле */
+.section--navy {
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+  --c-ink: var(--c-on-navy);
+  --c-slate: var(--c-on-navy-2);
+  --c-slate-2: var(--c-on-navy-2);
+  --c-accent: var(--c-accent-bright);
+  --c-rule: var(--c-rule-navy);
+  /* старые имена тоже пересчитываются для тёмного поля */
+  --c-black: var(--c-on-navy);
+  --c-ink-2: var(--c-on-navy-2);
+  --c-ink-3: var(--c-on-navy-2);
+  --c-blue: var(--c-accent-bright);
+  --c-line: var(--c-rule-navy);
+  --c-line-strong: rgb(255 255 255 / 0.3);
 }
 
 .visually-hidden {
@@ -271,23 +316,51 @@ video {
   font-variant-numeric: tabular-nums;
 }
 
-/* Шапка секции: тонкая линия → номер → метка (→ подпись справа) */
+/* Индекс раздела: ▪ 03 / ПОДХОД — без линий; подпись справа — служебная */
 .shead {
   display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  padding-top: 1.125rem;
-  border-top: 1px solid var(--c-black);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  color: var(--c-ink);
+}
+
+.shead::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--c-accent);
 }
 
 .shead__num {
-  min-width: 2.5rem;
-  color: var(--c-blue);
+  color: var(--c-accent);
+}
+
+.shead__sep {
+  color: var(--c-slate-2);
 }
 
 .shead__aside {
   margin-left: auto;
-  color: var(--c-ink-3);
+  color: var(--c-slate-2);
+}
+
+/* Короткий акцентный отрезок — только рядом с индексами и цифрами */
+.dash {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--c-accent);
+  vertical-align: middle;
+}
+
+/* Узел: маленький квадрат — единица структуры */
+.node {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--c-accent);
 }
 
 .shead__num,
@@ -320,9 +393,9 @@ video {
   color: var(--c-ink-3);
 }
 
-/* Выделение синим фрагмента заголовка (приём Behance) */
+/* Акцентный фрагмент заголовка */
 .hl {
-  color: var(--c-blue);
+  color: var(--c-accent);
 }
 
 .meta {
@@ -340,52 +413,14 @@ video {
 /* ═════════════════════════════════════════════════════════════
    UI: метка секции, кнопки, тайл-галочка
    ═════════════════════════════════════════════════════════════ */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 1rem 0.5rem 0.75rem;
-  border: 1px solid var(--c-line);
-  border-radius: 999px;
-  background: var(--c-white);
-  font-size: var(--fs-small);
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-}
 
-.tag__num {
-  display: inline-grid;
-  place-items: center;
-  min-width: 1.75rem;
-  height: 1.5rem;
-  padding-inline: 0.35rem;
-  border-radius: 999px;
-  background: var(--c-blue-light);
-  color: var(--c-blue);
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
 
-.tag--on-soft {
-  border-color: transparent;
-  box-shadow: 0 1px 2px rgb(10 12 17 / 0.05);
-}
 
-.tag--dot::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  margin-left: 0.25rem;
-  border-radius: 50%;
-  background: var(--c-blue);
-}
 
 .btn {
-  --btn-bg: var(--c-blue);
+  --btn-bg: var(--c-accent);
   --btn-fg: var(--c-white);
-  --btn-bg-hover: var(--c-black);
+  --btn-bg-hover: var(--c-navy);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -393,7 +428,7 @@ video {
   min-height: 56px;
   padding: 0 1.625rem;
   border: 0;
-  border-radius: var(--r-md);
+  border-radius: 2px;
   background: var(--btn-bg);
   color: var(--btn-fg);
   font-size: 1rem;
@@ -447,29 +482,8 @@ video {
   background-size: 100% 1.5px;
 }
 
-/* Синий квадрат с галочкой — как в референсе */
-.check {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-sm);
-  background: var(--c-blue);
-  color: var(--c-white);
-}
 
-.check svg {
-  width: 14px;
-  height: 14px;
-}
 
-/* Белая панель на светлом фоне */
-.panel {
-  background: var(--c-white);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-panel);
-}
 
 /* ═════════════════════════════════════════════════════════════
    MOTION — reveal

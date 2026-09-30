@@ -1,0 +1,329 @@
+---
+import Icon from './Icon.astro';
+import type { Case } from '../data/content';
+
+/**
+ * Кейс как редакционная история: текст + цветовая панель с номером, сферой, позицией и ключевой цифрой.
+ * Панель чередует сторону и поверхность; первый абзац — вводный тезис, остальное раскрывается.
+ */
+interface Props {
+  item: Case;
+  num: string;
+  index: number;
+  lead?: boolean;
+}
+
+const { item, num, index, lead: isLead = false } = Astro.props;
+const surfaces = ['mist', 'navy', 'white', 'tint'] as const;
+const surface = surfaces[index % surfaces.length];
+const flip = index % 2 === 1;
+const [intro, ...rest] = item.body;
+const panelId = `case-${item.id}-more`;
+const btnId = `case-${item.id}-btn`;
+---
+
+<article
+  class:list={['story', `story--${surface}`, { 'story--flip': flip, 'story--lead': isLead }]}
+  id={`case-${item.id}`}
+  aria-labelledby={`case-${item.id}-title`}
+  data-accordion
+  data-reveal
+>
+  <aside class="story__panel">
+    <span class="story__num num" aria-hidden="true">{num}</span>
+    <dl class="story__meta">
+      <div>
+        <dt class="eyebrow">Сфера</dt>
+        <dd>{item.sphere}</dd>
+      </div>
+      <div>
+        <dt class="eyebrow">{item.metaLabel}</dt>
+        <dd>{item.metaValue}</dd>
+      </div>
+    </dl>
+    {
+      item.figure && (
+        <p class="story__figure">
+          <span class="story__figure-value">{item.figure.value}</span>
+          <span class="story__figure-caption">{item.figure.caption}</span>
+        </p>
+      )
+    }
+  </aside>
+
+  <div class="story__body">
+    <p class="story__index eyebrow num">
+      <span class="node" aria-hidden="true"></span>
+      Кейс {num}
+    </p>
+    <h3 class="story__title" id={`case-${item.id}-title`}>{item.title}</h3>
+    <p class="story__intro">{intro}</p>
+
+    {
+      rest.length > 0 && (
+        <>
+          <div class="story__more" id={panelId} role="region" aria-labelledby={btnId} data-accordion-panel>
+            <div class="story__more-inner">
+              {rest.map((p) => <p>{p}</p>)}
+            </div>
+          </div>
+          <button class="story__toggle" id={btnId} type="button" aria-expanded="false" aria-controls={panelId} data-accordion-trigger>
+            <span class="story__toggle-open">Читать историю целиком</span>
+            <span class="story__toggle-close">Свернуть</span>
+            <Icon name="arrow-down" class="story__toggle-icon" />
+          </button>
+        </>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .story {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: 2rem;
+    align-items: start;
+  }
+
+  /* Цветовая панель — вместо рамки */
+  .story__panel {
+    grid-column: 9 / -1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    background: var(--story-bg);
+    color: var(--story-fg);
+  }
+
+  .story__body {
+    grid-column: 1 / span 7;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .story--flip .story__panel {
+    grid-column: 1 / span 4;
+  }
+
+  .story--flip .story__body {
+    grid-column: 6 / -1;
+  }
+
+  /* Поверхности панели */
+  .story--mist {
+    --story-bg: var(--c-mist);
+    --story-fg: var(--c-ink);
+    --story-muted: var(--c-slate);
+    --story-accent: var(--c-accent);
+  }
+
+  .story--navy {
+    --story-bg: var(--c-navy);
+    --story-fg: var(--c-white);
+    --story-muted: var(--c-on-navy-2);
+    --story-accent: var(--c-accent-bright);
+  }
+
+  .story--white {
+    --story-bg: var(--c-white);
+    --story-fg: var(--c-ink);
+    --story-muted: var(--c-slate);
+    --story-accent: var(--c-accent);
+  }
+
+  .story--tint {
+    --story-bg: var(--c-accent-tint);
+    --story-fg: var(--c-ink);
+    --story-muted: var(--c-slate);
+    --story-accent: var(--c-accent-deep);
+  }
+
+  .story__num {
+    font-size: clamp(3.5rem, 2.4rem + 3vw, 6rem);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: var(--story-accent);
+  }
+
+  .story__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .story__meta dt {
+    color: var(--story-muted);
+  }
+
+  .story__meta dd {
+    margin-top: 0.25rem;
+    font-size: var(--fs-small);
+    font-weight: 700;
+  }
+
+  .story__meta dd::first-letter {
+    text-transform: uppercase;
+  }
+
+  .story__figure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .story__figure-value {
+    font-size: clamp(2.5rem, 1.9rem + 1.8vw, 3.75rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+
+  .story__figure-caption {
+    max-width: 22ch;
+    font-size: var(--fs-small);
+    line-height: 1.4;
+    color: var(--story-muted);
+  }
+
+  .story__index {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--c-accent);
+  }
+
+  .story__title {
+    max-width: 18ch;
+    margin-top: 1.25rem;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .story--lead .story__title {
+    max-width: 22ch;
+    font-size: clamp(2rem, 1.2rem + 2.4vw, 3.5rem);
+  }
+
+  /* Вводный тезис */
+  .story__intro {
+    max-width: 58ch;
+    margin-top: 1.75rem;
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+  }
+
+  /* Основной рассказ — раскрывается */
+  .story__more {
+    display: grid;
+    grid-template-rows: 1fr;
+    width: 100%;
+    transition: grid-template-rows 0.55s var(--ease);
+  }
+
+  :global(.js) .story:not(.is-open) .story__more {
+    grid-template-rows: 0fr;
+  }
+
+  .story__more-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  :global(.js) .story:not(.is-open) .story__more-inner {
+    visibility: hidden;
+    transition: visibility 0s 0.55s;
+  }
+
+  .story__more-inner p {
+    max-width: 62ch;
+    padding-top: 1.25rem;
+    color: var(--c-slate);
+  }
+
+  .story__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-top: 1.75rem;
+    padding: 0.625rem 0;
+    border: 0;
+    background: none;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--c-accent);
+    cursor: pointer;
+  }
+
+  .story__toggle:hover {
+    color: var(--c-accent-deep);
+  }
+
+  .story__toggle-close,
+  .story.is-open .story__toggle-open {
+    display: none;
+  }
+
+  .story.is-open .story__toggle-close {
+    display: inline;
+  }
+
+  :global(.story__toggle-icon) {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--t-base) var(--ease);
+  }
+
+  .story.is-open :global(.story__toggle-icon) {
+    transform: rotate(180deg);
+  }
+
+  .story:not(.story--flip) .story__panel {
+    transition: transform var(--t-base) var(--ease);
+  }
+
+  @media (max-width: 960px) {
+    .story__panel,
+    .story--flip .story__panel {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 2rem;
+      row-gap: 1.5rem;
+      align-items: start;
+    }
+
+    .story__figure {
+      grid-column: 1 / -1;
+    }
+
+    .story__body,
+    .story--flip .story__body {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .story__panel,
+    .story--flip .story__panel {
+      grid-template-columns: 1fr;
+    }
+
+    .story__intro {
+      font-size: 1.0625rem;
+    }
+  }
+</style>
