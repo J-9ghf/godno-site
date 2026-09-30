@@ -1,122 +1,117 @@
 ---
 import Logo from './Logo.astro';
-import Arrow from './Arrow.astro';
-import { nav } from '../data/content';
+import { nav, legalDocs } from '../data/content';
 
+interface Props {
+  base?: string;
+}
+const { base = '' } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="container">
-    <div class="footer__top grid">
+    <div class="footer__top">
       <div class="footer__brand">
         <Logo tone="light" />
-        <p class="footer__desc">Подбор ключевых сотрудников и управленческий консалтинг для собственников бизнеса.</p>
+        <p class="footer__descr">Подбор ключевых сотрудников, бизнес-аналитика и управленческий консалтинг.</p>
       </div>
-      <nav class="footer__nav" aria-label="Навигация в подвале">
+
+      <nav class="footer__col" aria-label="Разделы сайта">
+        <p class="footer__label">Разделы</p>
         <ul>
           {nav.map((item) => (
-            <li><a href={item.href}>{item.label}</a></li>
+            <li><a href={`${base}${item.href}`}>{item.label}</a></li>
           ))}
         </ul>
       </nav>
-      <a class="footer__up" href="#top">
-        Наверх
-        <Arrow direction="up-right" class="footer__up-arrow" />
-      </a>
+
+      <nav class="footer__col" aria-label="Документы">
+        <p class="footer__label">Документы</p>
+        <ul>
+          {legalDocs.map((d) => (
+            <li><a href={d.href}>{d.title}</a></li>
+          ))}
+        </ul>
+      </nav>
     </div>
+
     <div class="footer__bottom">
       <p>© {year} Институт кадровых решений</p>
-      <p>Подбор · Диагностика · Управленческий консалтинг</p>
+      <a class="footer__up" href={`${base}#top`}>Наверх ↑</a>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding-block: 4rem 2rem;
-    background: var(--night);
-    color: var(--night-ink);
+    padding-block: clamp(3.5rem, 6vw, 5rem) 2rem;
+    background: var(--c-black);
+    color: var(--c-on-dark);
   }
 
   .footer__top {
-    row-gap: 2.5rem;
-    padding-bottom: 3.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 3fr);
+    gap: var(--gutter);
+    padding-bottom: clamp(3rem, 5vw, 4.5rem);
   }
 
   .footer__brand {
-    grid-column: 1 / span 5;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    align-items: flex-start;
+    gap: 1.25rem;
   }
 
-  .footer__desc {
-    max-width: 32ch;
+  .footer__descr {
+    max-width: 30ch;
     font-size: var(--fs-small);
-    color: var(--night-ink-2);
+    color: var(--c-on-dark-2);
   }
 
-  .footer__nav {
-    grid-column: 7 / span 4;
+  .footer__label {
+    margin-bottom: 1rem;
+    font-size: var(--fs-meta);
+    font-weight: 700;
+    color: var(--c-on-dark-2);
   }
 
-  .footer__nav ul {
-    columns: 2;
-    column-gap: var(--gutter);
+  .footer__col li + li {
+    margin-top: 0.625rem;
   }
 
-  .footer__nav li {
-    margin-bottom: 0.6rem;
-  }
-
-  .footer__nav a,
+  .footer__col a,
   .footer__up {
     font-size: var(--fs-small);
-    color: var(--night-ink);
+    font-weight: 600;
     text-decoration: none;
-    transition: color 0.3s var(--ease);
+    transition: color var(--t-fast) var(--ease);
   }
 
-  .footer__nav a:hover,
+  .footer__col a:hover,
   .footer__up:hover {
-    color: #e79a86;
-  }
-
-  .footer__up {
-    grid-column: 11 / -1;
-    justify-self: end;
-    align-self: start;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  :global(.footer__up-arrow) {
-    width: 14px;
-    height: 14px;
+    color: var(--c-blue-on-dark);
   }
 
   .footer__bottom {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.75rem 2rem;
+    gap: 1rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--night-line);
-    font-size: 0.8125rem;
-    color: var(--night-ink-2);
+    border-top: 1px solid var(--c-line-dark);
+    font-size: var(--fs-meta);
+    color: var(--c-on-dark-2);
   }
 
-  @media (max-width: 900px) {
-    .footer__brand,
-    .footer__nav {
-      grid-column: 1 / -1;
+  @media (max-width: 760px) {
+    .footer__top {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 2.5rem;
     }
 
-    .footer__up {
+    .footer__brand {
       grid-column: 1 / -1;
-      justify-self: start;
     }
   }
 </style>

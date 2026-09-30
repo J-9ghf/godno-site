@@ -1,58 +1,64 @@
 ---
+import Icon from './Icon.astro';
 import type { Case } from '../data/content';
 
 interface Props {
   item: Case;
   num: string;
+  open?: boolean;
+  compact?: boolean;
 }
 
-const { item, num } = Astro.props;
+const { item, num, open = false, compact = false } = Astro.props;
 const panelId = `case-${item.id}-panel`;
 const btnId = `case-${item.id}-btn`;
+const [lead, ...body] = item.body;
 ---
 
-<article class="case" id={`case-${item.id}`} data-accordion>
-  <h4 class="case__heading">
+<article class:list={['case', { 'is-open': open, 'case--compact': compact }]} id={`case-${item.id}`} data-accordion>
+  <h3 class="case__heading">
     <button
       class="case__trigger"
       id={btnId}
       type="button"
-      aria-expanded="false"
+      aria-expanded={open ? 'true' : 'false'}
       aria-controls={panelId}
       data-accordion-trigger
     >
-      <span class="case__num label">{num}</span>
-      <span class="case__title serif">{item.title}</span>
-      <span class="case__sphere label">{item.sphere}</span>
-      <span class="case__icon" aria-hidden="true"></span>
+      <span class="case__num num">{num}</span>
+      <span class="case__title">{item.title}</span>
+      <span class="case__meta">
+        <span class="case__meta-item">
+          <span class="case__meta-label">Сфера</span>
+          <span class="case__meta-value">{item.sphere}</span>
+        </span>
+        <span class="case__meta-item">
+          <span class="case__meta-label">{item.metaLabel}</span>
+          <span class="case__meta-value">{item.metaValue}</span>
+        </span>
+      </span>
+      <span class="case__toggle" aria-hidden="true">
+        <Icon name="plus" />
+      </span>
     </button>
-  </h4>
+  </h3>
 
   <div class="case__panel" id={panelId} role="region" aria-labelledby={btnId} data-accordion-panel>
     <div class="case__panel-inner">
       <div class="case__content">
-        <aside class="case__side">
-          <dl class="case__meta">
-            <div>
-              <dt class="label">Сфера</dt>
-              <dd>{item.sphere}</dd>
-            </div>
-            <div>
-              <dt class="label">{item.metaLabel}</dt>
-              <dd>{item.metaValue}</dd>
-            </div>
-          </dl>
+        <div class="case__aside">
           {
             item.figure && (
               <p class="case__figure">
-                <span class="case__figure-value serif">{item.figure.value}</span>
+                <span class="case__figure-value">{item.figure.value}</span>
                 <span class="case__figure-caption">{item.figure.caption}</span>
               </p>
             )
           }
-        </aside>
-        <div class="case__body">
-          {item.body.map((p, i) => <p class:list={{ case__lead: i === 0 && item.body.length > 1 }}>{p}</p>)}
+        </div>
+        <div class="case__text">
+          <p class:list={{ case__lead: body.length > 0 }}>{lead}</p>
+          {body.map((p) => <p>{p}</p>)}
         </div>
       </div>
     </div>
@@ -60,17 +66,21 @@ const btnId = `case-${item.id}-btn`;
 </article>
 
 <style>
+  .case {
+    border-top: 1px solid var(--c-line);
+  }
+
   .case__heading {
     font: inherit;
   }
 
   .case__trigger {
     display: grid;
-    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 13rem) 2rem;
-    align-items: baseline;
+    grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 20rem) 44px;
+    align-items: start;
     gap: var(--gutter);
     width: 100%;
-    padding: clamp(1.4rem, 2.2vw, 2rem) 0;
+    padding: clamp(1.5rem, 2.4vw, 2.25rem) 0;
     border: 0;
     background: none;
     text-align: left;
@@ -78,193 +88,236 @@ const btnId = `case-${item.id}-btn`;
   }
 
   .case__num {
-    color: var(--ink-3);
-    font-variant-numeric: tabular-nums;
-    transition: color 0.4s var(--ease);
+    padding-top: 0.35rem;
+    font-size: var(--fs-small);
+    font-weight: 800;
+    color: var(--c-blue);
   }
 
   .case__title {
-    font-size: clamp(1.35rem, 1.05rem + 1.1vw, 2.1rem);
-    font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -0.012em;
+    max-width: 24ch;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: var(--tr-title);
     text-wrap: balance;
-    transition: transform 0.5s var(--ease);
+    transition: color var(--t-base) var(--ease);
   }
 
-  .case__sphere {
-    color: var(--ink-3);
-    text-align: right;
+  .case--compact .case__title {
+    font-size: var(--fs-h4);
+    max-width: none;
   }
 
-  .case__icon {
-    position: relative;
-    width: 1rem;
-    height: 1rem;
-    justify-self: end;
-    align-self: center;
+  .case__meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gutter);
+    padding-top: 0.3rem;
   }
 
-  .case__icon::before,
-  .case__icon::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1.4px;
-    background: var(--ink);
-    transition: transform 0.45s var(--ease);
+  .case__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
   }
 
-  .case__icon::after {
-    transform: rotate(90deg);
+  .case__meta-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--c-ink-3);
   }
 
-  .case__trigger:hover .case__num,
-  .case__trigger[aria-expanded='true'] .case__num {
-    color: var(--accent);
+  .case__meta-value {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .case__meta-value::first-letter {
+    text-transform: uppercase;
+  }
+
+  .case__toggle {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-md);
+    background: var(--c-blue-light);
+    color: var(--c-blue);
+    transition:
+      background-color var(--t-base) var(--ease),
+      color var(--t-base) var(--ease);
+  }
+
+  :global(.case__toggle svg) {
+    width: 18px;
+    height: 18px;
+    transition: transform var(--t-base) var(--ease);
   }
 
   .case__trigger:hover .case__title {
-    transform: translateX(6px);
+    color: var(--c-blue);
   }
 
-  .case__trigger[aria-expanded='true'] .case__icon::after {
-    transform: rotate(0deg);
+  .case__trigger:hover .case__toggle,
+  .case.is-open .case__toggle {
+    background: var(--c-blue);
+    color: var(--c-white);
   }
 
-  /* Раскрытие: grid-rows 0fr → 1fr */
+  .case.is-open :global(.case__toggle svg) {
+    transform: rotate(45deg);
+  }
+
+  /* Раскрытие через grid-rows: 0fr → 1fr */
   .case__panel {
     display: grid;
     grid-template-rows: 1fr;
-    transition: grid-template-rows 0.6s var(--ease);
+    transition: grid-template-rows 0.55s var(--ease);
   }
 
-  :global(.js) .case__panel {
+  :global(.js) .case:not(.is-open) .case__panel {
     grid-template-rows: 0fr;
   }
 
-  :global(.js) .case.is-open .case__panel {
-    grid-template-rows: 1fr;
-  }
-
   .case__panel-inner {
-    overflow: hidden;
     min-height: 0;
+    overflow: hidden;
   }
 
-  :global(.js) .case__panel-inner {
+  :global(.js) .case:not(.is-open) .case__panel-inner {
     visibility: hidden;
-    transition: visibility 0s 0.6s;
-  }
-
-  :global(.js) .case.is-open .case__panel-inner {
-    visibility: visible;
-    transition: visibility 0s;
+    transition: visibility 0s 0.55s;
   }
 
   .case__content {
     display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 20rem) 44px;
     gap: var(--gutter);
-    padding: 0.5rem 0 clamp(2rem, 3.5vw, 3rem) calc(3rem + var(--gutter));
+    padding-bottom: clamp(2rem, 3.5vw, 3rem);
   }
 
-  .case__side {
+  .case__aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .case__text {
+    grid-column: 2;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.1rem;
+    max-width: 62ch;
+    color: var(--c-ink-2);
   }
 
-  .case__meta div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding-block: 0.75rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .case__meta dt {
-    color: var(--ink-3);
-  }
-
-  .case__meta dd {
-    font-size: var(--fs-small);
+  .case__lead {
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    color: var(--c-black);
   }
 
   .case__figure {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.625rem;
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
+    background: var(--c-blue-light);
   }
 
   .case__figure-value {
-    font-size: clamp(2.75rem, 2rem + 2.2vw, 4rem);
-    font-weight: 350;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    color: var(--accent);
+    font-size: clamp(2.25rem, 1.8rem + 1.4vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--c-blue);
   }
 
   .case__figure-caption {
-    max-width: 20ch;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
+    font-weight: 600;
     line-height: 1.4;
-    color: var(--ink-3);
+    color: var(--c-ink-2);
   }
 
-  .case__body {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-    max-width: 62ch;
-    color: var(--ink-2);
-  }
-
-  .case__lead {
-    font-family: var(--font-serif);
-    font-size: 1.1875rem;
-    line-height: 1.5;
-    color: var(--ink);
-  }
-
-  @media (max-width: 1024px) {
-    .case__trigger {
-      grid-template-columns: 2.5rem minmax(0, 1fr) 1.5rem;
-    }
-
-    .case__sphere {
-      display: none;
-    }
-
+  @media (max-width: 1100px) {
+    .case__trigger,
     .case__content {
-      padding-left: calc(2.5rem + var(--gutter));
-    }
-  }
-
-  @media (max-width: 760px) {
-    .case__trigger {
-      grid-template-columns: 2rem minmax(0, 1fr) 1.25rem;
-      gap: 0.75rem;
-    }
-
-    .case__content {
-      grid-template-columns: 1fr;
-      gap: 1.75rem;
-      padding-left: 0;
-    }
-
-    .case__side {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 1rem;
+      grid-template-columns: 3.5rem minmax(0, 1fr) 44px;
     }
 
     .case__meta {
-      flex: 1 1 12rem;
+      grid-column: 2;
+      grid-row: 2;
+      max-width: 26rem;
+    }
+
+    .case__toggle {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .case__aside {
+      grid-column: 2;
+      grid-row: 2;
+      max-width: 22rem;
+    }
+
+    .case__text {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .case__trigger,
+    .case__content {
+      grid-template-columns: minmax(0, 1fr) 40px;
+      column-gap: 1rem;
+      row-gap: 0.875rem;
+    }
+
+    .case__num {
+      grid-column: 1;
+      grid-row: 1;
+      padding-top: 0;
+    }
+
+    .case__title {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .case__meta {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+
+    .case__toggle {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      width: 40px;
+      height: 40px;
+    }
+
+    .case__text,
+    .case__aside {
+      grid-column: 1 / -1;
+    }
+
+    .case__aside {
+      grid-row: 2;
+      max-width: none;
+    }
+
+    .case__lead {
+      font-size: 1.0625rem;
     }
   }
 </style>

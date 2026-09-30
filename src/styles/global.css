@@ -1,59 +1,83 @@
-@import '@fontsource-variable/onest/wght.css';
-@import '@fontsource-variable/source-serif-4/opsz.css';
-@import '@fontsource-variable/source-serif-4/opsz-italic.css';
+@import '@fontsource-variable/manrope/wght.css';
 
-/* ─────────────────────────────────────────────────────────────
-   Design tokens
-   ───────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   Палитра: white + black — основа, blue — акцент, light blue — фон/выделение.
+   ═════════════════════════════════════════════════════════════ */
 :root {
-  /* Colour — тёплая бумажная база, графит, один акцент (сургуч) */
-  --paper: #f2efe9;
-  --paper-2: #e9e5dd;
-  --paper-3: #dfd9ce;
-  --ink: #14171a;
-  --ink-2: #3b3f44;
-  --ink-3: #6d7075;
-  --line: rgb(20 23 26 / 0.14);
-  --line-strong: rgb(20 23 26 / 0.32);
+  /* Colour */
+  --c-white: #ffffff;
+  --c-black: #0a0c11;
+  --c-ink-2: #3b4250; /* вторичный текст — холодный, в тон чёрному */
+  --c-ink-3: #6b7486; /* подписи, мета */
+  --c-blue: #1447e6; /* основной акцент (заменить на цвет логотипа при получении) */
+  --c-blue-dark: #0d34b0;
+  --c-blue-light: #eef3ff; /* фон секций, hover */
+  --c-blue-light-2: #dde7ff; /* линии/треки на светло-голубом */
+  --c-soft: #f4f7fc; /* светлый фон секций (голубоватый, не бежевый) */
+  --c-line: #e3e8f1;
+  --c-line-strong: #c8d1e0;
+  --c-on-dark: #ffffff;
+  --c-on-dark-2: #a9b1c2;
+  --c-line-dark: rgb(255 255 255 / 0.12);
+  --c-blue-on-dark: #7d9cff; /* синий для текста на чёрном — для контраста */
 
-  --night: #15191d;
-  --night-2: #1d2227;
-  --night-ink: #ece8e1;
-  --night-ink-2: #a3a39f;
-  --night-line: rgb(236 232 225 / 0.14);
+  /* Typography — один sans-serif на всё */
+  --font: 'Manrope Variable', 'Helvetica Neue', Arial, sans-serif;
 
-  --accent: #a63a24;
-  --accent-ink: #f6efe8;
-  --accent-deep: #8b2f1c;
+  --fs-display: clamp(2.5rem, 1.35rem + 3.5vw, 4.75rem); /* 40 → 76 */
+  --fs-h2: clamp(2rem, 1.2rem + 2.5vw, 3.75rem); /* 32 → 60 */
+  --fs-h3: clamp(1.375rem, 1.15rem + 0.7vw, 1.875rem); /* 22 → 30 */
+  --fs-h4: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem); /* 18 → 21 */
+  --fs-lead: clamp(1.125rem, 1.03rem + 0.35vw, 1.3125rem); /* 18 → 21 */
+  --fs-body: 1.0625rem; /* 17 */
+  --fs-small: 0.9375rem; /* 15 */
+  --fs-meta: 0.8125rem; /* 13 */
 
-  /* Type */
-  --font-sans: 'Onest Variable', 'Helvetica Neue', Arial, sans-serif;
-  --font-serif: 'Source Serif 4 Variable', 'Georgia', 'Times New Roman', serif;
+  --lh-tight: 1.04;
+  --lh-heading: 1.12;
+  --lh-body: 1.6;
 
-  --fs-display: clamp(2.6rem, 1.1rem + 5.4vw, 6.5rem);
-  --fs-h2: clamp(2.1rem, 1.2rem + 3.2vw, 4.25rem);
-  --fs-h3: clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem);
-  --fs-lead: clamp(1.2rem, 1.05rem + 0.55vw, 1.55rem);
-  --fs-body: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
-  --fs-small: 0.9375rem;
-  --fs-label: 0.75rem;
+  --tr-display: -0.038em;
+  --tr-heading: -0.03em;
+  --tr-title: -0.02em;
 
-  /* Grid */
-  --container: 1440px;
+  /* Grid & spacing */
+  --container: 1360px;
+  --pad: 48px;
   --gutter: 24px;
-  --pad: 40px;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+  --section: clamp(5rem, 3.5rem + 5vw, 9rem);
+  --section-s: clamp(4rem, 3rem + 3vw, 6.5rem);
 
-  /* Vertical rhythm */
-  --space-section: clamp(6rem, 4rem + 8vw, 11rem);
-  --space-section-s: clamp(4rem, 3rem + 4vw, 7rem);
+  /* Shape */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --border: 1px solid var(--c-line);
 
+  /* Elevation — только для белых панелей на светлом фоне */
+  --shadow-panel: 0 1px 2px rgb(10 12 17 / 0.04), 0 24px 48px -32px rgb(20 50 120 / 0.18);
+
+  /* Motion */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --header-h: 72px;
+  --t-fast: 0.2s;
+  --t-base: 0.35s;
+  --t-slow: 0.8s;
+
+  --header-h: 76px;
 }
 
 @media (max-width: 1024px) {
   :root {
-    --pad: 28px;
+    --pad: 32px;
     --gutter: 20px;
   }
 }
@@ -62,13 +86,14 @@
   :root {
     --pad: 20px;
     --gutter: 16px;
-    --header-h: 60px;
+    --header-h: 64px;
+    --fs-body: 1rem;
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Base
-   ───────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════
+   BASE
+   ═════════════════════════════════════════════════════════════ */
 *,
 *::before,
 *::after {
@@ -79,7 +104,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-h) + 16px);
+  scroll-padding-top: calc(var(--header-h) + 24px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -90,15 +115,14 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-sans);
+  background: var(--c-white);
+  color: var(--c-black);
+  font-family: var(--font);
   font-size: var(--fs-body);
-  line-height: 1.6;
-  font-feature-settings: 'kern', 'liga';
+  font-weight: 450;
+  line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
   overflow-x: clip;
 }
 
@@ -126,30 +150,33 @@ a {
   color: inherit;
 }
 
-button {
+button,
+input,
+textarea {
   font: inherit;
   color: inherit;
 }
 
 img,
-svg {
+svg,
+video {
   display: block;
   max-width: 100%;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--c-blue);
+  color: var(--c-white);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--c-blue);
   outline-offset: 3px;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Layout primitives
-   ───────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════
+   LAYOUT
+   ═════════════════════════════════════════════════════════════ */
 .container {
   width: 100%;
   max-width: var(--container);
@@ -169,6 +196,14 @@ svg {
   }
 }
 
+.section {
+  padding-block: var(--section);
+}
+
+.section--soft {
+  background: var(--c-soft);
+}
+
 .visually-hidden {
   position: absolute !important;
   width: 1px;
@@ -181,147 +216,205 @@ svg {
   border: 0;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Typography primitives
-   ───────────────────────────────────────────────────────────── */
-.label {
-  font-family: var(--font-sans);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  line-height: 1.4;
-}
-
-.serif {
-  font-family: var(--font-serif);
-  font-optical-sizing: auto;
+/* ═════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═════════════════════════════════════════════════════════════ */
+.display {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-display);
+  text-wrap: balance;
 }
 
 .h2 {
-  font-family: var(--font-serif);
   font-size: var(--fs-h2);
-  font-weight: 400;
-  line-height: 1.04;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: var(--tr-heading);
+  text-wrap: balance;
+}
+
+.h3 {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tr-title);
   text-wrap: balance;
 }
 
 .lead {
   font-size: var(--fs-lead);
-  line-height: 1.45;
-  letter-spacing: -0.005em;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
 }
 
 .muted {
-  color: var(--ink-3);
+  color: var(--c-ink-3);
 }
 
-/* Метка секции: «02 — О нас» */
-.section-tag {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  color: var(--ink-3);
+/* Выделение синим фрагмента заголовка (приём Behance) */
+.hl {
+  color: var(--c-blue);
 }
 
-.section-tag__num {
-  color: var(--accent);
+.meta {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--c-ink-3);
+}
+
+.num {
   font-variant-numeric: tabular-nums;
 }
 
-.section-tag__rule {
-  flex: 0 0 2rem;
-  height: 1px;
-  align-self: center;
-  background: currentColor;
-  opacity: 0.5;
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Buttons — прямоугольные, без «пилюль»
-   ───────────────────────────────────────────────────────────── */
-.btn {
-  --btn-bg: var(--ink);
-  --btn-fg: var(--paper);
-  position: relative;
+/* ═════════════════════════════════════════════════════════════
+   UI: метка секции, кнопки, тайл-галочка
+   ═════════════════════════════════════════════════════════════ */
+.tag {
   display: inline-flex;
   align-items: center;
-  gap: 1.25rem;
-  padding: 1.05rem 1.4rem 1.05rem 1.5rem;
-  border: 1px solid var(--btn-bg);
-  border-radius: 2px;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  background: var(--c-white);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tag__num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75rem;
+  height: 1.5rem;
+  padding-inline: 0.35rem;
+  border-radius: 999px;
+  background: var(--c-blue-light);
+  color: var(--c-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tag--on-soft {
+  border-color: transparent;
+  box-shadow: 0 1px 2px rgb(10 12 17 / 0.05);
+}
+
+.tag--dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-left: 0.25rem;
+  border-radius: 50%;
+  background: var(--c-blue);
+}
+
+.btn {
+  --btn-bg: var(--c-blue);
+  --btn-fg: var(--c-white);
+  --btn-bg-hover: var(--c-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 56px;
+  padding: 0 1.625rem;
+  border: 0;
+  border-radius: var(--r-md);
   background: var(--btn-bg);
   color: var(--btn-fg);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: -0.005em;
   line-height: 1;
-  letter-spacing: 0.005em;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  overflow: hidden;
-  isolation: isolate;
-  transition: color 0.45s var(--ease), border-color 0.45s var(--ease);
-}
-
-.btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s var(--ease);
-}
-
-.btn:hover::before,
-.btn:focus-visible::before {
-  transform: scaleX(1);
+  transition: background-color var(--t-base) var(--ease);
 }
 
 .btn:hover,
 .btn:focus-visible {
-  border-color: var(--accent);
-  color: var(--accent-ink);
+  background: var(--btn-bg-hover);
 }
 
-.btn__arrow {
-  width: 1.1em;
-  height: 1.1em;
-  transition: transform 0.45s var(--ease);
+.btn__icon {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--t-base) var(--ease);
 }
 
-.btn:hover .btn__arrow {
-  transform: translateX(3px);
+.btn:hover .btn__icon {
+  transform: translate(2px, -2px);
 }
 
-.btn--light {
-  --btn-bg: var(--paper);
-  --btn-fg: var(--ink);
+.btn--dark {
+  --btn-bg: var(--c-black);
+  --btn-bg-hover: var(--c-blue);
 }
 
-.btn--light::before {
-  background: var(--ink);
+.btn--white {
+  --btn-bg: var(--c-white);
+  --btn-fg: var(--c-black);
+  --btn-bg-hover: var(--c-blue-light);
 }
 
-.btn--light:hover,
-.btn--light:focus-visible {
-  border-color: var(--ink);
-  color: var(--paper);
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size var(--t-base) var(--ease);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Reveal — спокойное появление при скролле
-   ───────────────────────────────────────────────────────────── */
+.link-arrow:hover {
+  background-size: 100% 1.5px;
+}
+
+/* Синий квадрат с галочкой — как в референсе */
+.check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: var(--c-blue);
+  color: var(--c-white);
+}
+
+.check svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Белая панель на светлом фоне */
+.panel {
+  background: var(--c-white);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-panel);
+}
+
+/* ═════════════════════════════════════════════════════════════
+   MOTION — reveal
+   ═════════════════════════════════════════════════════════════ */
 .js [data-reveal] {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(16px);
   transition:
-    opacity 0.9s var(--ease),
-    transform 0.9s var(--ease);
-  transition-delay: calc(var(--reveal-delay, 0) * 1ms);
+    opacity var(--t-slow) var(--ease),
+    transform var(--t-slow) var(--ease);
+  transition-delay: calc(var(--d, 0) * 1ms);
 }
 
 .js [data-reveal].is-visible {

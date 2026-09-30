@@ -5,8 +5,8 @@ import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Principles from '../components/Principles.astro';
 import Cases from '../components/Cases.astro';
+import Consulting from '../components/Consulting.astro';
 import Reviews from '../components/Reviews.astro';
-import Interlude from '../components/Interlude.astro';
 import Process from '../components/Process.astro';
 import Faq from '../components/Faq.astro';
 import FinalCta from '../components/FinalCta.astro';
@@ -17,14 +17,15 @@ import Footer from '../components/Footer.astro';
   title="Институт кадровых решений — подбор ключевых сотрудников и управленческий консалтинг"
   description="Находим людей, которые остаются, и понимаем, почему предыдущие уходили. Подбор ключевых сотрудников для собственников, которые устали искать."
 >
+  <link slot="head" rel="preload" as="image" href="/media/hero-poster.jpg" />
   <Header />
   <main id="main">
     <Hero />
     <About />
     <Principles />
     <Cases />
+    <Consulting />
     <Reviews />
-    <Interlude />
     <Process />
     <Faq />
     <FinalCta />

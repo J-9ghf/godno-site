@@ -1,37 +1,43 @@
 ---
 import SectionTag from './SectionTag.astro';
 import CaseRow from './CaseRow.astro';
+import Icon from './Icon.astro';
 import { caseGroups } from '../data/content';
 
-// Сквозная нумерация кейсов
-let counter = 0;
-const groups = caseGroups.map((g) => ({
-  ...g,
-  cases: g.cases.map((c) => ({ ...c, num: String(++counter).padStart(2, '0') })),
-}));
+const hiring = caseGroups.find((g) => g.id === 'hiring')!;
+const consulting = caseGroups.find((g) => g.id === 'consulting')!;
+const also = caseGroups.find((g) => g.id === 'also')!;
 
-const plural = (n: number) =>
-  n % 10 === 1 && n % 100 !== 11 ? 'кейс' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'кейса' : 'кейсов';
-
-const [featured, ...hiringRest] = groups[0].cases;
+// Сквозная нумерация: подбор 01–04, консалтинг 05–06, также находили 07–09
+const pad = (n: number) => String(n).padStart(2, '0');
+const index = [
+  { title: hiring.title, href: '#cases-hiring', count: hiring.cases.length },
+  { title: consulting.title, href: '#consulting', count: consulting.cases.length },
+  { title: also.title, href: '#cases-also', count: also.cases.length },
+];
+const alsoStart = hiring.cases.length + consulting.cases.length;
 ---
 
-<section class="cases" id="cases" aria-labelledby="cases-title">
+<section class="section cases" id="cases" aria-labelledby="cases-title">
   <div class="container">
     <header class="cases__head grid">
-      <div class="cases__head-tag">
+      <div class="cases__title-wrap">
         <SectionTag num="04" label="Опыт" />
+        <h2 class="h2" id="cases-title" data-reveal>
+          Подбор ключевых сотрудников и <span class="hl">управленческий консалтинг</span>
+        </h2>
       </div>
-      <h2 class="cases__title serif" id="cases-title" data-reveal>Опыт</h2>
-      <nav class="cases__index" aria-label="Категории кейсов" data-reveal style="--reveal-delay: 120">
+
+      <nav class="cases__index" aria-label="Разделы опыта" data-reveal style="--d: 120">
         <ol>
           {
-            groups.map((g, i) => (
+            index.map((it, i) => (
               <li>
-                <a href={`#cases-${g.id}`}>
-                  <span class="cases__index-num label">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="cases__index-title">{g.title}</span>
-                  <span class="cases__index-count label">{g.cases.length}</span>
+                <a href={it.href}>
+                  <span class="cases__index-num num">{pad(i + 1)}</span>
+                  <span class="cases__index-title">{it.title}</span>
+                  <span class="cases__index-count num">{it.count}</span>
+                  <Icon name="arrow-down" class="cases__index-icon" />
                 </a>
               </li>
             ))
@@ -40,270 +46,114 @@ const [featured, ...hiringRest] = groups[0].cases;
       </nav>
     </header>
 
-    <!-- Избранный кейс -->
-    <article class="featured" id={`cases-${groups[0].id}`} aria-labelledby={`case-${featured.id}-title`} data-reveal>
-      <div class="featured__top">
-        <p class="label featured__kicker">
-          <span class="section-tag__num">Кейс {featured.num}</span>
-          <span aria-hidden="true">·</span>
-          <span>{groups[0].title}</span>
-        </p>
-        <dl class="featured__meta">
-          <div><dt class="label">Сфера</dt><dd>{featured.sphere}</dd></div>
-          <div><dt class="label">{featured.metaLabel}</dt><dd>{featured.metaValue}</dd></div>
-        </dl>
+    <div class="cases__group" id="cases-hiring">
+      <h3 class="cases__group-title">
+        <span class="check"><Icon name="check" /></span>
+        {hiring.title}
+      </h3>
+      <div class="cases__list">
+        {hiring.cases.map((c, i) => <CaseRow item={c} num={pad(i + 1)} open={i === 0} />)}
       </div>
-      <h3 class="featured__title serif" id={`case-${featured.id}-title`}>{featured.title}</h3>
-      <div class="featured__body">
-        {featured.body.map((p, i) => <p class:list={{ featured__first: i === 0 }}>{p}</p>)}
-      </div>
-    </article>
+    </div>
 
-    {
-      groups.map((g, gi) => {
-        const list = gi === 0 ? hiringRest : g.cases;
-        return (
-          <div class="group grid" id={gi === 0 ? undefined : `cases-${g.id}`}>
-            <div class="group__aside">
-              <div class="group__sticky">
-                <span class="label section-tag__num">{String(gi + 1).padStart(2, '0')}</span>
-                <h3 class="group__title">{g.title}</h3>
-                <span class="label muted">
-                  {g.cases.length} {plural(g.cases.length)}
-                </span>
-              </div>
-            </div>
-            <ul class="group__list">
-              {list.map((c) => (
-                <li>
-                  <CaseRow item={c} num={c.num} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      })
-    }
+    <div class="cases__group cases__group--also" id="cases-also">
+      <h3 class="cases__group-title">
+        <span class="check"><Icon name="check" /></span>
+        {also.title}
+      </h3>
+      <div class="cases__list">
+        {also.cases.map((c, i) => <CaseRow item={c} num={pad(alsoStart + i + 1)} compact />)}
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
-  .cases {
-    padding-block: var(--space-section) var(--space-section-s);
-  }
-
   .cases__head {
     align-items: end;
-    row-gap: 1.5rem;
-    padding-bottom: clamp(3rem, 6vw, 5rem);
+    row-gap: 2.5rem;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
   }
 
-  .cases__head-tag {
-    grid-column: 1 / -1;
-  }
-
-  .cases__title {
+  .cases__title-wrap {
     grid-column: 1 / span 7;
-    font-size: clamp(5rem, 2rem + 13vw, 15rem);
-    font-weight: 300;
-    line-height: 0.8;
-    letter-spacing: -0.05em;
-    margin-left: -0.05em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.75rem;
   }
 
   .cases__index {
     grid-column: 8 / -1;
   }
 
-  .cases__index li {
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .cases__index li:last-child {
-    border-bottom: 1px solid var(--line-strong);
+  .cases__index li + li {
+    border-top: 1px solid var(--c-line);
   }
 
   .cases__index a {
     display: grid;
-    grid-template-columns: 2.5rem 1fr auto;
-    align-items: baseline;
-    padding-block: 0.95rem;
+    grid-template-columns: 2.5rem 1fr auto 20px;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 0;
+    font-weight: 700;
     text-decoration: none;
-    transition: padding 0.4s var(--ease);
+    transition: color var(--t-fast) var(--ease);
   }
 
   .cases__index a:hover {
-    padding-left: 0.5rem;
+    color: var(--c-blue);
   }
 
   .cases__index-num {
-    color: var(--accent);
-  }
-
-  .cases__index-title {
-    font-size: 1.0625rem;
-    font-weight: 500;
+    font-size: var(--fs-meta);
+    color: var(--c-blue);
   }
 
   .cases__index-count {
-    color: var(--ink-3);
-  }
-
-  /* Featured */
-  .featured {
-    padding: clamp(1.5rem, 3.5vw, 3.5rem);
-    background: var(--ink);
-    color: var(--night-ink);
-    scroll-margin-top: calc(var(--header-h) + 1rem);
-  }
-
-  .featured__top {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1.5rem 3rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--night-line);
-  }
-
-  .featured__kicker {
-    display: flex;
-    gap: 0.6rem;
-    color: var(--night-ink-2);
-  }
-
-  .featured__kicker .section-tag__num {
-    color: #d9765f;
-  }
-
-  .featured__meta {
-    display: flex;
-    gap: 2.5rem;
-  }
-
-  .featured__meta div {
-    display: flex;
-    gap: 0.6rem;
-    align-items: baseline;
-  }
-
-  .featured__meta dt {
-    color: var(--night-ink-2);
-  }
-
-  .featured__meta dd {
-    font-size: 0.9375rem;
-  }
-
-  .featured__title {
-    max-width: 24ch;
-    margin-block: clamp(2.5rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem);
-    font-size: clamp(2rem, 1.2rem + 3vw, 3.75rem);
-    font-weight: 380;
-    line-height: 1.06;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-  }
-
-  .featured__body {
     display: grid;
-    grid-template-columns: 5fr 7fr;
-    gap: clamp(2rem, 4vw, 4.5rem);
-    color: var(--night-ink-2);
+    place-items: center;
+    min-width: 1.75rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: var(--c-soft);
+    font-size: 0.75rem;
+    color: var(--c-ink-2);
   }
 
-  .featured__body p {
-    max-width: 58ch;
+  :global(.cases__index-icon) {
+    width: 16px;
+    height: 16px;
+    color: var(--c-ink-3);
   }
 
-  .featured__first {
-    font-family: var(--font-serif);
-    font-size: 1.1875rem;
-    line-height: 1.5;
-    color: var(--night-ink);
-  }
-
-  /* Groups */
-  .group {
-    padding-top: clamp(4rem, 7vw, 6.5rem);
+  .cases__group {
     scroll-margin-top: calc(var(--header-h) + 1rem);
   }
 
-  .group__aside {
-    grid-column: 1 / span 3;
+  .cases__group--also {
+    margin-top: clamp(4rem, 7vw, 6rem);
   }
 
-  .group__sticky {
-    position: sticky;
-    top: calc(var(--header-h) + 2rem);
+  .cases__group-title {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding-top: 1.4rem;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 1.25rem;
+    font-size: var(--fs-h4);
+    font-weight: 700;
+    letter-spacing: -0.015em;
   }
 
-  .group__title {
-    max-width: 14ch;
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: -0.005em;
+  .cases__list {
+    border-bottom: 1px solid var(--c-line);
   }
 
-  .group__list {
-    grid-column: 4 / -1;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .group__list > li {
-    border-bottom: 1px solid var(--line-strong);
-  }
-
-  @media (max-width: 900px) {
-    .cases__title,
-    .cases__index,
-    .group__aside,
-    .group__list {
-      grid-column: 1 / -1;
-    }
-
+  @media (max-width: 960px) {
+    .cases__title-wrap,
     .cases__index {
-      margin-top: 1.5rem;
-    }
-
-    .group__sticky {
-      position: static;
-      flex-direction: row;
-      align-items: baseline;
-      flex-wrap: wrap;
-      padding-top: 0;
-      margin-bottom: 1.25rem;
-    }
-
-    .group__title {
-      max-width: none;
-    }
-
-    .group__sticky .muted {
-      margin-left: auto;
-    }
-
-    .featured__body {
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .featured {
-      margin-inline: calc(var(--pad) * -1);
-      padding: 2rem var(--pad);
-    }
-
-    .featured__meta {
-      flex-direction: column;
-      gap: 0.4rem;
+      grid-column: 1 / -1;
     }
   }
 </style>

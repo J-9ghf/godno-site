@@ -16,54 +16,47 @@ function initReveal() {
         }
       }
     },
-    { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    { rootMargin: '0px 0px -6% 0px', threshold: 0.06 },
   );
   items.forEach((el) => io.observe(el));
 }
 
-/* ── Accordions (кейсы и FAQ) ─────────────────────────────── */
+/* ── Accordions (кейсы, FAQ) ──────────────────────────────── */
 function initAccordions() {
   document.querySelectorAll<HTMLElement>('[data-accordion]').forEach((item) => {
     const trigger = item.querySelector<HTMLButtonElement>('[data-accordion-trigger]');
-    if (!trigger) return;
-    trigger.addEventListener('click', () => {
+    trigger?.addEventListener('click', () => {
       const open = trigger.getAttribute('aria-expanded') !== 'true';
       trigger.setAttribute('aria-expanded', String(open));
       item.classList.toggle('is-open', open);
     });
   });
 
-  // Открыть кейс/вопрос по прямой ссылке (#case-…)
-  const hash = decodeURIComponent(location.hash.slice(1));
-  if (hash) {
-    const target = document.getElementById(hash)?.closest<HTMLElement>('[data-accordion]');
-    target?.querySelector<HTMLButtonElement>('[data-accordion-trigger]')?.click();
+  // Открыть кейс по прямой ссылке (#case-…)
+  const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  const acc = target instanceof HTMLElement ? target.closest<HTMLElement>('[data-accordion]') : null;
+  if (acc && !acc.classList.contains('is-open')) {
+    acc.querySelector<HTMLButtonElement>('[data-accordion-trigger]')?.click();
   }
 }
 
-/* ── Header: состояние при скролле, активный пункт ───────── */
-function initHeader() {
-  const header = document.querySelector<HTMLElement>('[data-header]');
-  if (!header) return;
-
-  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-
+/* ── Header: активный пункт навигации ─────────────────────── */
+function initActiveNav() {
   const links = new Map<string, HTMLElement>();
   document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]').forEach((a) => {
-    links.set(a.hash.slice(1), a);
+    if (a.pathname === location.pathname) links.set(a.hash.slice(1), a);
   });
   const sections = [...links.keys()]
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => Boolean(el));
+  if (!sections.length) return;
 
   const inView = new Set<string>();
   const io = new IntersectionObserver(
     (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) inView.add(entry.target.id);
-        else inView.delete(entry.target.id);
+      for (const e of entries) {
+        if (e.isIntersecting) inView.add(e.target.id);
+        else inView.delete(e.target.id);
       }
       const current = sections.find((s) => inView.has(s.id))?.id;
       links.forEach((a, id) => a.classList.toggle('is-active', id === current));
@@ -97,42 +90,97 @@ function initMenu() {
       toggle.focus();
     }
   });
-  window.matchMedia('(min-width: 961px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  window.matchMedia('(min-width: 1061px)').addEventListener('change', (e) => e.matches && setOpen(false));
 }
 
-/* ── Principles: индикатор активного пункта в sticky-колонке ─ */
-function initPrinciples() {
-  const dots = document.querySelectorAll<HTMLElement>('[data-principle-dot]');
-  if (!dots.length) return;
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        const i = (entry.target as HTMLElement).dataset.principle;
-        dots.forEach((d) => d.classList.toggle('is-active', d.dataset.principleDot === i));
-      }
-    },
-    { rootMargin: '-40% 0px -55% 0px' },
-  );
-  document.querySelectorAll('[data-principle]').forEach((el) => io.observe(el));
+/* ── Hero video: пауза, reduced motion ────────────────────── */
+function initVideo() {
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-video-toggle]');
+  const label = document.querySelector<HTMLElement>('[data-video-label]');
+  if (!video || !toggle) return;
+
+  const sync = () => {
+    const paused = video.paused;
+    toggle.setAttribute('aria-pressed', String(paused));
+    if (label) label.textContent = paused ? 'Воспроизвести видео' : 'Остановить видео';
+  };
+
+  if (reduceMotion) {
+    video.removeAttribute('autoplay');
+    video.pause();
+  }
+
+  toggle.addEventListener('click', () => {
+    if (video.paused) void video.play();
+    else video.pause();
+  });
+  video.addEventListener('play', sync);
+  video.addEventListener('pause', sync);
+  sync();
 }
 
-/* ── Reviews slider (mobile): прогресс ────────────────────── */
+/* ── Reviews slider: стрелки, счётчик, прогресс ───────────── */
 function initSlider() {
   document.querySelectorAll<HTMLElement>('[data-slider]').forEach((slider) => {
     const track = slider.querySelector<HTMLElement>('[data-slider-track]');
     const bar = slider.querySelector<HTMLElement>('[data-slider-progress]');
-    if (!track || !bar) return;
+    const current = slider.querySelector<HTMLElement>('[data-slider-current]');
+    const prev = slider.querySelector<HTMLButtonElement>('[data-slider-prev]');
+    const next = slider.querySelector<HTMLButtonElement>('[data-slider-next]');
+    const slides = [...slider.querySelectorAll<HTMLElement>('[data-slide]')];
+    if (!track || !slides.length) return;
+
     const update = () => {
       const max = track.scrollWidth - track.clientWidth;
+      const ratio = max > 0 ? track.scrollLeft / max : 1;
       const visible = track.clientWidth / track.scrollWidth;
-      const p = max > 0 ? visible + (1 - visible) * (track.scrollLeft / max) : 1;
-      bar.style.setProperty('--p', p.toFixed(3));
+      bar?.style.setProperty('--p', (visible + (1 - visible) * ratio).toFixed(3));
+
+      const left = track.getBoundingClientRect().left;
+      let idx = slides.findIndex((s) => s.getBoundingClientRect().left >= left - 8);
+      if (ratio > 0.99) idx = slides.length - 1;
+      if (current) current.textContent = String(Math.max(idx, 0) + 1).padStart(2, '0');
+      if (prev) prev.disabled = track.scrollLeft <= 2;
+      if (next) next.disabled = track.scrollLeft >= max - 2;
     };
+
+    const step = (dir: number) => {
+      const w = slides[0].getBoundingClientRect().width;
+      track.scrollBy({ left: dir * w, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+
+    prev?.addEventListener('click', () => step(-1));
+    next?.addEventListener('click', () => step(1));
     track.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
     update();
   });
+}
+
+/* ── Process: «Шаг N из 5» + прогресс по скроллу ─────────── */
+function initProcess() {
+  const steps = [...document.querySelectorAll<HTMLElement>('[data-step]')];
+  const currentEl = document.querySelector<HTMLElement>('[data-step-current]');
+  const bar = document.querySelector<HTMLElement>('[data-step-bar]');
+  if (!steps.length) return;
+
+  const setCurrent = (n: number) => {
+    steps.forEach((s) => s.classList.toggle('is-current', Number(s.dataset.step) === n));
+    if (currentEl) currentEl.textContent = String(n);
+    bar?.style.setProperty('--p', String(n / steps.length));
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) setCurrent(Number((e.target as HTMLElement).dataset.step));
+      }
+    },
+    { rootMargin: '-40% 0px -55% 0px' },
+  );
+  steps.forEach((s) => io.observe(s));
+  setCurrent(1);
 }
 
 /* ── Form ─────────────────────────────────────────────────── */
@@ -144,23 +192,21 @@ function initForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    let valid = true;
+    let firstInvalid: HTMLInputElement | null = null;
     form.querySelectorAll<HTMLInputElement>('[required]').forEach((field) => {
-      const ok = field.value.trim().length > 0;
+      const ok = field.type === 'checkbox' ? field.checked : field.value.trim().length > 0;
       field.setAttribute('aria-invalid', String(!ok));
-      if (!ok && valid) {
-        field.focus();
-        valid = false;
-      }
+      if (!ok && !firstInvalid) firstInvalid = field;
     });
-    if (!valid) {
-      status.textContent = 'Пожалуйста, укажите имя и способ связи.';
+    if (firstInvalid) {
+      (firstInvalid as HTMLInputElement).focus();
+      status.textContent = 'Пожалуйста, укажите имя, способ связи и подтвердите согласие на обработку данных.';
       return;
     }
 
     const endpoint = form.dataset.endpoint;
     if (!endpoint) {
-      status.textContent = 'Форма ещё не подключена к обработчику заявок. Укажите PUBLIC_FORM_ENDPOINT при сборке.';
+      status.textContent = 'Форма ещё не подключена к обработчику заявок (PUBLIC_FORM_ENDPOINT).';
       console.warn('[form] PUBLIC_FORM_ENDPOINT не задан — заявка не отправлена.');
       return;
     }
@@ -185,15 +231,17 @@ function initForm() {
     }
   });
 
-  form.querySelectorAll('input, textarea').forEach((f) =>
-    f.addEventListener('input', () => f.removeAttribute('aria-invalid')),
-  );
+  form.querySelectorAll('input, textarea').forEach((f) => {
+    f.addEventListener('input', () => f.removeAttribute('aria-invalid'));
+    f.addEventListener('change', () => f.removeAttribute('aria-invalid'));
+  });
 }
 
 initReveal();
 initAccordions();
-initHeader();
+initActiveNav();
 initMenu();
-initPrinciples();
+initVideo();
 initSlider();
+initProcess();
 initForm();

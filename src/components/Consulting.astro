@@ -1,0 +1,253 @@
+---
+import { caseGroups, about } from '../data/content';
+
+const group = caseGroups.find((g) => g.id === 'consulting')!;
+const hiringCount = caseGroups.find((g) => g.id === 'hiring')!.cases.length;
+
+// Заголовок — фраза из блока «О нас», без изменений
+const quote = about.paragraphs[2];
+const heading = quote.slice(0, quote.indexOf(':'));
+const hlFrom = heading.indexOf('сломана');
+---
+
+<section class="consulting" id="consulting" aria-labelledby="consulting-title">
+  <div class="container">
+    <header class="consulting__head grid">
+      <p class="tag consulting__tag">
+        <span class="tag__num">04</span>
+        {group.title}
+      </p>
+      <h2 class="h2 consulting__title" id="consulting-title" data-reveal>
+        {heading.slice(0, hlFrom)}<span class="consulting__hl">{heading.slice(hlFrom)}</span>
+      </h2>
+    </header>
+
+    <div class="consulting__cases">
+      {
+        group.cases.map((c, i) => (
+          <article class="dossier" id={`case-${c.id}`} aria-labelledby={`case-${c.id}-title`} data-reveal style={`--d: ${i * 140}`}>
+            <div class="dossier__top">
+              <span class="dossier__num num">{String(hiringCount + i + 1).padStart(2, '0')}</span>
+              <span class="dossier__status">Проект продолжается</span>
+            </div>
+
+            <h3 class="h3 dossier__title" id={`case-${c.id}-title`}>{c.title}</h3>
+
+            <dl class="dossier__meta">
+              <div>
+                <dt>{c.metaLabel}</dt>
+                <dd>{c.metaValue}</dd>
+              </div>
+              <div>
+                <dt>Сфера</dt>
+                <dd>{c.sphere}</dd>
+              </div>
+            </dl>
+
+            <ol class="dossier__steps">
+              {c.body.map((p, j) => (
+                <li>
+                  <span class="dossier__step-num num" aria-hidden="true">{j + 1}</span>
+                  <p>{p}</p>
+                </li>
+              ))}
+            </ol>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .consulting {
+    padding-block: var(--section);
+    background: var(--c-black);
+    color: var(--c-on-dark);
+    scroll-margin-top: var(--header-h);
+  }
+
+  .consulting__head {
+    row-gap: 1.75rem;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .consulting__tag {
+    grid-column: 1 / -1;
+    justify-self: start;
+    border-color: var(--c-line-dark);
+    background: transparent;
+    color: var(--c-on-dark);
+  }
+
+  .consulting__tag .tag__num {
+    background: var(--c-blue);
+    color: var(--c-white);
+  }
+
+  .consulting__title {
+    grid-column: 1 / span 10;
+    max-width: 22ch;
+  }
+
+  .consulting__hl {
+    color: var(--c-blue-on-dark);
+  }
+
+  .consulting__cases {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
+  }
+
+  .dossier {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    border: 1px solid var(--c-line-dark);
+    border-radius: var(--r-xl);
+    transition:
+      opacity var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
+      transform var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
+      border-color var(--t-base) var(--ease) 0s;
+  }
+
+  .dossier:hover {
+    border-color: rgb(125 156 255 / 0.5);
+  }
+
+  .dossier__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dossier__num {
+    font-size: var(--fs-small);
+    font-weight: 800;
+    color: var(--c-blue-on-dark);
+  }
+
+  .dossier__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: rgb(125 156 255 / 0.14);
+    color: var(--c-blue-on-dark);
+    font-size: var(--fs-meta);
+    font-weight: 700;
+  }
+
+  .dossier__status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .dossier__title {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    max-width: 22ch;
+  }
+
+  .dossier__meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gutter);
+    margin-top: 1.75rem;
+    padding-block: 1.25rem;
+    border-block: 1px solid var(--c-line-dark);
+  }
+
+  .dossier__meta dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--c-on-dark-2);
+  }
+
+  .dossier__meta dd {
+    margin-top: 0.2rem;
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+
+  .dossier__meta dd::first-letter {
+    text-transform: uppercase;
+  }
+
+  /* Вертикальная структура: абзацы как этапы */
+  .dossier__steps {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .dossier__steps::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 14px;
+    bottom: 14px;
+    width: 1px;
+    background: var(--c-line-dark);
+  }
+
+  .dossier__steps li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 1.25rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--c-on-dark-2);
+  }
+
+  .dossier__steps li:first-child p {
+    color: var(--c-on-dark);
+  }
+
+  .dossier__step-num {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--r-sm);
+    background: var(--c-black);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--c-on-dark);
+  }
+
+  .dossier__steps li:last-child .dossier__step-num {
+    background: var(--c-blue);
+    box-shadow: none;
+  }
+
+  @media (max-width: 960px) {
+    .consulting__title {
+      grid-column: 1 / -1;
+    }
+
+    .consulting__cases {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .dossier {
+      padding: 1.5rem 1.25rem;
+      border-radius: var(--r-lg);
+    }
+
+    .dossier__steps li {
+      gap: 1rem;
+    }
+  }
+</style>

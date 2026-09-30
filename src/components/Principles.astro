@@ -3,27 +3,24 @@ import SectionTag from './SectionTag.astro';
 import { principles } from '../data/content';
 ---
 
-<section class="principles" id="approach" aria-labelledby="principles-title">
-  <div class="container grid">
-    <div class="principles__aside">
-      <div class="principles__sticky">
-        <SectionTag num="03" label="Подход" />
-        <h2 class="h2 principles__title" id="principles-title" data-reveal>Чем мы отличаемся</h2>
-        <p class="principles__index label" aria-hidden="true">
-          {principles.map((_, i) => <span data-principle-dot={i}>{String(i + 1).padStart(2, '0')}</span>)}
-        </p>
-      </div>
-    </div>
+<section class="section section--soft principles" id="approach" aria-labelledby="principles-title">
+  <div class="container">
+    <header class="principles__head">
+      <SectionTag num="03" label="Подход" onSoft />
+      <h2 class="h2" id="principles-title" data-reveal>Чем мы <span class="hl">отличаемся</span></h2>
+    </header>
 
-    <ol class="principles__list">
+    <ol class="principles__grid">
       {
         principles.map((p, i) => (
-          <li class="principle" data-reveal data-principle={i}>
-            <span class="principle__num serif" aria-hidden="true">
+          <li class:list={['principle panel', `principle--${i + 1}`]} data-reveal style={`--d: ${(i % 2) * 120}`}>
+            <span class="principle__num num" aria-hidden="true">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <h3 class="principle__title serif">{p.title}</h3>
-            <p class="principle__text">{p.text}</p>
+            <div class="principle__body">
+              <h3 class="h3 principle__title">{p.title}</h3>
+              <p class="principle__text">{p.text}</p>
+            </div>
           </li>
         ))
       }
@@ -32,139 +29,106 @@ import { principles } from '../data/content';
 </section>
 
 <style>
-  .principles {
-    padding-block: var(--space-section);
-    background: var(--paper-2);
-  }
-
-  .principles__aside {
-    grid-column: 1 / span 4;
-  }
-
-  .principles__sticky {
-    position: sticky;
-    top: calc(var(--header-h) + 2rem);
+  .principles__head {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+    margin-bottom: clamp(3rem, 5vw, 4.5rem);
   }
 
-  .principles__title {
-    max-width: 8ch;
-  }
-
-  .principles__index {
-    display: flex;
-    gap: 1rem;
-    color: var(--ink-3);
-  }
-
-  .principles__index span {
-    padding-bottom: 0.35rem;
-    border-bottom: 1px solid transparent;
-    transition:
-      color 0.4s var(--ease),
-      border-color 0.4s var(--ease);
-  }
-
-  .principles__index span.is-active {
-    color: var(--ink);
-    border-color: var(--accent);
-  }
-
-  .principles__list {
-    grid-column: 6 / -1;
-    border-top: 1px solid var(--line-strong);
+  .principles__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
   }
 
   .principle {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
-    grid-template-areas:
-      'num title'
-      'num text';
-    column-gap: var(--gutter);
-    row-gap: 1.25rem;
-    padding-block: clamp(2.25rem, 4vw, 3.75rem);
-    border-bottom: 1px solid var(--line-strong);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 3rem;
+    min-height: 22rem;
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    transition:
+      opacity var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
+      transform var(--t-slow) var(--ease) calc(var(--d, 0) * 1ms),
+      box-shadow var(--t-base) var(--ease) 0s;
   }
 
-  .principle::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -1px;
-    width: 100%;
-    height: 1px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.8s var(--ease);
+  .principle:hover {
+    box-shadow:
+      0 0 0 1px var(--c-blue-light-2),
+      var(--shadow-panel);
   }
 
-  .principle:hover::before {
-    transform: scaleX(1);
+  /* Асимметрия: 7/5, 5/7 */
+  .principle--1,
+  .principle--4 {
+    grid-column: span 7;
+  }
+
+  .principle--2,
+  .principle--3 {
+    grid-column: span 5;
   }
 
   .principle__num {
-    grid-area: num;
-    font-size: clamp(3.5rem, 2.4rem + 3.4vw, 6.5rem);
-    font-weight: 300;
-    line-height: 0.82;
-    letter-spacing: -0.04em;
-    color: var(--ink-3);
-    font-variant-numeric: lining-nums;
-    transition: color 0.5s var(--ease);
+    font-size: clamp(3rem, 2.2rem + 2.4vw, 5rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--c-blue);
   }
 
-  .principle:hover .principle__num {
-    color: var(--accent);
+  .principle__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 34rem;
   }
 
   .principle__title {
-    grid-area: title;
-    max-width: 20ch;
-    font-size: var(--fs-h3);
-    font-weight: 450;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
+    max-width: 18ch;
+    transition: color var(--t-base) var(--ease);
+  }
+
+  .principle:hover .principle__title {
+    color: var(--c-blue);
   }
 
   .principle__text {
-    grid-area: text;
-    max-width: 48ch;
-    color: var(--ink-2);
+    color: var(--c-ink-2);
   }
 
   @media (max-width: 900px) {
-    .principles__aside,
-    .principles__list {
+    .principle--1,
+    .principle--2,
+    .principle--3,
+    .principle--4 {
       grid-column: 1 / -1;
     }
 
-    .principles__sticky {
-      position: static;
-      margin-bottom: 3rem;
-    }
-
-    .principles__index {
-      display: none;
+    .principle {
+      min-height: 0;
+      gap: 2rem;
     }
   }
 
   @media (max-width: 640px) {
-    .principle {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        'num'
-        'title'
-        'text';
-      row-gap: 1rem;
+    .principles__head {
+      align-items: flex-start;
+      text-align: left;
     }
 
-    .principle__num {
-      font-size: 3rem;
+    .principles__grid {
+      gap: 12px;
+    }
+
+    .principle {
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
     }
   }
 </style>

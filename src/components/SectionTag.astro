@@ -2,13 +2,13 @@
 interface Props {
   num: string;
   label: string;
+  onSoft?: boolean;
   class?: string;
 }
-const { num, label, class: className } = Astro.props;
+const { num, label, onSoft = false, class: className } = Astro.props;
 ---
 
-<p class:list={['section-tag label', className]}>
-  <span class="section-tag__num">{num}</span>
-  <span class="section-tag__rule" aria-hidden="true"></span>
-  <span>{label}</span>
+<p class:list={['tag', { 'tag--on-soft': onSoft }, className]}>
+  <span class="tag__num">{num}</span>
+  {label}
 </p>

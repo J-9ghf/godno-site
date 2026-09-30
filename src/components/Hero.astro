@@ -1,376 +1,328 @@
 ---
-import Arrow from './Arrow.astro';
+import Icon from './Icon.astro';
 import { hero } from '../data/content';
 
-// Разбиваем заголовок, чтобы выделить вторую половину курсивом (текст не меняется).
-const [titleStart, titleEnd] = hero.title.split(' и понимаем');
+// Синим выделяется вторая половина заголовка — текст не меняется
+const splitAt = hero.title.indexOf('почему');
+const titleA = hero.title.slice(0, splitAt);
+const titleB = hero.title.slice(splitAt);
 
-const dossier = [
-  { label: 'Мотивация', value: 0.82 },
-  { label: 'Устойчивость', value: 0.64 },
-  { label: 'Риски', value: 0.38 },
-  { label: 'Горизонт работы', value: 0.9 },
-];
-
-const facts = [
-  { value: '0', text: 'замен по гарантии за год работы' },
-  { value: '5–7', text: 'рабочих дней до первых кандидатов' },
-  { value: '1 мес.', text: 'в среднем до закрытия вместе с адаптацией' },
-];
+// Направления — формулировки из ответа FAQ «Вы только подбираете или что-то ещё?»
+const directions = ['Подбор', 'Бизнес-аналитика', 'Управленческий консалтинг'];
 ---
 
 <section class="hero" id="top" aria-labelledby="hero-title">
-  <div class="hero__guides container" aria-hidden="true">
-    <span></span><span></span><span></span><span></span>
-  </div>
-
-  <div class="container hero__inner">
-    <div class="hero__meta" data-reveal>
-      <p class="label">Кадровое и управленческое бюро</p>
-      <p class="label hero__meta-mid">Подбор ключевых сотрудников<span aria-hidden="true"> · </span>Управленческий консалтинг</p>
-      <p class="label hero__meta-end"><span class="section-tag__num">01</span> / 08</p>
+  <div class="container hero__grid">
+    <div class="hero__top" data-reveal>
+      <p class="tag tag--on-soft tag--dot">Кадровое и управленческое бюро</p>
+      <ul class="hero__dirs" aria-label="Направления работы">
+        {directions.map((d) => <li>{d}</li>)}
+      </ul>
     </div>
 
-    <div class="hero__main grid">
-      <h1 class="hero__title" id="hero-title" data-reveal style="--reveal-delay: 80">
-        {titleStart} <em>и понимаем{titleEnd}</em>
-      </h1>
+    <h1 class="hero__title display" id="hero-title" data-reveal style="--d: 80">
+      {titleA}<span class="hl">{titleB}</span>
+    </h1>
 
-      <figure class="dossier" data-reveal style="--reveal-delay: 360" aria-label="Из чего состоит разбор кандидата">
-        <div class="dossier__head">
-          <span class="label">Разбор кандидата</span>
-          <span class="label dossier__no">Лист 1</span>
-        </div>
-        <ol class="dossier__rows">
-          {
-            dossier.map((row, i) => (
-              <li class="dossier__row">
-                <span class="dossier__idx">{String(i + 1).padStart(2, '0')}</span>
-                <span class="dossier__label">{row.label}</span>
-                <span class="dossier__bar" aria-hidden="true">
-                  <span style={`--v: ${row.value}; --i: ${i}`} />
-                </span>
-              </li>
-            ))
-          }
-        </ol>
-        <figcaption class="dossier__foot">
-          Кто это, что им движет, где риски — по каждому кандидату.
-        </figcaption>
-      </figure>
-    </div>
+    <div class="hero__text">
+      <p class="hero__subtitle lead" data-reveal style="--d: 160">{hero.subtitle}</p>
 
-    <div class="hero__bottom grid">
-      <div class="hero__intro" data-reveal style="--reveal-delay: 220">
-        <p class="hero__subtitle">{hero.subtitle}</p>
+      <div class="hero__actions" data-reveal style="--d: 240">
         <a class="btn" href="#contact">
           {hero.cta}
-          <Arrow class="btn__arrow" />
+          <Icon name="arrow-up-right" class="btn__icon" />
+        </a>
+        <a class="link-arrow hero__more" href="#process">
+          Как мы работаем
+          <Icon name="arrow-down" class="hero__more-icon" />
         </a>
       </div>
     </div>
 
-    <ul class="hero__facts" data-reveal style="--reveal-delay: 480">
-      {
-        facts.map((f) => (
-          <li>
-            <span class="hero__fact-value serif">{f.value}</span>
-            <span class="hero__fact-text">{f.text}</span>
-          </li>
-        ))
-      }
-    </ul>
+    <figure class="hero__media" data-reveal style="--d: 200">
+      <video
+        class="hero__video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="/media/hero-poster.jpg"
+        aria-label="Разговор с кандидатом в переговорной"
+        data-hero-video
+      >
+        <source src="/media/hero.webm" type="video/webm" />
+        <source src="/media/hero.mp4" type="video/mp4" />
+      </video>
+
+      <figcaption class="hero__chip">
+        <span class="hero__chip-num num">01</span>
+        Разговор-диагностика
+      </figcaption>
+
+      <button class="hero__toggle" type="button" aria-pressed="false" data-video-toggle>
+        <span class="visually-hidden" data-video-label>Остановить видео</span>
+        <Icon name="pause" class="hero__toggle-pause" />
+        <Icon name="play" class="hero__toggle-play" />
+      </button>
+    </figure>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    min-height: calc(100svh - var(--header-h));
-    display: flex;
-    margin-top: calc(var(--header-h) * -1);
-    padding-top: var(--header-h);
+    padding-block: clamp(1.75rem, 3.5vh, 2.75rem) clamp(2.5rem, 5vh, 4rem);
+    background: var(--c-soft);
   }
 
-  /* Тонкие вертикальные линии — архитектурная сетка */
-  .hero__guides {
-    position: absolute;
-    inset: 0;
+  .hero__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    pointer-events: none;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      'top   top   top   top   top   top   top   top   top   top   top   top'
+      'title title title title title title title title title title title title'
+      'text  text  text  text  media media media media media media media media';
+    column-gap: var(--gutter);
   }
 
-  .hero__guides span {
-    border-left: 1px solid var(--line);
-    opacity: 0.55;
-  }
-
-  .hero__guides span:first-child {
-    border-left-color: transparent;
-  }
-
-  .hero__inner {
-    position: relative;
+  .hero__top {
+    grid-area: top;
     display: flex;
-    flex-direction: column;
-    padding-block: clamp(2rem, 4vh, 3.5rem) 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
   }
 
-  .hero__meta {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: var(--gutter);
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--line-strong);
-    color: var(--ink-2);
+  /* Направления — тонкие вертикальные разделители, как в референсе */
+  .hero__dirs {
+    display: flex;
   }
 
-  .hero__meta-mid {
-    text-align: center;
+  .hero__dirs li {
+    padding-inline: 1.25rem;
+    font-size: var(--fs-meta);
+    font-weight: 700;
+    color: var(--c-ink-2);
   }
 
-  .hero__meta-end {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
+  .hero__dirs li + li {
+    border-left: 1px solid var(--c-line-strong);
   }
 
-  .hero__main {
-    align-items: end;
-    row-gap: 2.5rem;
-    margin-top: clamp(2.5rem, 7vh, 5.5rem);
+  .hero__dirs li:last-child {
+    padding-right: 0;
   }
 
   .hero__title {
-    grid-column: 1 / span 8;
-    max-width: 21ch;
-    font-family: var(--font-serif);
-    font-size: clamp(2.6rem, 1rem + 5.2vw, 6rem);
-    font-weight: 380;
-    line-height: 0.98;
-    letter-spacing: -0.028em;
-    font-variation-settings: 'opsz' 60;
-    text-wrap: balance;
+    grid-area: title;
+    max-width: 24ch;
+    margin-block: clamp(1.5rem, 4vh, 2.75rem) clamp(1.75rem, 4.5vh, 3rem);
+    font-size: clamp(2.25rem, 1.1rem + 3.6vw, 4.5rem);
   }
 
-  .hero__title em {
-    font-style: italic;
-    font-weight: 340;
-    color: var(--ink-2);
-  }
-
-  .hero__bottom {
-    margin-top: auto;
-    padding-top: clamp(2.5rem, 6vh, 4rem);
-  }
-
-  .hero__intro {
-    grid-column: 1 / span 6;
+  .hero__text {
+    grid-area: text;
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 2rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--c-line-strong);
   }
 
   .hero__subtitle {
-    max-width: 26ch;
-    font-size: var(--fs-lead);
-    line-height: 1.4;
-    color: var(--ink-2);
+    max-width: 22ch;
+    padding-top: 1.5rem;
+    color: var(--c-ink-2);
   }
 
-  /* Досье */
-  .dossier {
-    grid-column: 9 / span 4;
-    margin-bottom: 0.6rem;
-    padding: 1.25rem 1.25rem 1.1rem;
-    background: var(--paper-2);
-    border: 1px solid var(--line);
-  }
-
-  .dossier__head {
+  .hero__actions {
     display: flex;
-    justify-content: space-between;
-    padding-bottom: 0.85rem;
-    border-bottom: 1px solid var(--line-strong);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
   }
 
-  .dossier__no {
-    color: var(--ink-3);
+  .hero__more {
+    font-size: var(--fs-small);
   }
 
-  .dossier__row {
-    display: grid;
-    grid-template-columns: 1.75rem 1fr 38%;
-    align-items: center;
-    gap: 0.5rem;
-    padding-block: 0.7rem;
-    border-bottom: 1px dotted var(--line-strong);
-    font-size: 0.9375rem;
+  :global(.hero__more-icon) {
+    width: 16px;
+    height: 16px;
   }
 
-  .dossier__idx {
-    font-size: 0.75rem;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .dossier__bar {
+  /* Видео — внутри композиции, не фоном */
+  .hero__media {
+    grid-area: media;
     position: relative;
-    height: 2px;
-    background: var(--line);
+    aspect-ratio: 16 / 8.6;
+    overflow: hidden;
+    border-radius: var(--r-xl);
+    background: #d9dde2;
+    isolation: isolate;
   }
 
-  .dossier__bar span {
+  .hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* в кадре: кандидатка — центр, собеседник — справа */
+    object-position: 60% 50%;
+  }
+
+  .hero__chip {
     position: absolute;
-    inset: 0;
-    background: var(--ink);
-    transform: scaleX(var(--v));
-    transform-origin: left;
+    left: 1.25rem;
+    bottom: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    border-radius: 999px;
+    background: var(--c-white);
+    font-size: var(--fs-small);
+    font-weight: 700;
+    box-shadow: 0 8px 24px -12px rgb(10 12 17 / 0.3);
   }
 
-  :global(.js) .dossier:not(.is-visible) .dossier__bar span {
-    transform: scaleX(0);
-  }
-
-  :global(.js) .dossier .dossier__bar span {
-    transition: transform 1.4s var(--ease);
-    transition-delay: calc(600ms + var(--i) * 140ms);
-  }
-
-  .dossier__foot {
-    padding-top: 0.9rem;
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 0.9375rem;
-    line-height: 1.4;
-    color: var(--ink-2);
-  }
-
-  /* Факты */
-  .hero__facts {
+  .hero__chip-num {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--gutter);
-    margin-top: clamp(2.5rem, 6vh, 4rem);
-    border-top: 1px solid var(--line-strong);
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--c-blue);
+    color: var(--c-white);
+    font-size: 0.6875rem;
   }
 
-  .hero__facts li {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    padding-block: 1.25rem 1.75rem;
+  .hero__toggle {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.9);
+    color: var(--c-black);
+    cursor: pointer;
+    transition: background-color var(--t-fast) var(--ease);
   }
 
-  .hero__fact-value {
-    font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.5rem);
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-variant-numeric: lining-nums;
+  .hero__toggle:hover {
+    background: var(--c-white);
   }
 
-  .hero__fact-text {
-    max-width: 18ch;
-    font-size: 0.875rem;
-    line-height: 1.35;
-    color: var(--ink-3);
+  :global(.hero__toggle svg) {
+    width: 16px;
+    height: 16px;
   }
 
-  @media (max-width: 1200px) {
-    .hero__title {
-      grid-column: 1 / -1;
-    }
+  :global(.hero__toggle-play),
+  .hero__toggle[aria-pressed='true'] :global(.hero__toggle-pause) {
+    display: none;
+  }
 
-    .dossier {
-      grid-column: 7 / span 6;
-    }
+  .hero__toggle[aria-pressed='true'] :global(.hero__toggle-play) {
+    display: block;
+  }
 
-    .hero__intro {
-      grid-column: 1 / span 9;
+  @media (max-width: 1100px) {
+    .hero__grid {
+      grid-template-areas:
+        'top   top   top   top   top   top   top   top   top   top   top   top'
+        'title title title title title title title title title title title title'
+        'text  text  text  text  text  media media media media media media media';
     }
   }
 
-  @media (max-width: 760px) {
-    .hero {
-      min-height: auto;
+  /* Tablet: видео на всю ширину под текстом */
+  @media (max-width: 860px) {
+    .hero__grid {
+      grid-template-areas:
+        'top'
+        'title'
+        'text'
+        'media';
+      grid-template-columns: 1fr;
     }
 
-    .hero__guides {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .hero__meta {
-      grid-template-columns: 1fr auto;
-    }
-
-    .hero__meta-mid {
+    .hero__dirs {
       display: none;
     }
 
-    .hero__main {
-      margin-top: 2.75rem;
+    .hero__text {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .hero__subtitle {
+      padding-top: 0;
+      max-width: 26ch;
+    }
+
+    .hero__media {
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding-bottom: 2rem;
     }
 
     .hero__title {
-      line-height: 1.02;
+      margin-block: 1.5rem 1.25rem;
+      font-size: clamp(2.125rem, 1.2rem + 4.6vw, 2.75rem);
+      line-height: 1.06;
     }
 
-    .hero__bottom {
-      padding-top: 2.5rem;
-    }
-
-    .hero__intro,
-    .dossier {
-      grid-column: 1 / -1;
-    }
-
-    .hero__intro {
+    .hero__text {
       flex-direction: column;
+      align-items: stretch;
+      gap: 1.75rem;
+    }
+
+    .hero__actions {
       align-items: stretch;
     }
 
-    /* На мобильном: сначала подзаголовок и CTA, затем досье */
-    .hero__main {
-      display: contents;
-    }
-
-    .hero__title {
-      order: 1;
-      margin-top: 2.75rem;
-    }
-
-    .hero__bottom {
-      order: 2;
-    }
-
-    .dossier {
-      order: 3;
-      margin: 2.5rem 0 0;
-    }
-
-    .hero__facts {
-      order: 4;
-    }
-
-    .hero__intro .btn {
+    .hero__actions .btn {
       width: 100%;
-      justify-content: space-between;
     }
 
-    .hero__facts {
-      grid-template-columns: 1fr;
-      gap: 0;
-      margin-top: 2.5rem;
+    .hero__more {
+      align-self: flex-start;
     }
 
-    .hero__facts li {
-      padding-block: 1rem;
-      border-bottom: 1px solid var(--line);
+    .hero__media {
+      aspect-ratio: 4 / 5;
+      border-radius: var(--r-lg);
+      margin-inline: calc(var(--pad) * -0.5);
     }
 
-    .hero__fact-value {
-      min-width: 4.5rem;
+    /* Узкий кадр: держим кандидатку и собеседника в центре */
+    .hero__video {
+      object-position: 72% 50%;
+    }
+
+    .hero__chip {
+      left: 1rem;
+      bottom: 1rem;
+    }
+
+    .hero__toggle {
+      right: 1rem;
+      bottom: 1rem;
     }
   }
 </style>

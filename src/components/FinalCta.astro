@@ -1,155 +1,227 @@
 ---
-import Arrow from './Arrow.astro';
+import Icon from './Icon.astro';
 import { finalCta } from '../data/content';
 
-// Адрес обработчика заявок (CRM, Formspree, собственный backend и т.п.).
-// Задаётся переменной окружения PUBLIC_FORM_ENDPOINT при сборке.
+// Адрес обработчика заявок задаётся при сборке: PUBLIC_FORM_ENDPOINT
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 ---
 
 <section class="cta" id="contact" aria-labelledby="cta-title">
-  <div class="container grid cta__grid">
+  <div class="container cta__grid">
     <div class="cta__text">
-      <p class="label cta__tag">
-        <span>08</span>
-        <span class="cta__rule" aria-hidden="true"></span>
-        <span>Заявка</span>
+      <p class="tag cta__tag">
+        <span class="tag__num">08</span>
+        Заявка
       </p>
-      <h2 class="cta__title serif" id="cta-title" data-reveal>{finalCta.title}</h2>
-      <p class="cta__subtitle" data-reveal style="--reveal-delay: 120">{finalCta.subtitle}</p>
+      <h2 class="h2 cta__title" id="cta-title" data-reveal>{finalCta.title}</h2>
+      <p class="cta__subtitle lead" data-reveal style="--d: 120">{finalCta.subtitle}</p>
     </div>
 
-    <form class="form" data-form data-endpoint={endpoint} novalidate data-reveal style="--reveal-delay: 200">
+    <form class="form panel" data-form data-endpoint={endpoint} novalidate data-reveal style="--d: 180">
       <div class="form__fields">
         <label class="field">
-          <span class="field__label label">Как к вам обращаться</span>
+          <span class="field__label">Как к вам обращаться</span>
           <input class="field__input" type="text" name="name" autocomplete="name" required />
         </label>
         <label class="field">
-          <span class="field__label label">Телефон или Telegram</span>
+          <span class="field__label">Телефон или Telegram</span>
           <input class="field__input" type="text" name="contact" autocomplete="tel" required />
         </label>
         <label class="field">
-          <span class="field__label label">Кого ищете и что уже пробовали</span>
+          <span class="field__label">Кого ищете и что уже пробовали</span>
           <textarea class="field__input field__input--area" name="message" rows="3"></textarea>
         </label>
       </div>
 
-      <button class="btn btn--light form__submit" type="submit">
+      <label class="consent">
+        <input class="consent__box" type="checkbox" name="consent" required />
+        <span class="consent__mark" aria-hidden="true"><Icon name="check" /></span>
+        <span class="consent__text">
+          Я даю <a href="/personal-data">согласие на обработку персональных данных</a> и ознакомлен(а)
+          с{' '}<a href="/privacy">политикой конфиденциальности</a>
+        </span>
+      </label>
+
+      <button class="btn form__submit" type="submit">
         {finalCta.button}
-        <Arrow class="btn__arrow" />
+        <Icon name="arrow-up-right" class="btn__icon" />
       </button>
 
       <p class="form__status" role="status" aria-live="polite" data-form-status></p>
-      <p class="form__consent">
-        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
-      </p>
     </form>
   </div>
 </section>
 
 <style>
   .cta {
-    position: relative;
-    padding-block: var(--space-section);
-    background: var(--accent);
-    color: var(--accent-ink);
-    overflow: hidden;
+    padding-block: var(--section);
+    background: var(--c-blue);
+    color: var(--c-white);
   }
 
   .cta__grid {
-    row-gap: 3.5rem;
-    align-items: end;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: center;
   }
 
   .cta__text {
-    grid-column: 1 / span 7;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.75rem;
   }
 
   .cta__tag {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: clamp(2.5rem, 5vw, 4rem);
-    opacity: 0.8;
+    border-color: rgb(255 255 255 / 0.3);
+    background: transparent;
+    color: var(--c-white);
   }
 
-  .cta__rule {
-    width: 2rem;
-    height: 1px;
-    background: currentColor;
+  .cta__tag .tag__num {
+    background: var(--c-white);
+    color: var(--c-blue);
   }
 
   .cta__title {
-    font-size: clamp(2.5rem, 1.2rem + 4.6vw, 6rem);
-    font-weight: 360;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
+    max-width: 16ch;
+    font-size: clamp(2.25rem, 1.3rem + 3vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: var(--tr-display);
   }
 
   .cta__subtitle {
     max-width: 34ch;
-    margin-top: 2.25rem;
-    font-size: var(--fs-lead);
-    line-height: 1.4;
-    opacity: 0.88;
+    color: rgb(255 255 255 / 0.82);
   }
 
   /* Form */
   .form {
-    grid-column: 9 / -1;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    color: var(--c-black);
+    box-shadow: none;
   }
 
   .form__fields {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .field {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.5rem;
   }
 
   .field__label {
-    opacity: 0.75;
+    font-size: var(--fs-meta);
+    font-weight: 700;
   }
 
   .field__input {
     width: 100%;
-    padding: 0.55rem 0 0.7rem;
-    border: 0;
-    border-bottom: 1px solid rgb(246 239 232 / 0.45);
-    border-radius: 0;
-    background: transparent;
-    color: var(--accent-ink);
-    font: inherit;
-    font-size: 1.0625rem;
-    transition: border-color 0.3s var(--ease);
-    resize: vertical;
+    min-height: 52px;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-md);
+    background: var(--c-soft);
+    font-size: 1rem;
+    font-weight: 500;
+    transition:
+      border-color var(--t-fast) var(--ease),
+      background-color var(--t-fast) var(--ease);
+  }
+
+  .field__input:hover {
+    border-color: var(--c-line-strong);
   }
 
   .field__input:focus {
     outline: none;
-    border-bottom-color: var(--accent-ink);
+    border-color: var(--c-blue);
+    background: var(--c-white);
   }
 
   .field__input[aria-invalid='true'] {
-    border-bottom-color: var(--ink);
-    border-bottom-width: 2px;
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 3px var(--c-blue-light);
   }
 
   .field__input--area {
-    min-height: 5.5rem;
+    min-height: 96px;
+    resize: vertical;
+  }
+
+  .consent {
+    position: relative;
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 0.75rem;
+    font-size: var(--fs-meta);
+    line-height: 1.5;
+    color: var(--c-ink-2);
+    cursor: pointer;
+  }
+
+  .consent__box {
+    position: absolute;
+    opacity: 0;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+  }
+
+  .consent__mark {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--c-line-strong);
+    border-radius: 6px;
+    color: transparent;
+    transition:
+      background-color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+
+  :global(.consent__mark svg) {
+    width: 13px;
+    height: 13px;
+  }
+
+  .consent__box:checked + .consent__mark {
+    border-color: var(--c-blue);
+    background: var(--c-blue);
+    color: var(--c-white);
+  }
+
+  .consent__box:focus-visible + .consent__mark {
+    outline: 2px solid var(--c-blue);
+    outline-offset: 2px;
+  }
+
+  .consent__box[aria-invalid='true'] + .consent__mark {
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 3px var(--c-blue-light);
+  }
+
+  .consent a {
+    color: var(--c-black);
+    text-decoration-color: var(--c-line-strong);
+    text-underline-offset: 2px;
+  }
+
+  .consent a:hover {
+    color: var(--c-blue);
   }
 
   .form__submit {
-    justify-content: space-between;
+    width: 100%;
   }
 
   .form__submit[disabled] {
@@ -162,39 +234,24 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .form__status {
-    font-family: var(--font-serif);
-    font-size: 1.125rem;
-    line-height: 1.4;
+    padding: 0.875rem 1rem;
+    border-radius: var(--r-md);
+    background: var(--c-blue-light);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--c-blue-dark);
   }
 
-  .form__consent {
-    font-size: 0.8125rem;
-    line-height: 1.45;
-    opacity: 0.7;
-  }
-
-  .cta :global(.btn--light:hover),
-  .cta :global(.btn--light:focus-visible) {
-    border-color: var(--ink);
-  }
-
-  :global(.cta :focus-visible) {
-    outline-color: var(--accent-ink);
-  }
-
-  @media (max-width: 1024px) {
-    .cta__text {
-      grid-column: 1 / -1;
-    }
-
-    .form {
-      grid-column: 1 / span 8;
+  @media (max-width: 960px) {
+    .cta__grid {
+      grid-template-columns: 1fr;
     }
   }
 
   @media (max-width: 640px) {
     .form {
-      grid-column: 1 / -1;
+      border-radius: var(--r-lg);
+      margin-inline: calc(var(--pad) * -0.5);
     }
   }
 </style>

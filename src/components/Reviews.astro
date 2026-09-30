@@ -1,249 +1,297 @@
 ---
 import SectionTag from './SectionTag.astro';
+import Icon from './Icon.astro';
 import { reviews } from '../data/content';
 
-const total = reviews.items.length + 1;
+// Раскладка: крупная цитата + две короткие рядом, остальные — в слайдере
+const items = reviews.items;
+const side = [items[1], items[4]];
+const slides = [items[0], items[2], items[3], items[5], items[6]];
 ---
 
-<section class="reviews" id="reviews" aria-labelledby="reviews-title">
+<section class="section section--soft reviews" id="reviews" aria-labelledby="reviews-title">
   <div class="container">
-    <div class="reviews__head grid">
-      <SectionTag num="05" label="Отзывы" class="reviews__tag" />
-      <h2 class="visually-hidden" id="reviews-title">Отзывы клиентов</h2>
-      <p class="reviews__note label muted">Дословно, из переписки с клиентами</p>
+    <header class="reviews__head">
+      <SectionTag num="05" label="Отзывы" onSoft />
+      <h2 class="h2" id="reviews-title" data-reveal>Отзывы <span class="hl">клиентов</span></h2>
+    </header>
+
+    <div class="reviews__top">
+      <figure class="reviews__main panel" data-reveal>
+        <span class="reviews__mark"><Icon name="quote" /></span>
+        <blockquote>
+          <p>{reviews.featured}</p>
+        </blockquote>
+      </figure>
+
+      <div class="reviews__side">
+        {
+          side.map((r, i) => (
+            <figure class="quote panel" data-reveal style={`--d: ${100 + i * 100}`}>
+              <blockquote class="quote__text">
+                <p>{r.text}</p>
+              </blockquote>
+            </figure>
+          ))
+        }
+      </div>
     </div>
 
-    <figure class="lead-quote grid" data-reveal>
-      <span class="lead-quote__mark serif" aria-hidden="true">«</span>
-      <blockquote class="lead-quote__text serif">
-        <p>{reviews.featured}</p>
-      </blockquote>
-      <figcaption class="lead-quote__cap label">
-        <span class="section-tag__num">01</span> / {String(total).padStart(2, '0')} · Отзыв клиента
-      </figcaption>
-    </figure>
+    <div class="slider" data-slider>
+      <div class="slider__bar">
+        <p class="slider__count meta num" aria-hidden="true">
+          <span data-slider-current>01</span> / {String(slides.length).padStart(2, '0')}
+        </p>
+        <span class="slider__progress" aria-hidden="true"><span data-slider-progress></span></span>
+        <div class="slider__nav">
+          <button class="slider__btn" type="button" data-slider-prev aria-label="Предыдущий отзыв">
+            <Icon name="arrow-left" />
+          </button>
+          <button class="slider__btn" type="button" data-slider-next aria-label="Следующий отзыв">
+            <Icon name="arrow-right" />
+          </button>
+        </div>
+      </div>
 
-    <div class="quotes" data-slider>
-      <ul class="quotes__track" data-slider-track>
+      <ul class="slider__track" data-slider-track tabindex="0" aria-label="Отзывы клиентов, прокрутка">
         {
-          reviews.items.map((r, i) => (
-            <li class:list={['quote', `quote--${r.size}`]} data-reveal style={`--reveal-delay: ${(i % 3) * 90}`}>
-              <figure>
-                <figcaption class="quote__num label">
-                  {String(i + 2).padStart(2, '0')}
-                </figcaption>
-                <blockquote class="quote__text">
-                  <p>{r.text}</p>
-                </blockquote>
-              </figure>
+          slides.map((r) => (
+            <li class:list={['quote panel', `quote--${r.size}`]} data-slide>
+              <blockquote class="quote__text">
+                <p>{r.text}</p>
+              </blockquote>
             </li>
           ))
         }
       </ul>
-      <div class="quotes__controls" aria-hidden="true">
-        <span class="quotes__progress"><span data-slider-progress></span></span>
-        <span class="label muted">Листайте</span>
-      </div>
     </div>
   </div>
 </section>
 
 <style>
-  .reviews {
-    padding-block: var(--space-section-s) var(--space-section);
-    border-top: 1px solid var(--line);
-  }
-
   .reviews__head {
-    align-items: baseline;
-    margin-bottom: clamp(3rem, 6vw, 5.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+    margin-bottom: clamp(3rem, 5vw, 4.5rem);
   }
 
-  :global(.reviews__tag) {
-    grid-column: 1 / span 6;
+  .reviews__top {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: var(--gutter);
   }
 
-  .reviews__note {
-    grid-column: 7 / -1;
-    text-align: right;
+  .reviews__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: clamp(2rem, 4vw, 3.5rem);
   }
 
-  .lead-quote {
-    position: relative;
-    row-gap: 2.5rem;
+  .reviews__mark {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--r-md);
+    background: var(--c-blue);
+    color: var(--c-white);
   }
 
-  .lead-quote__mark {
-    grid-column: 1 / span 1;
-    font-size: clamp(5rem, 3rem + 6vw, 10rem);
-    line-height: 0.7;
-    color: var(--accent);
+  :global(.reviews__mark svg) {
+    width: 26px;
+    height: 26px;
   }
 
-  .lead-quote__text {
-    grid-column: 2 / span 10;
-    font-size: clamp(1.6rem, 1.05rem + 2vw, 3.1rem);
-    font-weight: 360;
-    line-height: 1.2;
-    letter-spacing: -0.018em;
+  .reviews__main blockquote {
+    font-size: clamp(1.375rem, 1.05rem + 1.1vw, 2.125rem);
+    font-weight: 600;
+    line-height: 1.32;
+    letter-spacing: -0.022em;
     text-wrap: pretty;
   }
 
-  .lead-quote__cap {
-    grid-column: 2 / span 10;
-    color: var(--ink-3);
-  }
-
-  /* Мозаика цитат */
-  .quotes {
-    margin-top: clamp(5rem, 9vw, 8rem);
-  }
-
-  .quotes__track {
-    columns: 3;
-    column-gap: var(--gutter);
+  .reviews__side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--gutter);
   }
 
   .quote {
-    break-inside: avoid;
-    margin-bottom: clamp(2.5rem, 4vw, 3.75rem);
-    padding-top: 1rem;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .quote__num {
-    margin-bottom: 1.25rem;
-    color: var(--accent);
+    display: flex;
+    padding: 1.75rem;
   }
 
   .quote__text {
     white-space: pre-line;
-    color: var(--ink-2);
-  }
-
-  .quote--l .quote__text {
-    font-family: var(--font-serif);
-    font-size: clamp(1.3rem, 1.1rem + 0.6vw, 1.65rem);
-    line-height: 1.32;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-  }
-
-  .quote--m .quote__text {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    line-height: 1.4;
-    color: var(--ink);
-  }
-
-  .quote--s .quote__text {
     font-size: var(--fs-body);
+    font-weight: 500;
     line-height: 1.55;
+    color: var(--c-ink-2);
   }
 
-  .quote--l {
-    padding: 1.5rem 1.5rem 1.75rem;
-    background: var(--paper-2);
-    border-top-color: var(--ink);
+  .reviews__side .quote__text {
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: -0.012em;
+    color: var(--c-black);
   }
 
-  .quotes__controls {
+  /* Slider */
+  .slider {
+    margin-top: clamp(3rem, 5vw, 4rem);
+  }
+
+  .slider__bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .slider__count {
+    color: var(--c-black);
+  }
+
+  .slider__progress {
+    position: relative;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--c-blue-light-2);
+    overflow: hidden;
+  }
+
+  .slider__progress span {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--c-blue);
+    transform: scaleX(var(--p, 0.2));
+    transform-origin: left;
+    transition: transform var(--t-base) var(--ease);
+  }
+
+  .slider__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .slider__btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: var(--r-md);
+    background: var(--c-white);
+    color: var(--c-black);
+    cursor: pointer;
+    transition:
+      background-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
+  }
+
+  .slider__btn:hover {
+    background: var(--c-blue);
+    color: var(--c-white);
+  }
+
+  .slider__btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    background: var(--c-white);
+    color: var(--c-black);
+  }
+
+  :global(.slider__btn svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .slider__track {
+    display: flex;
+    gap: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .slider__track::-webkit-scrollbar {
     display: none;
   }
 
+  .slider__track .quote {
+    flex: 0 0 calc((100% - var(--gutter) * 2) / 3);
+    scroll-snap-align: start;
+    min-height: 16rem;
+  }
+
+  .slider__track .quote--l {
+    flex-basis: calc((100% - var(--gutter) * 2) / 3 * 1.35);
+  }
+
   @media (max-width: 1024px) {
-    .quotes__track {
-      columns: 2;
+    .reviews__top {
+      grid-template-columns: 1fr;
+    }
+
+    .reviews__side {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: none;
+    }
+
+    .slider__track .quote,
+    .slider__track .quote--l {
+      flex-basis: calc((100% - var(--gutter)) / 2);
     }
   }
 
-  /* Мобильный: горизонтальный слайдер со snap */
   @media (max-width: 640px) {
-    :global(.reviews__tag),
-    .reviews__note {
-      grid-column: 1 / -1;
+    .reviews__head {
+      align-items: flex-start;
       text-align: left;
     }
 
-    .reviews__note {
-      margin-top: 0.75rem;
-    }
-
-    .lead-quote {
-      row-gap: 1rem;
-    }
-
-    .lead-quote__mark,
-    .lead-quote__text,
-    .lead-quote__cap {
-      grid-column: 1 / -1;
-    }
-
-    .lead-quote__mark {
-      font-size: 5rem;
-      line-height: 0.6;
-    }
-
-    .quotes {
-      margin-inline: calc(var(--pad) * -1);
-    }
-
-    .quotes__track {
-      columns: auto;
-      display: flex;
+    .reviews__side {
+      grid-template-columns: 1fr;
       gap: 12px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-padding-inline: var(--pad);
-      padding-inline: var(--pad);
-      scrollbar-width: none;
     }
 
-    .quotes__track::-webkit-scrollbar {
+    .reviews__top {
+      gap: 12px;
+    }
+
+    .reviews__main,
+    .quote {
+      padding: 1.5rem;
+      border-radius: var(--r-lg);
+    }
+
+    .slider__bar {
+      grid-template-columns: auto 1fr;
+    }
+
+    .slider__nav {
       display: none;
     }
 
-    /* Карточки за пределами экрана по горизонтали не пересекают viewport — без reveal */
-    :global(.js) .quote[data-reveal] {
-      opacity: 1;
-      transform: none;
-    }
-
-    .quote {
-      flex: 0 0 84%;
-      margin: 0;
-      padding: 1.25rem 1.25rem 1.5rem;
-      background: var(--paper-2);
-      scroll-snap-align: start;
-    }
-
-    .quote--l .quote__text {
-      font-size: 1.2rem;
-    }
-
-    .quotes__controls {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
+    .slider__track {
+      margin-inline: calc(var(--pad) * -1);
       padding-inline: var(--pad);
+      scroll-padding-inline: var(--pad);
+      gap: 12px;
     }
 
-    .quotes__progress {
-      position: relative;
-      flex: 1;
-      height: 1px;
-      background: var(--line-strong);
-    }
-
-    .quotes__progress span {
-      position: absolute;
-      inset: -0.5px auto -0.5px 0;
-      width: 100%;
-      background: var(--ink);
-      transform: scaleX(var(--p, 0.15));
-      transform-origin: left;
-      transition: transform 0.2s linear;
+    .slider__track .quote,
+    .slider__track .quote--l {
+      flex-basis: 86%;
     }
   }
 </style>

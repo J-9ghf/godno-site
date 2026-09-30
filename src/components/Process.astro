@@ -1,34 +1,44 @@
 ---
 import SectionTag from './SectionTag.astro';
+import Icon from './Icon.astro';
 import { steps } from '../data/content';
 ---
 
-<section class="process" id="process" aria-labelledby="process-title">
-  <div class="container">
-    <div class="process__head grid">
-      <SectionTag num="06" label="Как работаем" class="process__tag" />
-      <h2 class="h2 process__title" id="process-title" data-reveal>Как мы работаем</h2>
-      <p class="process__aside label" data-reveal style="--reveal-delay: 120">
-        Пять шагов — от первого разговора до работы после выхода сотрудника
-      </p>
-    </div>
+<section class="section process" id="process" aria-labelledby="process-title">
+  <div class="container grid">
+    <aside class="process__aside">
+      <div class="process__sticky">
+        <SectionTag num="06" label="Как работаем" />
+        <h2 class="h2" id="process-title" data-reveal>Как мы <span class="hl">работаем</span></h2>
 
-    <ol class="steps">
+        <div class="process__meter" aria-hidden="true">
+          <span class="process__chip num">
+            Шаг <span data-step-current>1</span> из {steps.length}
+          </span>
+          <span class="process__bar"><span data-step-bar></span></span>
+        </div>
+
+        <a class="btn process__cta" href="#contact">
+          Обсудить вашу задачу
+          <Icon name="arrow-up-right" class="btn__icon" />
+        </a>
+      </div>
+    </aside>
+
+    <ol class="process__steps">
       {
         steps.map((s, i) => (
-          <li class="step" data-reveal style={`--reveal-delay: ${i * 110}`}>
-            <div class="step__top">
-              <span class="step__num serif" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              {s.mark && <span class="step__mark label">{s.mark}</span>}
-            </div>
+          <li class="step" data-step={i + 1} data-reveal>
+            <span class="step__num num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
             <div class="step__body">
-              <h3 class="step__title">
+              <h3 class="h3 step__title">
                 <span class="visually-hidden">Шаг {i + 1}. </span>
                 {s.title}
               </h3>
               <p class="step__text">{s.text}</p>
+              {s.mark && <span class="step__mark">{s.mark}</span>}
             </div>
           </li>
         ))
@@ -38,196 +48,138 @@ import { steps } from '../data/content';
 </section>
 
 <style>
-  .process {
-    padding-block: var(--space-section);
-    background: var(--night);
-    color: var(--night-ink);
-  }
-
-  .process :global(.section-tag) {
-    color: var(--night-ink-2);
-  }
-
-  .process :global(.section-tag__num) {
-    color: #d9765f;
-  }
-
-  .process__head {
-    row-gap: 2rem;
-    align-items: end;
-    margin-bottom: clamp(3.5rem, 7vw, 6.5rem);
-  }
-
-  :global(.process__tag) {
-    grid-column: 1 / -1;
-  }
-
-  .process__title {
-    grid-column: 1 / span 7;
-    font-size: clamp(2.6rem, 1.2rem + 5vw, 6.5rem);
-    line-height: 0.96;
-    letter-spacing: -0.03em;
-  }
-
   .process__aside {
-    grid-column: 9 / -1;
-    max-width: 30ch;
-    color: var(--night-ink-2);
+    grid-column: 1 / span 5;
   }
 
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-template-rows: minmax(clamp(15rem, 34vh, 21rem), auto) auto;
-    border-left: 1px solid var(--night-line);
+  .process__sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 2.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.75rem;
+  }
+
+  .process__meter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: min(100%, 22rem);
+    margin-top: 0.5rem;
+  }
+
+  .process__chip {
+    flex: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: var(--c-blue-light);
+    color: var(--c-blue);
+    font-size: var(--fs-meta);
+    font-weight: 700;
+  }
+
+  .process__bar {
+    position: relative;
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--c-blue-light);
+    overflow: hidden;
+  }
+
+  .process__bar span {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--c-blue);
+    transform: scaleX(var(--p, 0.2));
+    transform-origin: left;
+    transition: transform var(--t-slow) var(--ease);
+  }
+
+  .process__cta {
+    margin-top: 0.5rem;
+  }
+
+  .process__steps {
+    grid-column: 7 / -1;
+    border-top: 1px solid var(--c-line);
   }
 
   .step {
-    position: relative;
     display: grid;
-    grid-row: span 2;
-    grid-template-rows: subgrid;
-    row-gap: 1.5rem;
-    padding: 1.5rem clamp(1rem, 1.6vw, 1.75rem) 2rem;
-    border-right: 1px solid var(--night-line);
-    border-top: 1px solid var(--night-line);
-    /* Объединяем с transition от [data-reveal], чтобы hover не отменял появление */
-    transition:
-      opacity 0.9s var(--ease) calc(var(--reveal-delay, 0) * 1ms),
-      transform 0.9s var(--ease) calc(var(--reveal-delay, 0) * 1ms),
-      background-color 0.5s var(--ease) 0s;
-  }
-
-  /* Акцентная линия сверху — «загорается» при появлении */
-  .step::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: 0;
-    height: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 1s var(--ease);
-    transition-delay: calc(300ms + var(--reveal-delay, 0) * 2ms);
-  }
-
-  .step.is-visible::before,
-  :global(html:not(.js)) .step::before {
-    transform: scaleX(1);
-  }
-
-  .step:hover {
-    background: var(--night-2);
-  }
-
-  .step__top {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1.5rem;
+    grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr);
+    gap: var(--gutter);
+    padding-block: clamp(2rem, 3.5vw, 3rem);
+    border-bottom: 1px solid var(--c-line);
   }
 
   .step__num {
-    font-size: clamp(4rem, 2.5rem + 4.4vw, 8.5rem);
-    font-weight: 280;
-    line-height: 0.8;
+    font-size: clamp(3rem, 2.2rem + 2.6vw, 5.25rem);
+    font-weight: 800;
+    line-height: 0.85;
     letter-spacing: -0.05em;
-    color: var(--night-ink);
-    font-variant-numeric: lining-nums;
-    transition: color 0.5s var(--ease);
+    color: var(--c-blue-light-2);
+    transition: color var(--t-slow) var(--ease);
   }
 
-  .step:hover .step__num {
-    color: #d9765f;
+  .step.is-current .step__num {
+    color: var(--c-blue);
   }
 
   .step__body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.9rem;
-  }
-
-  .step__mark {
-    padding: 0.35rem 0.55rem;
-    border: 1px solid #d9765f;
-    color: #e79a86;
-  }
-
-  .step__title {
-    font-family: var(--font-serif);
-    font-size: clamp(1.3rem, 1.1rem + 0.5vw, 1.6rem);
-    font-weight: 420;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
+    gap: 0.875rem;
+    padding-top: 0.25rem;
   }
 
   .step__text {
-    font-size: var(--fs-small);
-    line-height: 1.55;
-    color: var(--night-ink-2);
+    max-width: 44ch;
+    color: var(--c-ink-2);
   }
 
-  @media (max-width: 1100px) {
-    .steps {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      grid-template-rows: repeat(2, minmax(11rem, auto) auto);
-    }
-
-    .step {
-      grid-column: span 2;
-    }
-
-    .step:nth-child(4),
-    .step:nth-child(5) {
-      grid-column: span 3;
-    }
+  .step__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: var(--c-blue-light);
+    color: var(--c-blue);
+    font-size: var(--fs-meta);
+    font-weight: 700;
   }
 
-  @media (max-width: 900px) {
-    .process__title,
-    .process__aside {
+  @media (max-width: 960px) {
+    .process__aside,
+    .process__steps {
       grid-column: 1 / -1;
+    }
+
+    .process__sticky {
+      position: static;
+      margin-bottom: 2.5rem;
+    }
+
+    .process__meter,
+    .process__cta {
+      display: none;
     }
   }
 
   @media (max-width: 640px) {
-    .steps {
-      grid-template-columns: 1fr;
-      grid-template-rows: none;
-      border-left: 0;
-    }
-
-    .step__top {
-      justify-content: flex-start;
-    }
-
-    .step__mark {
-      display: none;
-    }
-
-    .step,
-    .step:nth-child(4),
-    .step:nth-child(5) {
-      grid-column: auto;
-      display: grid;
-      grid-row: auto;
-      grid-template-columns: 4.25rem 1fr;
-      grid-template-rows: none;
+    .step {
+      grid-template-columns: 4.5rem minmax(0, 1fr);
       gap: 1rem;
-      padding: 1.5rem 0 2rem;
-      border-right: 0;
-    }
-
-    .step:hover {
-      background: none;
     }
 
     .step__num {
-      font-size: 3.25rem;
+      font-size: 2.75rem;
+      color: var(--c-blue);
     }
   }
 </style>
