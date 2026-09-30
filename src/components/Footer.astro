@@ -1,6 +1,6 @@
 ---
 import Brand from './Brand.astro';
-import { nav, legalPdfs, operator } from '../data/content';
+import { nav, legalDocs, operator } from '../data/content';
 
 interface Props {
   base?: string;
@@ -32,8 +32,8 @@ const year = new Date().getFullYear();
       <nav class="footer__col footer__col--docs" aria-label="Документы">
         <p class="footer__label eyebrow"><span class="node" aria-hidden="true"></span>Документы</p>
         <ul>
-          {legalPdfs.map((d) => (
-            <li><a href={d.href} target="_blank" rel="noopener">{d.title}</a></li>
+          {legalDocs.map((d) => (
+            <li><a href={d.href}>{d.title}</a></li>
           ))}
         </ul>
       </nav>

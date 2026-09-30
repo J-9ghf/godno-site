@@ -285,12 +285,6 @@ export const finalCta = {
 };
 
 /** Юридические документы. Тексты — в src/content/legal/*.md (только из документов компании). */
-/** Ссылки на оригинальные PDF заказчика (footer и согласие в форме) — открываются в новой вкладке. */
-export const legalPdfs = [
-  { href: '/docs/politika-konfidencialnosti.pdf', title: 'Политика конфиденциальности' },
-  { href: '/docs/obrabotka-personalnyh-dannyh.pdf', title: 'Обработка персональных данных' },
-];
-
 export const legalDocs = [
   { href: '/privacy', title: 'Политика конфиденциальности', doc: 'Политика в отношении обработки персональных данных' },
   { href: '/consent', title: 'Согласие на обработку персональных данных', doc: 'Согласие на обработку персональных данных' },
