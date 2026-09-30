@@ -1,0 +1,219 @@
+---
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { legalDocs } from '../data/content';
+
+interface Props {
+  title: string;
+  pending?: boolean;
+  current: string;
+}
+
+const { title, pending = false, current } = Astro.props;
+const docIndex = Math.max(0, legalDocs.findIndex((d) => d.href === current));
+const docLabel = legalDocs[docIndex]?.title ?? '';
+---
+
+<Base title={`${title} — Институт кадровых решений`} description={title}>
+  <meta slot="head" name="robots" content={pending ? 'noindex' : 'index'} />
+  <Header base="/" />
+  <main id="main" class="legal">
+    <div class="container legal__grid">
+      <aside class="legal__aside">
+        <a class="legal__back" href="/">← На главную</a>
+        <nav aria-label="Документы">
+          <p class="legal__label eyebrow"><span class="node" aria-hidden="true"></span>Документы</p>
+          <ul>
+            {
+              legalDocs.map((d) => (
+                <li>
+                  <a href={d.href} aria-current={d.href === current ? 'page' : undefined}>
+                    {d.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </aside>
+
+      <article class="legal__doc">
+        <p class="legal__kind eyebrow num">
+          <span class="shead__num">{String(docIndex + 1).padStart(2, '0')}</span>
+          <span class="shead__sep" aria-hidden="true">/</span>
+          <span>{docLabel}</span>
+        </p>
+        <h1 class="h2 legal__title">{title}</h1>
+        {
+          pending ? (
+            <p class="legal__pending">Текст документа будет размещён в ближайшее время.</p>
+          ) : (
+            <div class="legal__body">
+              <slot />
+            </div>
+          )
+        }
+      </article>
+    </div>
+  </main>
+  <Footer base="/" />
+</Base>
+
+<style>
+  .legal {
+    padding-block: calc(var(--header-h) + clamp(3rem, 6vw, 5.5rem)) var(--section);
+  }
+
+  .legal__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--gutter);
+  }
+
+  .legal__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .legal__back {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--c-blue);
+    text-decoration: none;
+  }
+
+  .legal__label {
+    margin-bottom: 0.75rem;
+    font-size: var(--fs-meta);
+    font-weight: 700;
+    color: var(--c-ink-3);
+  }
+
+  .legal__aside ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .legal__aside li {
+  }
+
+  .legal__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .legal__kind {
+    display: flex;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Реквизиты оператора в тексте согласия — на туманной поверхности */
+  .legal__body :global(.legal-requisites) {
+    margin: 1.25rem 0;
+    padding: 1.25rem 1.5rem;
+    background: var(--c-mist-2);
+    font-weight: 600;
+    line-height: 1.8;
+    color: var(--c-ink);
+  }
+
+  .legal__aside li a {
+    display: block;
+    padding: 0.875rem 1rem;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--c-ink-2);
+  }
+
+  .legal__aside li a:hover,
+  .legal__aside li a[aria-current='page'] {
+    color: var(--c-accent-deep);
+  }
+
+  .legal__aside li a[aria-current='page'] {
+    background: var(--c-accent-tint);
+  }
+
+  .legal__doc {
+    max-width: 72ch;
+  }
+
+  .legal__title {
+    margin-bottom: 2.5rem;
+  }
+
+  .legal__pending {
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
+    background: var(--c-soft);
+    color: var(--c-ink-2);
+  }
+
+  /* Типографика юридического текста — строгая, для чтения */
+  .legal__body :global(h2) {
+    margin: 2.5rem 0 1rem;
+    font-size: var(--fs-h4);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .legal__body :global(h3) {
+    margin: 1.75rem 0 0.75rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  .legal__body :global(p),
+  .legal__body :global(li) {
+    color: var(--c-ink-2);
+  }
+
+  .legal__body :global(p + p) {
+    margin-top: 1rem;
+  }
+
+  .legal__body :global(ul),
+  .legal__body :global(ol) {
+    margin: 1rem 0;
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+
+  .legal__body :global(ol) {
+    list-style: decimal;
+  }
+
+  .legal__body :global(li + li) {
+    margin-top: 0.5rem;
+  }
+
+  .legal__body :global(a) {
+    color: var(--c-blue);
+  }
+
+  .legal__title {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  @media (max-width: 900px) {
+    .legal__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .legal__aside {
+      position: static;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  }
+</style>
