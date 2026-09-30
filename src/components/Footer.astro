@@ -1,6 +1,6 @@
 ---
 import Brand from './Brand.astro';
-import { nav, legalDocs, operator } from '../data/content';
+import { nav } from '../data/content';
 
 interface Props {
   base?: string;
@@ -28,28 +28,9 @@ const year = new Date().getFullYear();
           <li><a href={`${base}#contact`}>Заявка</a></li>
         </ul>
       </nav>
-
-      <nav class="footer__col footer__col--docs" aria-label="Документы">
-        <p class="footer__label eyebrow"><span class="node" aria-hidden="true"></span>Документы</p>
-        <ul>
-          {legalDocs.map((d) => (
-            <li><a href={d.href}>{d.title}</a></li>
-          ))}
-        </ul>
-      </nav>
-
-      <div class="footer__col footer__col--contacts">
-        <p class="footer__label eyebrow"><span class="node" aria-hidden="true"></span>Контакты</p>
-        <a class="footer__mail" href={`mailto:${operator.email}`}>{operator.email}</a>
-      </div>
     </div>
 
     <div class="footer__legal">
-      <p class="footer__requisites">
-        <span>{operator.name}</span>
-        <span>ОГРНИП {operator.ogrnip}</span>
-        <span>ИНН {operator.inn}</span>
-      </p>
       <p class="footer__copy">
         © {year} Институт кадровых решений
         <a class="footer__up" href={`${base}#top`}>Наверх ↑</a>
@@ -96,14 +77,6 @@ const year = new Date().getFullYear();
     grid-column: 5 / span 2;
   }
 
-  .footer__col--docs {
-    grid-column: 7 / span 3;
-  }
-
-  .footer__col--contacts {
-    grid-column: 10 / span 3;
-  }
-
   .footer__label {
     display: flex;
     align-items: center;
@@ -117,25 +90,19 @@ const year = new Date().getFullYear();
   }
 
   .footer__col a,
-  .footer__up,
-  .footer__mail {
+  .footer__up {
     font-size: var(--fs-small);
     font-weight: 600;
     text-decoration: none;
     transition: color var(--t-fast) var(--ease);
   }
 
-  .footer__mail {
-    overflow-wrap: anywhere;
-  }
-
   .footer__col a:hover,
-  .footer__up:hover,
-  .footer__mail:hover {
+  .footer__up:hover {
     color: var(--c-accent);
   }
 
-  /* Реквизиты — на туманной полосе, без линий */
+  /* Нижняя строка — на туманной полосе, без линий */
   .footer__legal {
     display: flex;
     justify-content: space-between;
@@ -146,12 +113,6 @@ const year = new Date().getFullYear();
     background: var(--c-mist-2);
     font-size: var(--fs-meta);
     color: var(--c-slate);
-  }
-
-  .footer__requisites {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.5rem;
   }
 
   .footer__copy {
@@ -172,20 +133,10 @@ const year = new Date().getFullYear();
     .footer__col--nav {
       grid-column: 1 / span 4;
     }
-
-    .footer__col--docs {
-      grid-column: 5 / span 4;
-    }
-
-    .footer__col--contacts {
-      grid-column: 9 / span 4;
-    }
   }
 
   @media (max-width: 640px) {
-    .footer__col--nav,
-    .footer__col--docs,
-    .footer__col--contacts {
+    .footer__col--nav {
       grid-column: 1 / -1;
     }
 
