@@ -166,6 +166,23 @@ import { about } from '../data/assistants';
     border-radius: 8px;
   }
 
+  /* Телефон/планшет: фото на половину ширины, имя и должность справа */
+  @media (max-width: 899px) {
+    .portrait {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+      gap: 16px;
+    }
+
+    .portrait__cap {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 0 0 4px;
+    }
+  }
+
   @media (min-width: 900px) {
     .about__grid {
       grid-template-columns: 5fr 7fr;
