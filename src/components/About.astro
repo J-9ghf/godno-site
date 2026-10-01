@@ -281,7 +281,16 @@ const btnId = 'about-more-btn';
   }
 
   @media (max-width: 640px) {
+    /* Телефон: компактное фото (кадр 4:5 целиком) и подпись справа от него */
+    .about__founder {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+
     .about__founder-photo {
+      flex: none;
+      width: clamp(7rem, 34vw, 9rem);
       aspect-ratio: 4 / 5;
       object-position: 50% 50%;
     }
