@@ -1,9 +1,9 @@
 // Собирает лендинг (dist/index.html) в один самодостаточный HTML для публикации как Artifact:
 // CSS, JS (GSAP), шрифты (только latin + cyrillic) и изображения встраиваются инлайн.
 // Запуск: npm run build && node tools/export-single.mjs <out.html>
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { join, extname } from 'node:path';
+import { dirname, join, extname } from 'node:path';
 
 const out = process.argv[2] || 'ikr-assistants.html';
 const dist = 'dist';
@@ -43,5 +43,6 @@ html = html
 // Название страницы на хостинге — короткое имя продукта
 html = html.replace(/<title>[^<]*<\/title>/, '<title>ИКР.Ассистенты</title>');
 
+mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, html);
 console.log(out, (Buffer.byteLength(html) / 1024).toFixed(0) + ' KB');
