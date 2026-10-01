@@ -11,13 +11,28 @@ const btnId = 'about-more-btn';
   <div class="container">
     <SectionTag num="02" label="О нас" aside="Институт кадровых решений" />
 
-    <div class="about__head grid">
-      <h2 class="about__title h2" id="about-title" data-reveal>{about.title}</h2>
-      <!-- Место под изображение: добавляется после утверждения картинок -->
-    </div>
+    <!-- Компьютер: фото с подписью слева, текст блока справа. Планшет и телефон: всё друг под другом -->
+    <div class="about__layout">
+    <h2 class="about__title h2" id="about-title" data-reveal>{about.title}</h2>
+
+    <figure class="about__founder" data-reveal>
+      <img
+        class="about__founder-photo"
+        src={about.founder.photo}
+        alt={about.founder.alt}
+        width="640"
+        height="800"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption class="about__founder-cap">
+        <span class="about__founder-name">{about.founder.name}</span>
+        <span class="about__founder-role">{about.founder.role}</span>
+      </figcaption>
+    </figure>
 
     <!-- Три тезиса и ключевой факт -->
-    <ul class="about__cards grid">
+    <ul class="about__cards">
       {
         about.theses.map((t, i) => (
           <li class="about__card" data-reveal style={`--d: ${i * 90}`}>
@@ -48,34 +63,79 @@ const btnId = 'about-more-btn';
         <Icon name="arrow-down" class="about__toggle-icon" />
       </button>
     </div>
+    </div>
   </div>
 </section>
 
 <style>
-  .about__head {
-    row-gap: 2rem;
+  .about__layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      'ph ph ph ph ti ti ti ti ti ti ti ti'
+      'ph ph ph ph ca ca ca ca ca ca ca ca'
+      'ph ph ph ph mo mo mo mo mo mo mo mo';
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--gutter);
+    row-gap: clamp(2rem, 4vw, 3rem);
     margin-top: clamp(3rem, 6vw, 5rem);
-    align-items: end;
   }
 
   .about__title {
-    grid-column: 1 / span 8;
+    grid-area: ti;
     max-width: 16ch;
   }
 
-  /* Карточки: 3 тезиса + факт */
+  /* Фото руководителя с подписью */
+  .about__founder {
+    grid-area: ph;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .about__founder-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: var(--c-mist);
+  }
+
+  .about__founder-name {
+    display: block;
+    font-size: var(--fs-h4);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--c-ink);
+  }
+
+  .about__founder-role {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--c-slate);
+  }
+
+  /* Карточки: 3 тезиса + факт, сетка 2×2 */
   .about__cards {
-    row-gap: var(--gutter);
-    margin-top: clamp(3rem, 6vw, 4.5rem);
+    grid-area: ca;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
   }
 
   .about__card,
   .about__fact {
-    grid-column: span 3;
     display: flex;
     flex-direction: column;
     gap: 1.75rem;
-    min-height: 15rem;
+    min-height: 12rem;
     padding: clamp(1.5rem, 2vw, 2rem);
   }
 
@@ -122,7 +182,7 @@ const btnId = 'about-more-btn';
 
   /* Полный текст — раскрывается */
   .about__more {
-    margin-top: clamp(2rem, 4vw, 3rem);
+    grid-area: mo;
   }
 
   .about__more-panel {
@@ -200,27 +260,38 @@ const btnId = 'about-more-btn';
   }
 
   @media (max-width: 1100px) {
-    .about__card,
-    .about__fact {
-      grid-column: span 6;
-      min-height: 12rem;
-    }
-  }
-
-  @media (max-width: 960px) {
-    .about__title {
-      grid-column: 1 / -1;
-    }
-
     .about__more-inner {
       grid-template-columns: minmax(0, 1fr);
     }
   }
 
+  /* Планшет и телефон: заголовок, фото с подписью, карточки, кнопка */
+  @media (max-width: 960px) {
+    .about__layout {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'ti' 'ph' 'ca' 'mo';
+      grid-template-rows: auto;
+    }
+
+    /* На планшете фото на всю ширину, кадр 4:3 — лицо целиком */
+    .about__founder-photo {
+      aspect-ratio: 4 / 3;
+      object-position: 50% 22%;
+    }
+  }
+
   @media (max-width: 640px) {
+    .about__founder-photo {
+      aspect-ratio: 4 / 5;
+      object-position: 50% 50%;
+    }
+
+    .about__cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
     .about__card,
     .about__fact {
-      grid-column: 1 / -1;
       min-height: 0;
       gap: 1.25rem;
     }
