@@ -1,0 +1,366 @@
+---
+import Words from '../ikr/Words.astro';
+import Ico from './Ico.astro';
+import { scenarios, reasons, services } from '../data/assistants';
+
+const [a, b] = scenarios;
+---
+
+<section class="us s-bone sec" id="us" aria-labelledby="us-title">
+  <div class="frame">
+    <p class="coord" data-fade>04 / 09 — Почему именно мы</p>
+
+    <!-- Две траектории: прямая (ещё не было) и петля (уже пробовали) сходятся в одной точке -->
+    <div class="tr">
+      <svg class="tr__svg" viewBox="0 0 1200 640" preserveAspectRatio="none" aria-hidden="true">
+        <path class="tr__p" d="M0 150 C 360 150, 560 150, 760 250 S 980 320, 1200 320" data-draw />
+        <path class="tr__p tr__p--b" d="M0 520 C 200 520, 260 380, 360 420 C 470 465, 420 590, 330 560 C 250 530, 330 420, 520 430 C 660 440, 760 360, 1200 320" data-draw />
+      </svg>
+      <span class="tr__meet" aria-hidden="true"><b></b><span class="tag">ИКР.Ассистенты</span></span>
+
+      <article class="tr__s tr__s--a" data-fade>
+        <span class="tag muted">Траектория A</span>
+        <h3 class="d d-3">{a.title}</h3>
+        <p>{a.text}</p>
+      </article>
+      <article class="tr__s tr__s--b" data-fade>
+        <span class="tag muted">Траектория B</span>
+        <h3 class="d d-3">{b.title}</h3>
+        <p>{b.text}</p>
+      </article>
+    </div>
+
+    <div class="rs">
+      <h2 class="rs__title d" id="us-title" data-words><Words text="Почему мы" /></h2>
+      <ol class="rs__list">
+        {reasons.map((r, i) => (
+          <li class="rs__row" data-reason>
+            <span class="rs__line" aria-hidden="true"></span>
+            <span class="rs__n d outline" aria-hidden="true">0{i + 1}</span>
+            <div class="rs__body">
+              <h3 class="d-4">{r.title}</h3>
+              <p class="muted">{r.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  <div class="sv" data-fade-group>
+    {services.map((s) => (
+      <a class="sv__band" href="#contact" data-cursor-text="Обсудить">
+        <span class="sv__fill" aria-hidden="true"></span>
+        <span class="sv__in frame">
+          <span class="sv__n tag">Услуга {s.n}</span>
+          <span class="sv__t d d-3">{s.title}</span>
+          <span class="sv__side">
+            <span class="sv__x">{s.text}</span>
+            <span class="sv__pts">{s.points.map((p) => <span>{p}</span>)}</span>
+          </span>
+          <span class="sv__a" aria-hidden="true"><Ico n="ne" /></span>
+        </span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .us {
+    overflow: hidden;
+  }
+
+  /* ——— Траектории ——— */
+  .tr {
+    position: relative;
+    display: grid;
+    gap: 48px;
+    margin-top: 40px;
+  }
+
+  .tr__svg,
+  .tr__meet {
+    display: none;
+  }
+
+  .tr__s {
+    display: grid;
+    gap: 16px;
+    padding-left: 22px;
+    border-left: 1.5px solid var(--onyx);
+  }
+
+  .tr__s--b {
+    border-left: 1.5px dashed var(--sig);
+  }
+
+  .tr__s h3 {
+    max-width: 12ch;
+  }
+
+  .tr__s p {
+    max-width: 38ch;
+    color: var(--t-bone-2);
+  }
+
+  @media (min-width: 1024px) {
+    .tr {
+      display: block;
+      height: clamp(560px, 52vw, 820px);
+      margin-top: 24px;
+    }
+
+    .tr__svg {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .tr__p {
+      fill: none;
+      stroke: var(--onyx);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .tr__p--b {
+      stroke: var(--sig);
+      stroke-width: 2.5;
+    }
+
+    .tr__meet {
+      display: flex;
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      align-items: center;
+      gap: 12px;
+      translate: -100% -50%;
+      padding-left: 20px;
+    }
+
+    .tr__meet b {
+      width: 18px;
+      height: 18px;
+      background: var(--onyx);
+      transform: rotate(45deg);
+    }
+
+    .tr__meet .tag {
+      position: absolute;
+      right: 0;
+      top: 26px;
+      white-space: nowrap;
+    }
+
+    .tr__s {
+      position: absolute;
+      width: min(34vw, 460px);
+      border: 0;
+      padding: 0;
+    }
+
+    .tr__s--a {
+      left: 0;
+      top: 0;
+    }
+
+    .tr__s--a h3,
+    .tr__s--a p {
+      background: var(--bone);
+    }
+
+    .tr__s--b {
+      left: 40%;
+      bottom: 0;
+    }
+  }
+
+  /* ——— Почему мы ——— */
+  .rs {
+    position: relative;
+    display: grid;
+    gap: 40px;
+    margin-top: clamp(96px, 12vw, 220px);
+  }
+
+  .rs__title {
+    font-size: var(--g-2);
+    letter-spacing: -0.05em;
+  }
+
+  .rs__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(16px, 3vw, 56px);
+    align-items: start;
+    padding-block: clamp(26px, 3vw, 44px);
+  }
+
+  .rs__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1.5px;
+    background: var(--onyx);
+    transform-origin: left;
+  }
+
+  .rs__n {
+    font-size: clamp(3.4rem, 2rem + 5vw, 7.5rem);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    transition: color 0.6s var(--ease);
+  }
+
+  .rs__row:hover .rs__n,
+  :global(.rs__row.is-in) .rs__n {
+    color: var(--sig);
+    --ol: var(--sig);
+  }
+
+  .rs__body {
+    display: grid;
+    gap: 10px;
+    padding-top: 0.3em;
+  }
+
+  .rs__body h3 {
+    font-family: var(--f-display);
+    font-size: var(--g-4);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .rs__body p {
+    max-width: 46ch;
+  }
+
+  @media (min-width: 1024px) {
+    .rs {
+      grid-template-columns: auto 1fr;
+      gap: clamp(40px, 6vw, 120px);
+    }
+
+    .rs__title {
+      position: sticky;
+      top: calc(var(--hdr) + 20px);
+      align-self: start;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: clamp(5rem, 9vw, 11rem);
+      line-height: 0.85;
+      height: max-content;
+    }
+  }
+
+  /* ——— Услуги: полосы на всю ширину ——— */
+  .sv {
+    margin-top: clamp(96px, 12vw, 200px);
+    border-top: 1.5px solid var(--onyx);
+  }
+
+  .sv__band {
+    position: relative;
+    display: block;
+    border-bottom: 1.5px solid var(--onyx);
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .sv__fill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--sig);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .sv__band:hover .sv__fill,
+  .sv__band:focus-visible .sv__fill {
+    transform: scaleY(1);
+  }
+
+  .sv__in {
+    display: grid;
+    gap: 18px;
+    padding-block: clamp(32px, 4vw, 64px);
+  }
+
+  .sv__t {
+    max-width: 12ch;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .sv__band:hover .sv__t {
+    transform: translateX(clamp(8px, 2vw, 32px));
+  }
+
+  .sv__side {
+    display: grid;
+    gap: 14px;
+    max-width: 44ch;
+  }
+
+  .sv__pts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+
+  .sv__pts span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .sv__pts span::before {
+    content: '◆ ';
+    color: var(--sig);
+    transition: color 0.4s;
+  }
+
+  .sv__band:hover .sv__pts span::before {
+    color: var(--onyx);
+  }
+
+  .sv__a {
+    position: absolute;
+    right: var(--pad);
+    top: clamp(28px, 4vw, 56px);
+    width: clamp(44px, 5vw, 80px);
+    transition: transform 0.8s var(--ease);
+  }
+
+  .sv__a :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .sv__band:hover .sv__a {
+    transform: rotate(45deg);
+  }
+
+  @media (min-width: 1024px) {
+    .sv__in {
+      grid-template-columns: 140px 1fr 30ch;
+      align-items: end;
+      padding-right: calc(var(--pad) + 120px);
+    }
+
+    .sv__n {
+      align-self: start;
+      padding-top: 1.4em;
+    }
+  }
+</style>

@@ -1,0 +1,331 @@
+---
+import Words from '../ikr/Words.astro';
+import { guarantees } from '../data/assistants';
+
+const [intro1, intro2] = guarantees.intro.split('. ').map((s, i, a) => (i < a.length - 1 ? `${s}.` : s));
+---
+
+<section class="gu s-onyx sec" id="guarantees" aria-labelledby="gu-title">
+  <div class="frame">
+    <div class="gu__head">
+      <p class="coord coord--sig" data-fade>08 / 09 — Условия и гарантии</p>
+      <h2 class="d d-3 gu__title" id="gu-title" data-words><Words text={guarantees.title} /></h2>
+    </div>
+
+    <div class="gu__field">
+      <svg class="gu__cross" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 0 L100 100 M100 0 L0 100" data-draw />
+      </svg>
+
+      <p class="gu__center">
+        <span class="gu__big d" data-words><Words text={intro1} /></span>
+        <span class="gu__sub tag">{intro2}</span>
+      </p>
+
+      {guarantees.items.map((g, i) => (
+        <article class:list={['gg', `gg--${i + 1}`]} data-fade>
+          <span class="gg__corner" aria-hidden="true"></span>
+          <span class="tag sig">0{i + 1} · {g.label}</span>
+          <span class="gg__v d" aria-hidden="true">
+            {g.big === '↺' ? (
+              <svg viewBox="0 0 80 60" class="gg__loop"><path d="M4 48 H34 C58 48 70 36 70 24 C70 12 60 4 48 4 C34 4 26 16 30 28 C34 40 50 44 76 44" /><path d="M66 36 L76 44 L66 52" /></svg>
+            ) : (
+              <><span data-count>{g.big}</span>{g.unit && <small>{g.unit}</small>}</>
+            )}
+          </span>
+          <p class="gg__t">{g.text}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="pay" data-pay>
+      <p class="tag muted">Условия оплаты</p>
+      <div class="pay__line" aria-hidden="true">
+        <span class="pay__a"><i></i></span>
+        <b class="pay__mid"></b>
+        <span class="pay__b"><i></i></span>
+      </div>
+      <ul class="pay__list">
+        {guarantees.payment.map((p) => (
+          <li><span class="d sig">{p.share}</span><span>{p.text}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gu {
+    overflow: clip;
+  }
+
+  .gu__head {
+    display: grid;
+    gap: 22px;
+  }
+
+  .gu__title {
+    max-width: 13ch;
+  }
+
+  .gu__field {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+
+  .gu__cross {
+    display: none;
+  }
+
+  .gu__center {
+    display: grid;
+    gap: 18px;
+    padding-block: 24px 40px;
+  }
+
+  .gu__big {
+    font-size: clamp(2.6rem, 0.8rem + 7.4vw, 9rem);
+    line-height: 0.86;
+    letter-spacing: -0.055em;
+    color: var(--sig);
+  }
+
+  .gg {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    padding: 22px 22px 26px;
+    background: var(--onyx-2);
+    transition: background 0.5s, transform 0.7s var(--ease);
+  }
+
+  .gg__corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    border-top: 2px solid var(--sig);
+    border-left: 2px solid var(--sig);
+    transition: width 0.6s var(--ease), height 0.6s var(--ease);
+  }
+
+  .gg:hover .gg__corner {
+    width: 100%;
+    height: 100%;
+  }
+
+  .gg__v {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: clamp(3.4rem, 2rem + 5vw, 7.4rem);
+    line-height: 0.82;
+    letter-spacing: -0.06em;
+  }
+
+  .gg__v small {
+    font-size: 0.3em;
+    letter-spacing: -0.02em;
+  }
+
+  .gg__loop {
+    width: 1.3em;
+    height: auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 4;
+    stroke-linecap: square;
+  }
+
+  .gg__t {
+    max-width: 28ch;
+    font-size: 1.02rem;
+    line-height: 1.4;
+  }
+
+  .pay {
+    display: grid;
+    gap: 22px;
+    margin-top: clamp(80px, 9vw, 160px);
+  }
+
+  .pay__line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 20px;
+  }
+
+  .pay__a,
+  .pay__b {
+    position: relative;
+    flex: 1;
+    height: 6px;
+  }
+
+  .pay__a {
+    background: rgb(255 77 26 / 0.2);
+  }
+
+  .pay__b {
+    background: repeating-linear-gradient(90deg, var(--t-onyx-2) 0 6px, transparent 6px 12px);
+    opacity: 0.6;
+  }
+
+  .pay__a i,
+  .pay__b i {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+    transition: transform 1.4s var(--ease-io);
+  }
+
+  .pay__a i {
+    background: var(--sig);
+  }
+
+  .pay__b i {
+    background: repeating-linear-gradient(90deg, var(--t-onyx) 0 6px, transparent 6px 12px);
+    transition-delay: 1s;
+  }
+
+  .pay__mid {
+    width: 20px;
+    height: 20px;
+    margin-inline: 4px;
+    background: var(--t-onyx);
+    transform: rotate(45deg);
+  }
+
+  :global(.pay.is-in) .pay__line,
+  :global(html.reduced) .pay__line,
+  :global(html:not(.js)) .pay__line {
+    --p: 1;
+  }
+
+  .pay__list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .pay__list li {
+    display: flex;
+    gap: 18px;
+    align-items: baseline;
+    font-size: var(--g-5);
+    line-height: 1.35;
+  }
+
+  .pay__list .d {
+    font-size: clamp(1.6rem, 1rem + 2vw, 2.8rem);
+    letter-spacing: -0.05em;
+    flex: none;
+  }
+
+  @media (min-width: 768px) {
+    .gu__field {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .gu__center {
+      grid-column: 1 / -1;
+    }
+
+    .pay__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .gu__head {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .gu__head .coord {
+      align-self: start;
+    }
+
+    /* Гарантии раскрываются по углам вокруг главной фразы */
+    .gu__field {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+      grid-template-rows: auto auto auto;
+      gap: 0;
+      min-height: 86vh;
+    }
+
+    .gu__cross {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .gu__cross path {
+      fill: none;
+      stroke: var(--l-onyx);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .gu__center {
+      position: relative;
+      z-index: 1;
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-items: center;
+      text-align: center;
+      padding: 6vh 0;
+    }
+
+    .gu__big {
+      max-width: 11ch;
+      font-size: clamp(5rem, 8.4vw, 11rem);
+      text-shadow: 0 0 40px var(--onyx);
+    }
+
+    .gg {
+      z-index: 1;
+      width: min(100%, 360px);
+    }
+
+    .gg--1 {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .gg--2 {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+    }
+
+    .gg--3 {
+      grid-column: 1;
+      grid-row: 3;
+      align-self: end;
+    }
+
+    .gg--4 {
+      grid-column: 3;
+      grid-row: 3;
+      justify-self: end;
+      align-self: end;
+    }
+
+    .gg--2 .gg__corner,
+    .gg--4 .gg__corner {
+      left: auto;
+      right: 0;
+      border-left: 0;
+      border-right: 2px solid var(--sig);
+    }
+  }
+</style>

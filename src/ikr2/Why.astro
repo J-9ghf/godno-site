@@ -1,0 +1,264 @@
+---
+import Words from '../ikr/Words.astro';
+import { why } from '../data/assistants';
+---
+
+<section class="wy s-bone" id="why" aria-labelledby="wy-title" data-wy>
+  <div class="wy__pin" data-wy-pin>
+    <div class="wy__track" data-wy-track>
+      <span class="wy__route" aria-hidden="true"><i data-wy-fill></i></span>
+
+      <div class="wy__intro">
+        <p class="coord">02 / 09 — Зачем собственнику ассистент</p>
+        <h2 class="d d-2 wy__title" id="wy-title" data-words>
+          <Words text={why.title.before} />{' '}<span class="wy__strike" data-strike><Words text={why.title.struck} /></span><span class="w"><span>,</span></span>{' '}<span class="sig"><Words text={why.title.after} /></span>
+        </h2>
+        <p class="tag muted wy__hint" aria-hidden="true">Четыре причины →</p>
+      </div>
+
+      {why.cards.map((c, i) => (
+        <article class:list={['wy__p', `wy__p--${i + 1}`]} data-wy-panel>
+          <span class="wy__mark" aria-hidden="true"></span>
+          <span class:list={['wy__n d', i % 2 === 0 ? 'outline' : 'sig']} aria-hidden="true">{c.n}</span>
+          <div class="wy__body">
+            <h3 class="d d-3">{c.title}</h3>
+            <p class="lead">{c.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="rl s-sig" aria-label="Надёжность">
+  <div class="rl__in frame">
+    <span class="rl__big d" aria-hidden="true" data-scale>99%</span>
+    <p class="d d-4 rl__text" data-fade>{why.reliability}</p>
+  </div>
+</section>
+
+<style>
+  .wy {
+    position: relative;
+    z-index: 2;
+    margin-top: -32px;
+    border-radius: 32px 32px 0 0;
+    overflow: hidden;
+  }
+
+  .wy__pin {
+    padding-block: var(--sec);
+  }
+
+  .wy__track {
+    position: relative;
+    display: grid;
+    gap: clamp(56px, 10vw, 120px);
+    padding-inline: var(--pad);
+  }
+
+  .wy__route {
+    position: absolute;
+    left: calc(var(--pad) + 4px);
+    top: 0;
+    bottom: 0;
+    width: 1.5px;
+    background: var(--line);
+  }
+
+  .wy__route i {
+    position: absolute;
+    inset: 0;
+    background: var(--sig);
+    transform: scaleY(var(--p, 0));
+    transform-origin: top;
+  }
+
+  .wy__intro {
+    display: grid;
+    gap: 28px;
+    padding-left: 28px;
+  }
+
+  .wy__title {
+    max-width: 14ch;
+  }
+
+  .wy__strike {
+    position: relative;
+    display: inline-block;
+    color: var(--t-bone-2);
+  }
+
+  .wy__strike::after {
+    content: '';
+    position: absolute;
+    left: -0.04em;
+    right: -0.04em;
+    top: 46%;
+    height: 0.09em;
+    background: var(--sig);
+    transform: scaleX(var(--s, 0));
+    transform-origin: left;
+    transition: transform 1s var(--ease-io) 0.5s;
+  }
+
+  :global(.wy__strike.is-in),
+  :global(html.reduced) .wy__strike,
+  :global(html:not(.js)) .wy__strike {
+    --s: 1;
+  }
+
+  .wy__hint {
+    display: none;
+  }
+
+  .wy__p {
+    position: relative;
+    display: grid;
+    gap: 18px;
+    padding-left: 28px;
+  }
+
+  .wy__mark {
+    position: absolute;
+    left: 0;
+    top: 0.4em;
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid var(--onyx);
+    background: var(--bone);
+    transform: rotate(45deg);
+    transition: background 0.4s;
+  }
+
+  :global(.wy__p.is-on) .wy__mark {
+    background: var(--sig);
+    border-color: var(--sig);
+  }
+
+  .wy__n {
+    font-size: clamp(6rem, 3rem + 14vw, 20rem);
+    line-height: 0.78;
+    letter-spacing: -0.07em;
+  }
+
+  .wy__body {
+    display: grid;
+    gap: 18px;
+  }
+
+  .wy__body h3 {
+    max-width: 12ch;
+  }
+
+  .wy__body p {
+    max-width: 30ch;
+    color: var(--t-bone-2);
+  }
+
+  /* Горизонтальный режим (desktop, движение разрешено) — класс ставит JS */
+  :global(.wy.is-h) .wy__pin {
+    height: 100vh;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  :global(.wy.is-h) .wy__track {
+    display: flex;
+    align-items: center;
+    gap: clamp(80px, 9vw, 180px);
+    width: max-content;
+    padding-right: 12vw;
+  }
+
+  :global(.wy.is-h) .wy__route {
+    left: 0;
+    right: 0;
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    height: 1.5px;
+  }
+
+  :global(.wy.is-h) .wy__route i {
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+
+  :global(.wy.is-h) .wy__intro {
+    width: min(64vw, 1000px);
+    padding-left: 0;
+  }
+
+  :global(.wy.is-h) .wy__hint {
+    display: block;
+  }
+
+  :global(.wy.is-h) .wy__p {
+    padding-left: 0;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: 32px;
+  }
+
+  :global(.wy.is-h) .wy__mark {
+    left: -60px;
+    top: 50%;
+  }
+
+  :global(.wy.is-h) .wy__p--1 {
+    width: 46vw;
+    translate: 0 -16vh;
+  }
+
+  :global(.wy.is-h) .wy__p--2 {
+    width: 40vw;
+    translate: 0 14vh;
+  }
+
+  :global(.wy.is-h) .wy__p--3 {
+    width: 44vw;
+    translate: 0 -12vh;
+  }
+
+  :global(.wy.is-h) .wy__p--4 {
+    width: 50vw;
+    translate: 0 10vh;
+  }
+
+  :global(.wy.is-h) .wy__n {
+    font-size: clamp(10rem, 22vh, 18rem);
+  }
+
+  /* ——— Надёжность ——— */
+  .rl {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rl__in {
+    display: grid;
+    gap: 24px;
+    align-items: end;
+    padding-block: clamp(72px, 9vw, 160px);
+  }
+
+  .rl__big {
+    font-size: clamp(7rem, 2rem + 22vw, 26rem);
+    line-height: 0.76;
+    letter-spacing: -0.07em;
+    transform-origin: 0 100%;
+  }
+
+  .rl__text {
+    max-width: 22ch;
+  }
+
+  @media (min-width: 1024px) {
+    .rl__text {
+      justify-self: end;
+    }
+  }
+</style>

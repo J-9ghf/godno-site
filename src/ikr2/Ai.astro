@@ -1,0 +1,357 @@
+---
+import Words from '../ikr/Words.astro';
+import { ai } from '../data/assistants';
+---
+
+<section class="ai s-onyx" id="ai" aria-labelledby="ai-title" data-ai>
+  <div class="ai__pin frame" data-ai-pin>
+    <header class="ai__head">
+      <p class="coord coord--sig">03 / 09 — ИИ и живой ассистент</p>
+      <h2 class="ai__title" id="ai-title" data-words>
+        <span class="ai__q d d-4"><Words text={ai.quote} /></span>
+        <span class="d d-3"><Words text={ai.title} /></span>
+      </h2>
+    </header>
+
+    <div class="ai__stage" data-ai-stage>
+      <svg class="ai__svg ai__svg--h" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true" data-ai-svg="h">
+        <path class="ai__base" d="M20 280 C 180 280, 220 90, 400 100 S 620 300, 800 250 S 1040 60, 1180 90" />
+        <path class="ai__draw" d="M20 280 C 180 280, 220 90, 400 100 S 620 300, 800 250 S 1040 60, 1180 90" data-ai-path />
+      </svg>
+      <svg class="ai__svg ai__svg--v" viewBox="0 0 300 1000" preserveAspectRatio="none" aria-hidden="true" data-ai-svg="v">
+        <path class="ai__base" d="M30 20 C 30 160, 270 180, 270 330 S 30 520, 30 660 S 270 840, 270 980" />
+        <path class="ai__draw" d="M30 20 C 30 160, 270 180, 270 330 S 30 520, 30 660 S 270 840, 270 980" data-ai-path />
+      </svg>
+      <span class="ai__dot" aria-hidden="true" data-ai-dot></span>
+
+      <ol class="ai__nodes" aria-label="Вы, Ассистент, ИИ и инструменты, Результат">
+        {ai.scheme.map((s, i) => (
+          <li class:list={['nd', `nd--${i + 1}`]} data-ai-node={i / (ai.scheme.length - 1)} tabindex="0">
+            <span class="nd__mark" aria-hidden="true"></span>
+            <span class="nd__n tag">0{i + 1}</span>
+            <span class="nd__l d">{s.label}</span>
+            <span class="nd__t">{s.text}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <p class="ai__concl d-4" data-ai-concl>
+      <span class="sig">{ai.conclusionLead}</span>
+      <span class="muted"> {ai.conclusion} </span>
+      <span>{ai.conclusionTail}</span>
+    </p>
+  </div>
+
+  <figure class="st frame" data-fade>
+    <span class="st__q d sig" aria-hidden="true">“</span>
+    <div class="st__body">
+      <p class="tag sig">{ai.story.label}</p>
+      <blockquote class="ph st__ph">{ai.story.placeholder}</blockquote>
+      <figcaption class="st__by">
+        <b>{ai.story.author}</b>
+        <span class="muted">{ai.story.role}</span>
+      </figcaption>
+    </div>
+  </figure>
+</section>
+
+<style>
+  .ai {
+    position: relative;
+    padding-bottom: var(--sec);
+    overflow: hidden;
+  }
+
+  .ai__pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, 4vw, 56px);
+    padding-top: var(--sec);
+  }
+
+  .ai__head {
+    display: grid;
+    gap: 22px;
+  }
+
+  .ai__title {
+    display: grid;
+    gap: 0.3em;
+    font-weight: inherit;
+  }
+
+  .ai__q {
+    font-weight: 600;
+    color: var(--t-onyx-2);
+  }
+
+  .ai__title .d-3 {
+    max-width: 16ch;
+  }
+
+  .ai__stage {
+    position: relative;
+    height: 150vh;
+    max-height: 1400px;
+    margin-bottom: 180px;
+  }
+
+  .ai__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .ai__svg--h {
+    display: none;
+  }
+
+  .ai__svg path {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .ai__base {
+    stroke: var(--l-onyx);
+    stroke-width: 1.5;
+    stroke-dasharray: 2 8;
+  }
+
+  .ai__draw {
+    stroke: var(--sig);
+    stroke-width: 2.5;
+  }
+
+  .ai__dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border-radius: 50%;
+    background: var(--sig);
+    box-shadow: 0 0 0 8px rgb(255 77 26 / 0.18), 0 0 40px 12px rgb(255 77 26 / 0.55);
+  }
+
+  .ai__dot::after {
+    content: '';
+    position: absolute;
+    inset: -14px;
+    border-radius: 50%;
+    border: 1px solid var(--sig);
+    animation: ping 1.8s var(--ease) infinite;
+  }
+
+  @keyframes ping {
+    from {
+      transform: scale(0.5);
+      opacity: 1;
+    }
+    to {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+  }
+
+  .nd {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    gap: 6px;
+    width: min(48vw, 260px);
+    outline: none;
+  }
+
+  .nd__mark {
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 16px;
+    height: 16px;
+    background: var(--onyx);
+    border: 1.5px solid var(--t-onyx-2);
+    transform: rotate(45deg);
+    transition: background 0.5s, border-color 0.5s, transform 0.6s var(--ease);
+  }
+
+  .nd__n {
+    margin-top: 18px;
+    color: var(--t-onyx-2);
+  }
+
+  .nd__l {
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.6rem);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: var(--t-onyx-2);
+    transition: color 0.6s var(--ease);
+  }
+
+  .nd__t {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--t-onyx-2);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  }
+
+  :global(.nd.is-on) .nd__mark {
+    background: var(--sig);
+    border-color: var(--sig);
+    transform: rotate(45deg) scale(1.25);
+  }
+
+  :global(.nd.is-on) .nd__l {
+    color: var(--t-onyx);
+  }
+
+  :global(.nd.is-on) .nd__t {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(.nd.is-on) .nd__n {
+    color: var(--sig);
+  }
+
+  :global(html.reduced) .nd__t,
+  :global(html:not(.js)) .nd__t {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(html.reduced) .nd__l,
+  :global(html:not(.js)) .nd__l {
+    color: var(--t-onyx);
+  }
+
+  /* Позиции по умолчанию (без JS / reduced): узлы списком */
+  :global(html:not(.js)) .ai__stage,
+  :global(html.reduced) .ai__stage {
+    height: auto;
+    max-height: none;
+  }
+
+  :global(html:not(.js)) .ai__svg,
+  :global(html.reduced) .ai__svg,
+  :global(html:not(.js)) .ai__dot,
+  :global(html.reduced) .ai__dot {
+    display: none;
+  }
+
+  :global(html:not(.js)) .ai__nodes,
+  :global(html.reduced) .ai__nodes {
+    display: grid;
+    gap: 36px;
+  }
+
+  :global(html:not(.js)) .nd,
+  :global(html.reduced) .nd {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .ai__concl {
+    max-width: 34ch;
+    font-family: var(--f-display);
+    font-size: var(--g-4);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  }
+
+  :global(.ai__concl.is-wait) {
+    opacity: 0.12;
+    transform: translateY(24px);
+  }
+
+  /* ——— История ——— */
+  .st {
+    position: relative;
+    display: grid;
+    gap: 24px;
+    margin-top: clamp(80px, 10vw, 180px);
+  }
+
+  .st__q {
+    font-size: clamp(9rem, 4rem + 18vw, 24rem);
+    line-height: 0.6;
+    height: 0.5em;
+  }
+
+  .st__body {
+    display: grid;
+    gap: 22px;
+  }
+
+  .st__ph {
+    min-height: 220px;
+    margin: 0;
+    font-size: 0.72rem;
+  }
+
+  .st__by {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    align-items: baseline;
+  }
+
+  .st__by b {
+    font-family: var(--f-display);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 900px) {
+    .ai__svg--h {
+      display: block;
+    }
+
+    .ai__svg--v {
+      display: none;
+    }
+
+    .ai__stage {
+      height: min(48vh, 440px);
+      margin-top: 4vh;
+      margin-bottom: 0;
+    }
+
+    :global(.ai.is-pinned) .ai__pin {
+      height: 100vh;
+      padding-top: calc(var(--hdr) + 32px);
+      justify-content: space-between;
+      padding-bottom: 6vh;
+    }
+
+    .ai__head {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .ai__head .coord {
+      grid-column: 1 / -1;
+    }
+
+    .st {
+      grid-template-columns: 4fr 7fr;
+      align-items: start;
+    }
+
+    .st__q {
+      height: auto;
+      line-height: 0.8;
+    }
+  }
+</style>

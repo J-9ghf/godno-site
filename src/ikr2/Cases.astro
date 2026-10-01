@@ -1,0 +1,475 @@
+---
+import Words from '../ikr/Words.astro';
+import Ico from './Ico.astro';
+import { cases, reviews } from '../data/assistants';
+
+const [c1, c2, c3] = cases;
+---
+
+<section class="cs s-bone sec" id="cases" aria-labelledby="cs-title">
+  <div class="frame">
+    <p class="coord" data-fade>07 / 09 — Кейсы и отзывы</p>
+    <h2 class="cs__title d d-1" id="cs-title" data-words><Words text="Кейсы" /></h2>
+  </div>
+
+  <!-- 01 — классическая editorial-история, результат гигантской строкой -->
+  <article class="k k1" aria-labelledby="k1">
+    <div class="frame">
+      <header class="k__head" data-fade>
+        <span class="k__n d outline">{c1.n}</span>
+        <span class="k__meta">
+          <span class="tag sig">{c1.niche}</span>
+          <h3 class="d d-3" id="k1">{c1.role}</h3>
+        </span>
+      </header>
+      <div class="k1__story" data-fade-group>
+        <dl><dt class="tag">Задача</dt><dd class="lead">{c1.task}</dd></dl>
+        <dl><dt class="tag">Было</dt><dd>{c1.before}</dd></dl>
+        <dl><dt class="tag">Что сделали</dt><dd>{c1.did}</dd></dl>
+        <dl><dt class="tag">Итог</dt><dd>{c1.outcome}</dd></dl>
+      </div>
+    </div>
+    <p class="k1__res" aria-label={`Результат: ${c1.result.value} ${c1.result.unit}`}>
+      <span class="k1__giant d sig" data-drift="-9" aria-hidden="true"><span data-count>{c1.result.value}</span> {c1.result.unit}</span>
+    </p>
+    <p class="frame k1__cap tag">Результат — {c1.result.caption}</p>
+  </article>
+
+  <!-- 02 — тёмная вкладка, sticky-мета слева -->
+  <article class="k k2 s-onyx" aria-labelledby="k2">
+    <div class="k2__in frame">
+      <header class="k2__side">
+        <div class="k2__sticky">
+          <span class="k__n d sig">{c2.n}</span>
+          <span class="tag sig">{c2.niche}</span>
+          <h3 class="d d-4 k2__role" id="k2">{c2.role}</h3>
+        </div>
+      </header>
+      <div class="k2__main">
+        <div class="k2__story" data-fade-group>
+          <dl><dt class="tag muted">Задача</dt><dd class="lead">{c2.task}</dd></dl>
+          <dl><dt class="tag muted">Было</dt><dd>{c2.before}</dd></dl>
+          <dl><dt class="tag muted">Что сделали</dt><dd>{c2.did}</dd></dl>
+        </div>
+        <p class="k2__res d" data-fade>
+          <span class="tag sig k2__lbl">Результат</span>
+          <span class="k2__w1">{c2.result.value}</span>
+          <span class="k2__w2 outline">{c2.result.unit}</span>
+        </p>
+        <p class="k2__out muted" data-fade>{c2.outcome}</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- 03 — цифра растёт при скролле -->
+  <article class="k k3" aria-labelledby="k3">
+    <div class="frame">
+      <header class="k__head" data-fade>
+        <span class="k__n d outline">{c3.n}</span>
+        <span class="k__meta">
+          <span class="tag sig">{c3.niche}</span>
+          <h3 class="d d-3" id="k3">{c3.role}</h3>
+        </span>
+      </header>
+      <div class="k3__stage" data-k3>
+        <p class="k3__num d" data-k3-num aria-label={`${c3.result.value} ${c3.result.unit}`}>
+          <span aria-hidden="true" data-count>{c3.result.value}</span>
+        </p>
+        <span class="k3__unit vtext tag" aria-hidden="true">{c3.result.unit}</span>
+      </div>
+      <p class="k3__cap d-4" data-fade>{c3.result.caption}</p>
+      <div class="k3__story" data-fade-group>
+        <dl><dt class="tag">Задача</dt><dd>{c3.task}</dd></dl>
+        <dl><dt class="tag">Было</dt><dd>{c3.before}</dd></dl>
+        <dl><dt class="tag">Что сделали</dt><dd>{c3.did}</dd></dl>
+        <dl><dt class="tag">Итог</dt><dd>{c3.outcome}</dd></dl>
+      </div>
+    </div>
+  </article>
+
+  <!-- Отзывы -->
+  <div class="rv frame">
+    <p class="coord coord--sig" data-fade>Отзывы · имена скрыты</p>
+    <ul class="rv__list">
+      {reviews.map((r, i) => (
+        <li class:list={['rv__i', `rv__i--${i + 1}`]} data-fade>
+          <span class="rv__mark d sig" aria-hidden="true">«</span>
+          <blockquote>
+            <p class="rv__q d">{r.quote}</p>
+            <p class="rv__m">{r.full}</p>
+          </blockquote>
+          <p class="tag muted">{r.who}</p>
+        </li>
+      ))}
+    </ul>
+
+    <div class="sh" data-fade>
+      <div class="sh__bar">
+        <p class="tag">Скриншоты переписок</p>
+        <div class="sh__nav">
+          <button type="button" class="sh__btn sh__btn--prev" data-sh-prev aria-label="Назад"><Ico /></button>
+          <button type="button" class="sh__btn" data-sh-next aria-label="Вперёд"><Ico /></button>
+        </div>
+      </div>
+      <ul class="sh__track" data-sh tabindex="0" aria-label="Скриншоты переписок с клиентами">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <li class="sh__it">
+            <!-- Заменить на <img src="/media/reviews/0N.jpg" alt="Отзыв клиента, имя скрыто" /> -->
+            <div class="ph sh__ph"><span>Скриншот 0{i + 1}</span><span>имя скрыто</span></div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cs {
+    overflow: clip;
+  }
+
+  .cs__title {
+    margin-top: 20px;
+  }
+
+  .k {
+    position: relative;
+    margin-top: clamp(80px, 10vw, 180px);
+  }
+
+  .k dl {
+    display: grid;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .k dt {
+    color: var(--sig);
+  }
+
+  .k dd {
+    max-width: 52ch;
+  }
+
+  .k__head {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(16px, 3vw, 48px);
+    margin-bottom: clamp(32px, 4vw, 64px);
+  }
+
+  .k__n {
+    font-size: clamp(5rem, 3rem + 9vw, 13rem);
+    line-height: 0.78;
+    letter-spacing: -0.07em;
+    transition: transform 0.8s var(--ease), color 0.5s;
+  }
+
+  .k:hover .k__n.outline {
+    color: var(--onyx);
+    transform: translateX(10px);
+  }
+
+  .k__meta {
+    display: grid;
+    gap: 10px;
+    padding-bottom: 0.4em;
+  }
+
+  .k__meta h3 {
+    max-width: 14ch;
+  }
+
+  @media (max-width: 599px) {
+    .k__head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .k__meta h3 {
+      font-size: clamp(1.4rem, 1rem + 2.4vw, 2rem);
+    }
+  }
+
+  /* 01 */
+  .k1__story {
+    display: grid;
+    gap: 24px;
+  }
+
+  .k1__res {
+    margin-top: clamp(40px, 5vw, 80px);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .k1__giant {
+    display: inline-block;
+    padding-left: var(--pad);
+    font-size: clamp(3rem, 13vw, 22rem);
+    line-height: 0.82;
+    letter-spacing: -0.06em;
+  }
+
+  .k1__cap {
+    margin-top: 14px;
+    text-align: right;
+  }
+
+  /* 02 */
+  .k2 {
+    padding-block: clamp(72px, 9vw, 160px);
+  }
+
+  .k2__in {
+    display: grid;
+    gap: 40px;
+  }
+
+  .k2__sticky {
+    display: grid;
+    gap: 14px;
+  }
+
+  .k2__main {
+    display: grid;
+    gap: clamp(40px, 5vw, 72px);
+  }
+
+  .k2__role {
+    font-family: var(--f-display);
+    text-transform: uppercase;
+  }
+
+  .k2__story {
+    display: grid;
+    gap: 22px;
+  }
+
+  .k2__story dd {
+    color: var(--t-onyx-2);
+  }
+
+  .k2__story .lead {
+    color: var(--t-onyx);
+  }
+
+  .k2__res {
+    display: grid;
+    gap: 8px;
+    font-size: clamp(1.9rem, 0.4rem + 5.4vw, 6.2rem);
+    line-height: 0.86;
+    letter-spacing: -0.055em;
+  }
+
+  .k2__lbl {
+    font-family: var(--f-text);
+    letter-spacing: 0.14em;
+    margin-bottom: 8px;
+  }
+
+  .k2__w2 {
+  }
+
+  .k2__out {
+    max-width: 50ch;
+  }
+
+  /* 03 */
+  .k3__stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    padding-block: 2vw;
+  }
+
+  .k3__num {
+    font-size: clamp(5.4rem, 1rem + 21vw, 26rem);
+    line-height: 0.8;
+    letter-spacing: -0.07em;
+    color: var(--onyx);
+    transform-origin: 50% 60%;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .k3__unit {
+    color: var(--sig);
+    font-size: clamp(0.7rem, 0.5rem + 0.6vw, 1rem);
+  }
+
+  .k3__cap {
+    max-width: 26ch;
+    margin: 24px auto 0;
+    text-align: center;
+    font-family: var(--f-display);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .k3__story {
+    display: grid;
+    gap: 24px;
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+
+  @media (min-width: 900px) {
+    .k1__story {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px 6vw;
+      margin-left: 22%;
+    }
+
+    .k2__in {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: 5vw;
+    }
+
+    .k2__sticky {
+      position: sticky;
+      top: calc(var(--hdr) + 24px);
+    }
+
+    .k3__story {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .k3__story dd {
+      font-size: 0.95rem;
+    }
+  }
+
+  /* ——— Отзывы ——— */
+  .rv {
+    margin-top: clamp(100px, 12vw, 220px);
+  }
+
+  .rv__list {
+    display: grid;
+    gap: clamp(56px, 7vw, 120px);
+    margin-top: 40px;
+  }
+
+  .rv__i {
+    position: relative;
+    display: grid;
+    gap: 18px;
+    max-width: 920px;
+    padding-left: clamp(40px, 6vw, 110px);
+  }
+
+  .rv__mark {
+    position: absolute;
+    left: 0;
+    top: -0.08em;
+    font-size: clamp(4rem, 3rem + 5vw, 9rem);
+    line-height: 0.8;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .rv__i:hover .rv__mark {
+    transform: translateX(-8px) rotate(-8deg);
+  }
+
+  .rv__q {
+    font-size: clamp(1.45rem, 0.8rem + 3.6vw, 4.4rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    margin-bottom: 20px;
+  }
+
+  .rv__m {
+    max-width: 40ch;
+    padding-left: 16px;
+    border-left: 2px solid var(--sig);
+    white-space: pre-line;
+    font-size: 0.92rem;
+    color: var(--t-bone-2);
+  }
+
+  @media (min-width: 900px) {
+    .rv__i--2 {
+      margin-left: auto;
+    }
+
+    .rv__i--3 {
+      margin-left: 14%;
+    }
+  }
+
+  /* ——— Скриншоты ——— */
+  .sh {
+    margin-top: clamp(80px, 9vw, 160px);
+  }
+
+  .sh__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1.5px solid var(--onyx);
+  }
+
+  .sh__nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .sh__btn {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 0;
+    background: var(--onyx);
+    color: var(--bone);
+    transition: background 0.4s;
+  }
+
+  .sh__btn:hover {
+    background: var(--sig);
+    color: var(--onyx);
+  }
+
+  .sh__btn :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .sh__btn--prev :global(svg) {
+    transform: scaleX(-1);
+  }
+
+  .sh__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(210px, 60vw, 280px);
+    gap: 12px;
+    margin-top: 20px;
+    margin-inline: calc(-1 * var(--pad));
+    padding-inline: var(--pad);
+    scroll-padding-inline: var(--pad);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .sh__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sh__it {
+    scroll-snap-align: start;
+  }
+
+  .sh__it:nth-child(even) {
+    padding-top: 40px;
+  }
+
+  .sh__ph {
+    aspect-ratio: 9 / 16;
+  }
+</style>

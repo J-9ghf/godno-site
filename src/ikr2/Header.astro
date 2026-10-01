@@ -1,0 +1,445 @@
+---
+import Ico from './Ico.astro';
+import { nav, contacts, hero } from '../data/assistants';
+
+/** Скрытая система сайта — станции маршрута на правом краю экрана */
+const stations = ['Человек', 'Контекст', 'Инструменты', 'Скорость', 'Результат'];
+---
+
+<header class="hd" data-hd>
+  <a class="hd__label" href="#top" aria-label="ИКР.Ассистенты — Институт кадровых решений, в начало">
+    <img src="/brand/ikr-logo.png" width="242" height="56" alt="ИКР — Институт кадровых решений" />
+    <span class="hd__product">ИКР.Ассистенты</span>
+  </a>
+
+  <div class="hd__right">
+    <a class="hd__cta" href="#contact">
+      <span>Заявка</span>
+      <Ico n="ne" />
+    </a>
+    <button class="hd__menu" type="button" aria-expanded="false" aria-controls="nav" data-nav-toggle>
+      <span class="hd__menu-t" data-open-label>Меню</span>
+      <span class="hd__menu-i" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<div class="nv s-sig" id="nav" data-nav hidden>
+  <div class="nv__in frame">
+    <ol class="nv__list">
+      {nav.map((i, idx) => (
+        <li>
+          <a href={i.href} data-nav-link>
+            <span class="nv__n tag">{String(idx + 1).padStart(2, '0')}</span>
+            <span class="nv__t">{i.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <div class="nv__foot">
+      <a class="go go--dark" href="#contact" data-nav-link>
+        <span class="go__t">{hero.cta}</span>
+        <span class="go__a"><Ico /></span>
+      </a>
+      <div class="nv__contacts">
+        <a class="ul" href={contacts.telegramUrl} target="_blank" rel="noopener">Telegram {contacts.telegram}</a>
+        <a class="ul" href={contacts.phoneHref}>{contacts.phone}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Маршрут страницы: прогресс скролла через пять станций -->
+<nav class="rail" aria-hidden="true" data-rail>
+  <span class="rail__line"><i data-rail-fill></i></span>
+  {stations.map((s, i) => (
+    <span class="rail__st" style={`--y:${(i / (stations.length - 1)) * 100}%`} data-rail-st={i / (stations.length - 1)}>
+      <b></b>
+      <em>{s}</em>
+    </span>
+  ))}
+</nav>
+
+<div class="dk" data-dk>
+  <a class="go dk__go" href="#contact">
+    <span class="go__t">{hero.cta}</span>
+    <span class="go__a"><Ico /></span>
+  </a>
+  <a class="dk__tg" href={contacts.telegramUrl} target="_blank" rel="noopener" aria-label="Написать в Telegram"><Ico n="tg" /></a>
+</div>
+
+<style>
+  .hd {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px var(--pad) 0;
+    pointer-events: none;
+    transition: transform 0.7s var(--ease);
+  }
+
+  .hd > * {
+    pointer-events: auto;
+  }
+
+  .hd.is-up:not(.is-open) {
+    transform: translateY(-120%);
+  }
+
+  /* Логотип живёт на «ярлыке» цвета кости — работает на любом фоне, форма знака не меняется */
+  .hd__label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px 10px 12px;
+    background: var(--bone);
+    color: var(--onyx);
+    text-decoration: none;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 14px) 100%, 0 100%);
+  }
+
+  .hd__label img {
+    height: 30px;
+    width: auto;
+  }
+
+  .hd__product {
+    padding-left: 14px;
+    border-left: 1px solid rgb(14 14 12 / 0.3);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .hd__right {
+    display: flex;
+    gap: 6px;
+  }
+
+  .hd__cta,
+  .hd__menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 50px;
+    padding: 0 18px;
+    border: 0;
+    font-family: var(--f-display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .hd__cta {
+    background: var(--sig);
+    color: var(--onyx);
+  }
+
+  .hd__cta svg {
+    width: 16px;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .hd__cta:hover svg {
+    transform: rotate(45deg);
+  }
+
+  .hd__menu {
+    background: var(--onyx);
+    color: var(--t-onyx);
+    box-shadow: inset 0 0 0 1px var(--l-onyx);
+  }
+
+  .hd__menu-i {
+    position: relative;
+    width: 22px;
+    height: 8px;
+  }
+
+  .hd__menu-i i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.6s var(--ease), top 0.6s var(--ease);
+  }
+
+  .hd__menu-i i:first-child {
+    top: 0;
+  }
+
+  .hd__menu-i i:last-child {
+    top: 7px;
+    right: 6px;
+  }
+
+  .hd.is-open .hd__menu-i i:first-child {
+    top: 3.5px;
+    transform: rotate(45deg);
+  }
+
+  .hd.is-open .hd__menu-i i:last-child {
+    top: 3.5px;
+    right: 0;
+    transform: rotate(-45deg);
+  }
+
+  .nv {
+    position: fixed;
+    inset: 0;
+    z-index: 190;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    clip-path: circle(0% at calc(100% - 60px) 36px);
+    transition: clip-path 0.9s var(--ease-io);
+  }
+
+  .nv.is-in {
+    clip-path: circle(150% at calc(100% - 60px) 36px);
+  }
+
+  .nv__in {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    min-height: 100%;
+    padding-block: calc(var(--hdr) + 40px) 32px;
+  }
+
+  .nv__list a {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(12px, 2vw, 28px);
+    padding-block: 4px;
+    text-decoration: none;
+  }
+
+  .nv__t {
+    font-family: var(--f-display);
+    font-size: clamp(1.9rem, 1rem + 4.4vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+    transition: transform 0.6s var(--ease), color 0.3s;
+  }
+
+  .nv__list a:hover .nv__t {
+    transform: translateX(18px);
+    color: var(--bone);
+  }
+
+  .nv.is-in li {
+    animation: nv-in 0.9s var(--ease) both;
+    animation-delay: calc(0.15s + var(--i, 0) * 0.04s);
+  }
+
+  .nv li:nth-child(2) { --i: 1; }
+  .nv li:nth-child(3) { --i: 2; }
+  .nv li:nth-child(4) { --i: 3; }
+  .nv li:nth-child(5) { --i: 4; }
+  .nv li:nth-child(6) { --i: 5; }
+  .nv li:nth-child(7) { --i: 6; }
+  .nv li:nth-child(8) { --i: 7; }
+
+  @keyframes nv-in {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+  }
+
+  .nv__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .nv__contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+  }
+
+  /* ——— Рельс маршрута ——— */
+  .rail {
+    position: fixed;
+    right: 18px;
+    top: 50%;
+    z-index: 150;
+    height: min(52vh, 460px);
+    width: 14px;
+    transform: translateY(-50%);
+    mix-blend-mode: difference;
+    color: #fff;
+    display: none;
+  }
+
+  .rail__line {
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgb(255 255 255 / 0.3);
+  }
+
+  .rail__line i {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    transform: scaleY(var(--p, 0));
+    transform-origin: top;
+  }
+
+  .rail__st {
+    position: absolute;
+    left: 0;
+    top: var(--y);
+    width: 13px;
+    height: 13px;
+    margin-top: -6.5px;
+  }
+
+  .rail__st b {
+    position: absolute;
+    inset: 3px;
+    border: 1px solid #fff;
+    background: #000;
+    transform: rotate(45deg);
+    transition: background 0.4s, transform 0.5s var(--ease);
+  }
+
+  .rail__st.is-on b {
+    background: #fff;
+    transform: rotate(45deg) scale(1.3);
+  }
+
+  .rail__st em {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    translate: 0 -50%;
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+    font-style: normal;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.4s;
+    transform: none;
+    white-space: nowrap;
+  }
+
+  .rail__st.is-cur em {
+    opacity: 1;
+  }
+
+  @media (min-width: 1100px) {
+    .rail {
+      display: block;
+    }
+  }
+
+  /* ——— Мобильный док ——— */
+  .dk {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 180;
+    display: none;
+    gap: 6px;
+    transform: translateY(150%);
+    transition: transform 0.7s var(--ease);
+  }
+
+  .dk.is-on {
+    transform: none;
+  }
+
+  .dk__go {
+    flex: 1;
+    min-width: 0;
+    justify-content: space-between;
+    min-height: 58px;
+    font-size: 0.74rem;
+  }
+
+  .dk__go .go__t {
+    padding: 0 16px;
+    white-space: nowrap;
+  }
+
+  .dk__go .go__a {
+    width: 56px;
+  }
+
+  .dk__tg {
+    display: grid;
+    place-items: center;
+    flex: 0 0 58px;
+    background: var(--onyx);
+    color: var(--t-onyx);
+    box-shadow: inset 0 0 0 1px var(--l-onyx);
+  }
+
+  .dk__tg svg {
+    width: 24px;
+  }
+
+  @media (max-width: 767px) {
+    .hd {
+      padding-top: 8px;
+    }
+
+    .hd__label img {
+      height: 24px;
+    }
+
+    .hd__label {
+      gap: 10px;
+      padding: 8px 14px 8px 10px;
+    }
+
+    .hd__product {
+      padding-left: 10px;
+      font-size: 0.56rem;
+    }
+
+    .hd__cta {
+      display: none;
+    }
+
+    .hd__menu {
+      height: 44px;
+      padding: 0 14px;
+    }
+
+    .dk {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 370px) {
+    .hd__product {
+      display: none;
+    }
+
+    .hd__menu-t {
+      display: none;
+    }
+  }
+</style>

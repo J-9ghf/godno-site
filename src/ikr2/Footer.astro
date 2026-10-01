@@ -1,0 +1,151 @@
+---
+import { contacts, footer, nav } from '../data/assistants';
+const year = new Date().getFullYear();
+const loop = Array.from({ length: 4 });
+---
+
+<footer class="ft s-onyx">
+  <p class="sr-only">{footer.signature}</p>
+  <div class="ft__marquee" aria-hidden="true">
+    <div class="ft__track">
+      {loop.map((_, i) => (
+        <span class:list={['d', i % 2 ? 'outline' : 'sig']}>{footer.signature}&nbsp;◆&nbsp;</span>
+      ))}
+    </div>
+  </div>
+
+  <div class="frame ft__grid">
+    <div class="ft__brand">
+      <span class="ft__label">
+        <img src="/brand/ikr-logo.png" width="242" height="56" alt="ИКР — Институт кадровых решений" loading="lazy" />
+      </span>
+      <p class="tag">{footer.brand}</p>
+    </div>
+
+    <ul class="ft__col">
+      <li class="tag muted">Контакты</li>
+      <li>Telegram: <a href={contacts.telegramUrl} target="_blank" rel="noopener">{contacts.telegram}</a></li>
+      <li>Телефон: <a href={contacts.phoneHref}>{contacts.phone}</a></li>
+      <li>Сайт: <a href={contacts.siteUrl} target="_blank" rel="noopener">{contacts.site}</a></li>
+    </ul>
+
+    <nav aria-label="Разделы сайта">
+      <ul class="ft__col ft__nav">
+        <li class="tag muted">Разделы</li>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="frame ft__bottom">
+    <span>© {year} {footer.brand}</span>
+    <a href="/privacy">Политика конфиденциальности</a>
+    <span class="ft__sig">{footer.signature}</span>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    padding-block: clamp(56px, 7vw, 120px) calc(28px + env(safe-area-inset-bottom));
+    overflow: hidden;
+  }
+
+  .ft__marquee {
+    overflow: hidden;
+    padding-block: 10px;
+  }
+
+  .ft__track {
+    display: flex;
+    width: max-content;
+    animation: mq 40s linear infinite;
+  }
+
+  .ft__track span {
+    font-size: clamp(3rem, 1rem + 8vw, 11rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+  }
+
+  @keyframes mq {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .ft__grid {
+    display: grid;
+    gap: 36px;
+    margin-top: clamp(56px, 7vw, 112px);
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+
+  .ft__brand {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    align-content: start;
+  }
+
+  .ft__label {
+    display: block;
+    padding: 12px 18px 12px 14px;
+    background: var(--bone);
+    clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 14px) 100%, 0 100%);
+  }
+
+  .ft__label img {
+    height: 38px;
+    width: auto;
+  }
+
+  .ft__col {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+  }
+
+  .ft__col .tag {
+    margin-bottom: 8px;
+  }
+
+  .ft a {
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .ft a:hover {
+    color: var(--sig);
+  }
+
+  .ft__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    margin-top: 56px;
+    font-size: 0.85rem;
+    color: var(--t-onyx-2);
+  }
+
+  .ft__sig {
+    margin-left: auto;
+  }
+
+  @media (min-width: 768px) {
+    .ft__grid {
+      grid-template-columns: 2fr 1.4fr 1fr;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .ft {
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    .ft__sig {
+      margin-left: 0;
+    }
+  }
+</style>

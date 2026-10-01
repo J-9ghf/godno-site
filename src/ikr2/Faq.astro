@@ -1,0 +1,153 @@
+---
+import Words from '../ikr/Words.astro';
+import { faq, contacts } from '../data/assistants';
+---
+
+<section class="fq s-bone sec" id="faq" aria-labelledby="fq-title">
+  <div class="frame">
+    <div class="fq__head">
+      <p class="coord" data-fade>09 / 09 — Вопросы</p>
+      <h2 class="d d-2" id="fq-title" data-words><Words text="Вопросы" /></h2>
+    </div>
+
+    <div class="fq__list">
+      {faq.map((f, i) => (
+        <details class="q" data-qa>
+          <summary>
+            <span class="q__n d outline" aria-hidden="true">0{i + 1}</span>
+            <span class="q__q">{f.q}</span>
+            <span class="q__x" aria-hidden="true"><i></i><i></i></span>
+          </summary>
+          <div class="q__a" data-qa-body>
+            <p>{f.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <p class="fq__more muted" data-fade>
+      Остался вопрос — напишите в Telegram{' '}
+      <a class="ul" href={contacts.telegramUrl} target="_blank" rel="noopener">{contacts.telegram}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .fq__head {
+    display: grid;
+    gap: 22px;
+    margin-bottom: clamp(40px, 5vw, 80px);
+  }
+
+  .q {
+    border-top: 1.5px solid var(--onyx);
+  }
+
+  .q:last-child {
+    border-bottom: 1.5px solid var(--onyx);
+  }
+
+  .q summary {
+    display: grid;
+    grid-template-columns: clamp(72px, 12vw, 200px) 1fr auto;
+    align-items: center;
+    gap: clamp(12px, 2vw, 32px);
+    min-height: 72px;
+    padding-block: clamp(18px, 2.4vw, 34px);
+    list-style: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .q summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .q__n {
+    font-size: clamp(2.8rem, 1.6rem + 4.2vw, 6.5rem);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    transition: color 0.5s var(--ease), transform 0.7s var(--ease);
+  }
+
+  .q__q {
+    font-family: var(--f-display);
+    font-size: clamp(1rem, 0.85rem + 0.9vw, 1.7rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .q summary:hover .q__q {
+    transform: translateX(8px);
+  }
+
+  .q summary:hover .q__n,
+  .q[open] .q__n {
+    color: var(--sig);
+    --ol: var(--sig);
+  }
+
+  .q__x {
+    position: relative;
+    width: 28px;
+    height: 28px;
+  }
+
+  .q__x i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    margin-top: -1px;
+    background: var(--onyx);
+    transition: transform 0.7s var(--ease);
+  }
+
+  .q__x i:last-child {
+    transform: rotate(90deg);
+  }
+
+  .q[open] .q__x i:first-child {
+    transform: rotate(180deg);
+  }
+
+  .q[open] .q__x i:last-child {
+    transform: rotate(0deg);
+  }
+
+  .q__a {
+    overflow: hidden;
+  }
+
+  .q__a p {
+    max-width: 56ch;
+    padding: 0 0 clamp(26px, 3vw, 44px);
+    font-size: var(--g-5);
+    line-height: 1.45;
+  }
+
+  .fq__more {
+    margin-top: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .q__a p {
+      margin-left: calc(clamp(72px, 12vw, 200px) + clamp(12px, 2vw, 32px));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .fq__head {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .fq__head .coord {
+      align-self: start;
+    }
+  }
+</style>

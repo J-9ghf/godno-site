@@ -1,0 +1,201 @@
+---
+import Words from '../ikr/Words.astro';
+import { steps } from '../data/assistants';
+---
+
+<section class="pr s-sig sec" id="process" aria-labelledby="pr-title" data-pr>
+  <div class="frame">
+    <p class="coord" data-fade>06 / 09 — Как мы работаем</p>
+    <h2 class="pr__title d d-2" id="pr-title" data-words><Words text="Как мы работаем" /></h2>
+
+    <div class="pr__grid">
+      <div class="pr__sticky" aria-hidden="true">
+        <div class="pr__num d">
+          <span>0</span>
+          <span class="pr__roll"><span class="pr__strip" data-pr-strip>{steps.map((_, i) => <span>{i + 1}</span>)}</span></span>
+        </div>
+        <p class="pr__of tag">из 05</p>
+      </div>
+
+      <ol class="pr__steps" data-pr-steps>
+        <span class="pr__route" aria-hidden="true"><i data-pr-fill></i></span>
+        {steps.map((s, i) => (
+          <li class="ps" data-pr-step>
+            <span class="ps__dot" aria-hidden="true"></span>
+            <span class="ps__n d" aria-hidden="true">0{i + 1}</span>
+            <div class="ps__body">
+              {s.mark ? <span class="ps__mark tag">{s.mark}</span> : <span class="ps__mark ps__mark--empty tag">Шаг 0{i + 1}</span>}
+              <h3 class="d d-3"><span class="sr-only">Шаг {i + 1}. </span>{s.title}</h3>
+              <p class="lead">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pr {
+    overflow: clip;
+  }
+
+  .pr__title {
+    margin-top: 28px;
+    max-width: 10ch;
+  }
+
+  .pr__grid {
+    display: grid;
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+
+  .pr__sticky {
+    display: none;
+  }
+
+  .pr__steps {
+    position: relative;
+    padding-left: 34px;
+  }
+
+  .pr__route {
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: rgb(14 14 12 / 0.18);
+  }
+
+  .pr__route i {
+    position: absolute;
+    inset: 0;
+    background: var(--onyx);
+    transform: scaleY(var(--p, 0));
+    transform-origin: top;
+  }
+
+  .ps {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    padding-bottom: clamp(64px, 9vw, 140px);
+  }
+
+  .ps:last-child {
+    padding-bottom: 0;
+  }
+
+  .ps__dot {
+    position: absolute;
+    left: -34px;
+    top: 10px;
+    width: 15px;
+    height: 15px;
+    border: 2px solid var(--onyx);
+    background: var(--sig);
+    transform: rotate(45deg);
+    transition: background 0.4s, transform 0.6s var(--ease);
+  }
+
+  .ps__n {
+    font-size: clamp(4.6rem, 3rem + 8vw, 8rem);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+  }
+
+  .ps__body {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+
+  .ps__body h3 {
+    max-width: 14ch;
+  }
+
+  .ps__body p {
+    max-width: 36ch;
+    color: rgb(14 14 12 / 0.78);
+  }
+
+  .ps__mark {
+    padding: 7px 10px;
+    background: var(--onyx);
+    color: var(--sig);
+  }
+
+  .ps__mark--empty {
+    background: transparent;
+    color: var(--onyx);
+    box-shadow: inset 0 0 0 1.5px var(--onyx);
+  }
+
+  :global(html.js:not(.reduced)) .ps:not(.is-on) .ps__body {
+    opacity: 0.28;
+    transform: translateY(16px);
+  }
+
+  :global(.ps.is-on) .ps__dot {
+    background: var(--onyx);
+    transform: rotate(45deg) scale(1.3);
+  }
+
+  @media (min-width: 1024px) {
+    .pr__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 4vw;
+    }
+
+    .pr__sticky {
+      display: block;
+      position: sticky;
+      top: calc(var(--hdr) + 4vh);
+      align-self: start;
+    }
+
+    .pr__num {
+      display: flex;
+      font-size: clamp(14rem, 26vw, 30rem);
+      line-height: 0.8;
+      letter-spacing: -0.08em;
+    }
+
+    .pr__roll {
+      display: block;
+      height: 0.8em;
+      overflow: hidden;
+    }
+
+    .pr__strip {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.9s var(--ease);
+    }
+
+    .pr__strip span {
+      display: block;
+      height: 0.8em;
+    }
+
+    .pr__of {
+      margin-top: 16px;
+    }
+
+    .ps {
+      min-height: 62vh;
+      align-content: center;
+      padding-bottom: 0;
+    }
+
+    .ps__n {
+      display: none;
+    }
+
+    .ps__dot {
+      top: 50%;
+    }
+  }
+</style>

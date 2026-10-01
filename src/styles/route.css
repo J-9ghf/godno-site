@@ -1,0 +1,476 @@
+/* ИКР.Ассистенты — вариант 2, концепция «Маршрут».
+   Оникс + кость + один сигнальный киноварный акцент. Широкий гротеск Unbounded как графический объект,
+   Golos Text — спокойный текст. Скрытая система: маршрут ЧЕЛОВЕК → КОНТЕКСТ → ИНСТРУМЕНТЫ → СКОРОСТЬ → РЕЗУЛЬТАТ
+   (метки, координаты, линии, номера станций). */
+
+:root {
+  --onyx: #0e0e0c;
+  --onyx-2: #1a1a17;
+  --bone: #e7e3d8;
+  --bone-2: #dbd6c8;
+  --sig: #ff4d1a;
+  --sig-deep: #e03a0a;
+
+  --t-bone: #0e0e0c;
+  --t-bone-2: #4c4a43;
+  --t-onyx: #e7e3d8;
+  --t-onyx-2: rgb(231 227 216 / 0.58);
+  --l-bone: rgb(14 14 12 / 0.16);
+  --l-onyx: rgb(231 227 216 / 0.16);
+
+  --f-display: 'Unbounded', system-ui, sans-serif;
+  --f-text: 'Golos Text Variable', 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --pad: clamp(16px, 3.4vw, 56px);
+  --sec: clamp(96px, 7rem + 6vw, 240px);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
+  --hdr: 68px;
+
+  /* giant / display шкала: от ширины экрана, Unbounded широкий — коэффициенты ниже обычных */
+  --g-1: clamp(3.1rem, 0.4rem + 13.2vw, 17rem);
+  --g-2: clamp(2.2rem, 0.6rem + 7.4vw, 9.6rem);
+  --g-3: clamp(1.7rem, 0.8rem + 4.2vw, 5.4rem);
+  --g-4: clamp(1.3rem, 0.9rem + 1.9vw, 2.6rem);
+  --g-5: clamp(1.08rem, 0.95rem + 0.6vw, 1.45rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: var(--hdr);
+}
+
+body {
+  margin: 0;
+  background: var(--onyx);
+  color: var(--t-onyx);
+  font-family: var(--f-text);
+  font-size: clamp(1rem, 0.96rem + 0.16vw, 1.1rem);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--sig);
+  color: var(--onyx);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sig);
+  outline-offset: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 8px;
+  z-index: 300;
+  padding: 10px 14px;
+  background: var(--sig);
+  color: var(--onyx);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* ——— Поверхности ——— */
+.s-onyx {
+  background: var(--onyx);
+  color: var(--t-onyx);
+  --line: var(--l-onyx);
+  --text-2: var(--t-onyx-2);
+  --ol: var(--t-onyx);
+  --olbg: var(--onyx);
+}
+
+.s-bone {
+  background: var(--bone);
+  color: var(--t-bone);
+  --line: var(--l-bone);
+  --text-2: var(--t-bone-2);
+  --ol: var(--onyx);
+  --olbg: var(--bone);
+}
+
+.s-sig {
+  background: var(--sig);
+  color: var(--onyx);
+  --line: rgb(14 14 12 / 0.22);
+  --text-2: rgb(14 14 12 / 0.72);
+  --ol: var(--onyx);
+  --olbg: var(--sig);
+}
+
+.frame {
+  position: relative;
+  padding-inline: var(--pad);
+}
+
+.sec {
+  position: relative;
+  padding-block: var(--sec);
+}
+
+/* ——— Типографика ——— */
+.d {
+  font-family: var(--f-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  line-height: 0.88;
+}
+
+.d-1 {
+  font-size: var(--g-1);
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+}
+
+.d-2 {
+  font-size: var(--g-2);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+}
+
+.d-3 {
+  font-size: var(--g-3);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.d-4 {
+  font-family: var(--f-display);
+  font-size: var(--g-4);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  font-size: var(--g-5);
+  line-height: 1.42;
+  font-weight: 450;
+}
+
+.muted {
+  color: var(--text-2);
+}
+
+.sig {
+  color: var(--sig);
+}
+
+/* Контур без артефактов перекрывающихся контуров шрифта: заливка цветом фона + кольцо теней */
+.outline {
+  --ow: max(1.5px, 0.012em);
+  color: var(--olbg, transparent);
+  text-shadow: calc(var(--ow) * 1) calc(var(--ow) * 0) 0 var(--ol), calc(var(--ow) * -1) calc(var(--ow) * 0) 0 var(--ol), calc(var(--ow) * 0) calc(var(--ow) * 1) 0 var(--ol), calc(var(--ow) * 0) calc(var(--ow) * -1) 0 var(--ol), calc(var(--ow) * 0.7) calc(var(--ow) * 0.7) 0 var(--ol), calc(var(--ow) * -0.7) calc(var(--ow) * 0.7) 0 var(--ol), calc(var(--ow) * 0.7) calc(var(--ow) * -0.7) 0 var(--ol), calc(var(--ow) * -0.7) calc(var(--ow) * -0.7) 0 var(--ol), calc(var(--ow) * 0.92) calc(var(--ow) * 0.38) 0 var(--ol), calc(var(--ow) * -0.92) calc(var(--ow) * 0.38) 0 var(--ol), calc(var(--ow) * 0.92) calc(var(--ow) * -0.38) 0 var(--ol), calc(var(--ow) * -0.92) calc(var(--ow) * -0.38) 0 var(--ol), calc(var(--ow) * 0.38) calc(var(--ow) * 0.92) 0 var(--ol), calc(var(--ow) * -0.38) calc(var(--ow) * 0.92) 0 var(--ol), calc(var(--ow) * 0.38) calc(var(--ow) * -0.92) 0 var(--ol), calc(var(--ow) * -0.38) calc(var(--ow) * -0.92) 0 var(--ol);
+}
+
+/* Маленькие технические подписи */
+.tag {
+  font-family: var(--f-text);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.coord {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.coord::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.coord--sig::before {
+  background: var(--sig);
+  border-color: var(--sig);
+}
+
+.vtext {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* ——— CTA: прямоугольный блок с «маршрутной» стрелкой ——— */
+.go {
+  --bg: var(--sig);
+  --fg: var(--onyx);
+  --hov: var(--t-onyx);
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  min-height: 64px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-display);
+  font-size: clamp(0.82rem, 0.75rem + 0.25vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.go::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--hov);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.7s var(--ease);
+}
+
+.go:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.go__t {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.go__a {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  border-left: 1.5px solid currentColor;
+}
+
+.go__a svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.7s var(--ease);
+}
+
+.go:hover .go__a svg {
+  transform: translateX(6px);
+}
+
+.go--dark {
+  --bg: var(--onyx);
+  --fg: var(--t-onyx);
+  --hov: var(--sig);
+}
+
+.go--dark:hover {
+  color: var(--onyx);
+}
+
+.ul {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-block: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ul::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1.5px;
+  background: currentColor;
+  transform-origin: right;
+  transition: transform 0.6s var(--ease);
+}
+
+.ul:hover::after {
+  transform: scaleX(0);
+}
+
+.ul svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.6s var(--ease);
+}
+
+.ul:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* ——— Плейсхолдер ——— */
+.ph {
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  padding: 20px;
+  border: 1px dashed currentColor;
+  color: var(--text-2);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* ——— Слова-маски ——— */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.04em 0.02em 0.1em;
+  margin: -0.04em -0.02em -0.1em;
+}
+
+.w > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+html.js:not(.reduced) [data-words] .w > span {
+  transform: translateY(110%);
+}
+
+html.js:not(.reduced) [data-fade] {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+html.js:not(.reduced) [data-fade-group] > * {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* ——— Курсор (только мышь) ——— */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 400;
+  display: none;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.cursor::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.45s var(--ease);
+}
+
+.cursor span {
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cursor.is-hover::before {
+  transform: scale(3.4);
+}
+
+.cursor.is-label span {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.js:not(.reduced) .cursor {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

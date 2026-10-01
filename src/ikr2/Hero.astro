@@ -1,0 +1,282 @@
+---
+import Words from '../ikr/Words.astro';
+import Ico from './Ico.astro';
+import { hero, contacts } from '../data/assistants';
+
+const [f1, f2, f3] = hero.facts;
+---
+
+<section class="hr s-onyx" id="top" aria-labelledby="hr-title" data-hr>
+  <div class="hr__in frame" data-hr-in>
+    <div class="hr__top" data-hr-fade>
+      <span class="coord coord--sig">Маршрут 01 / 05 — Человек</span>
+      <span class="tag muted hr__eyebrow">{hero.eyebrow}</span>
+    </div>
+
+    <h1 class="hr__title" id="hr-title" data-words data-hr-title>
+      <span class="hr__small d d-3"><Words text="Ассистент," /><br class="hr__br" /> <Words text="с которым вы успеваете" /></span>
+      <span class="hr__giant hr__giant--a d" data-fit="0.72" data-hr-a><Words text="в разы" /></span>
+      <span class="hr__giant hr__giant--b d outline" data-fit="0.74" data-hr-b><Words text="больше" /></span>
+    </h1>
+
+    <!-- Маршрут между фактами -->
+    <svg class="hr__route" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M40 330 C 260 330, 300 120, 520 140 S 820 300, 960 60" data-hr-route />
+    </svg>
+
+    <ul class="hr__facts" aria-label="Факты">
+      {[f1, f2, f3].map((f, i) => (
+        <li class:list={['fx', `fx--${i + 1}`]} data-hr-fade>
+          <span class="fx__pin" aria-hidden="true"></span>
+          <span class="fx__v d" data-count>{f.value}</span>
+          <span class="fx__c"><b>{f.unit}</b> {f.caption}</span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="hr__base">
+      <div class="hr__copy" data-hr-fade>
+        <p class="lead">{hero.subtitle}</p>
+        <p class="muted">{hero.addition}</p>
+      </div>
+      <div class="hr__act" data-hr-fade>
+        <a class="go" href="#contact" data-cursor-text="Заявка">
+          <span class="go__t">{hero.cta}</span>
+          <span class="go__a"><Ico /></span>
+        </a>
+        <a class="ul" href={contacts.telegramUrl} target="_blank" rel="noopener">{hero.secondary} <Ico n="ne" /></a>
+      </div>
+    </div>
+
+    <a class="hr__scroll vtext tag muted" href="#why" aria-label="К следующему разделу">Листайте ↓</a>
+  </div>
+</section>
+
+<style>
+  .hr {
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .hr__in {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding-top: calc(var(--hdr) + clamp(28px, 4vw, 56px));
+    padding-bottom: clamp(24px, 3vw, 40px);
+    transform-origin: 50% 0;
+  }
+
+  .hr__top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 40px;
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .hr__eyebrow {
+    max-width: 36ch;
+    text-align: right;
+  }
+
+  .hr__title {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    font-weight: inherit;
+  }
+
+  .hr__small {
+    display: block;
+    font-size: var(--g-4);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin-bottom: 0.6em;
+  }
+
+  .hr__giant {
+    display: block;
+    white-space: nowrap;
+    line-height: 0.8;
+    letter-spacing: -0.055em;
+    will-change: transform;
+  }
+
+  .hr__giant--a {
+    font-size: 16vw;
+    color: var(--sig);
+  }
+
+  .hr__giant--b {
+    font-size: 19vw;
+    align-self: flex-end;
+    margin-top: 0.02em;
+  }
+
+  .hr__route {
+    position: absolute;
+    left: var(--pad);
+    right: var(--pad);
+    top: 30%;
+    height: 50%;
+    width: calc(100% - 2 * var(--pad));
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hr__route path {
+    fill: none;
+    stroke: var(--sig);
+    stroke-width: 1.2;
+    stroke-dasharray: 3 7;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.7;
+  }
+
+  .hr__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .fx {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .fx__pin {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    background: var(--sig);
+    transform: rotate(45deg);
+  }
+
+  .fx__v {
+    font-size: clamp(1.7rem, 1rem + 2.6vw, 3.4rem);
+    letter-spacing: -0.05em;
+    color: var(--sig);
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fx__c {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--text-2);
+  }
+
+  .fx__c b {
+    display: block;
+    color: var(--t-onyx);
+    font-weight: 600;
+  }
+
+  .hr__base {
+    display: grid;
+    gap: 24px;
+    margin-top: auto;
+    padding-top: clamp(28px, 4vw, 56px);
+  }
+
+  .hr__copy .lead {
+    max-width: 30ch;
+    margin-bottom: 10px;
+  }
+
+  .hr__copy .muted {
+    max-width: 44ch;
+    font-size: 0.95rem;
+  }
+
+  .hr__act {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 28px;
+  }
+
+  .hr__scroll {
+    display: none;
+    position: absolute;
+    left: calc(var(--pad) * 0.35);
+    bottom: 40px;
+    text-decoration: none;
+  }
+
+  @media (max-width: 767px) {
+    .hr__eyebrow {
+      text-align: left;
+    }
+
+    .hr__br {
+      display: none;
+    }
+
+    .hr__route {
+      display: none;
+    }
+
+    .fx__c {
+      font-size: 0.7rem;
+    }
+
+    .hr__act .go {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hr__small {
+      max-width: 22ch;
+    }
+
+    .hr__base {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      border-top: 1px solid var(--line);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    /* Факты «плавают» поверх гигантской типографики */
+    .hr__facts {
+      position: absolute;
+      inset: 0;
+      display: block;
+      margin: 0;
+      pointer-events: none;
+    }
+
+    .fx {
+      position: absolute;
+      width: min(12vw, 190px);
+      pointer-events: auto;
+    }
+
+    .hr__small {
+      align-self: flex-start;
+      margin: 0 0 0.5em;
+    }
+
+    .hr__scroll {
+      display: block;
+    }
+  }
+</style>

@@ -1,0 +1,265 @@
+---
+import Ico from './Ico.astro';
+import { finalCta, contacts } from '../data/assistants';
+
+const lines = ['Расскажите,', 'что сейчас', 'не получается'];
+---
+
+<section class="fn s-sig" id="contact" aria-labelledby="fn-title" data-fn>
+  <div class="frame fn__in">
+    <p class="coord">Финиш маршрута — Результат</p>
+
+    <h2 class="fn__title d" id="fn-title" data-words data-fit-group="1">
+      {lines.map((l, i) => (
+        <span class:list={['fn__l', `fn__l--${i + 1}`]}>
+          {l.split(' ').map((w, j, a) => (
+            <Fragment><span class="w"><span>{w}</span></span>{j < a.length - 1 ? ' ' : ''}</Fragment>
+          ))}
+        </span>
+      ))}
+    </h2>
+
+    <div class="fn__grid">
+      <div class="fn__aside">
+        <p class="lead" data-fade>{finalCta.text}</p>
+        <div class="fn__alt" data-fade>
+          <a class="ul" href={contacts.telegramUrl} target="_blank" rel="noopener">Telegram {contacts.telegram} <Ico n="ne" /></a>
+          <a class="ul" href={contacts.phoneHref}>{contacts.phone}</a>
+        </div>
+      </div>
+
+      <form class="fm" data-form novalidate data-fade>
+        <div class="fm__fields" data-form-fields>
+          <label class="fd fd--name">
+            <span class="fd__l tag">01 — {finalCta.fields.name}</span>
+            <input type="text" name="name" autocomplete="name" required />
+            <em class="fd__e">Как к вам обращаться?</em>
+          </label>
+          <label class="fd fd--contact">
+            <span class="fd__l tag">02 — {finalCta.fields.contact}</span>
+            <input type="text" name="contact" autocomplete="tel" required />
+            <em class="fd__e">Оставьте телефон или ник в Telegram</em>
+          </label>
+          <label class="fd fd--msg">
+            <span class="fd__l tag">03 — {finalCta.fields.message}</span>
+            <textarea name="message" rows="3"></textarea>
+          </label>
+
+          <label class="cn">
+            <input type="checkbox" name="consent" required />
+            <span class="cn__b" aria-hidden="true"></span>
+            <span>Согласен(на) на обработку персональных данных и с <a href="/privacy">политикой конфиденциальности</a></span>
+          </label>
+
+          <button class="go go--dark fm__go" type="submit" data-cursor-text="Отправить">
+            <span class="go__t">{finalCta.button}</span>
+            <span class="go__a"><Ico /></span>
+          </button>
+        </div>
+
+        <div class="fm__ok" data-form-ok hidden tabindex="-1">
+          <p class="d d-2">Спасибо.</p>
+          <p class="lead">Заявка у нас. Свяжемся с вами по указанному контакту. Если срочно — Telegram {contacts.telegram}.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fn {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fn__in {
+    padding-block: calc(var(--sec) * 0.8) var(--sec);
+  }
+
+  .fn__title {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    font-size: clamp(2.5rem, 0.4rem + 10.4vw, 14rem);
+    line-height: 0.84;
+    letter-spacing: -0.06em;
+  }
+
+  .fn__l {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .fn__l--2 {
+    align-self: flex-end;
+  }
+
+  .fn__l--3 {
+    color: var(--bone);
+  }
+
+  .fn__grid {
+    display: grid;
+    gap: 48px;
+    margin-top: clamp(48px, 6vw, 110px);
+  }
+
+  .fn__aside .lead {
+    max-width: 36ch;
+  }
+
+  .fn__alt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 28px;
+  }
+
+  /* ——— Форма как продолжение типографики ——— */
+  .fm__fields {
+    display: grid;
+    gap: 26px 28px;
+  }
+
+  .fd {
+    position: relative;
+    display: grid;
+    gap: 6px;
+  }
+
+  .fd__l {
+    color: rgb(14 14 12 / 0.7);
+  }
+
+  .fd input,
+  .fd textarea {
+    width: 100%;
+    padding: 6px 0 10px;
+    border: 0;
+    border-bottom: 2px solid var(--onyx);
+    border-radius: 0;
+    background: transparent;
+    font-family: var(--f-display);
+    font-size: clamp(1.3rem, 1rem + 1.4vw, 2.3rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .fd textarea {
+    font-family: var(--f-text);
+    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.3rem);
+    font-weight: 500;
+    letter-spacing: 0;
+    resize: vertical;
+    min-height: 96px;
+  }
+
+  .fd input:focus,
+  .fd textarea:focus {
+    border-color: var(--bone);
+    background: rgb(14 14 12 / 0.06);
+  }
+
+  .fd__e {
+    display: none;
+    font-style: normal;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--onyx);
+  }
+
+  :global(.fd.is-invalid) input {
+    border-bottom-style: dashed;
+  }
+
+  :global(.fd.is-invalid) .fd__e {
+    display: block;
+  }
+
+  :global(.fd.is-invalid) .fd__e::before {
+    content: '◆ ';
+  }
+
+  .cn {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+
+  .cn input {
+    position: absolute;
+    opacity: 0;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+  }
+
+  .cn__b {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--onyx);
+    transition: background 0.3s;
+  }
+
+  .cn input:checked + .cn__b {
+    background: var(--onyx) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3L9.5 3.8' fill='none' stroke='%23ff4d1a' stroke-width='2'/%3E%3C/svg%3E") center / 14px no-repeat;
+  }
+
+  .cn input:focus-visible + .cn__b {
+    outline: 2px solid var(--onyx);
+    outline-offset: 3px;
+  }
+
+  :global(.cn.is-invalid) .cn__b {
+    border-style: dashed;
+  }
+
+  .fm__go {
+    width: 100%;
+    min-height: 76px;
+    justify-content: space-between;
+    font-size: clamp(0.85rem, 0.75rem + 0.4vw, 1.1rem);
+  }
+
+  .fm__go .go__a {
+    width: 76px;
+  }
+
+  .fm__ok {
+    display: grid;
+    gap: 16px;
+    outline: none;
+  }
+
+  .fm__ok[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .fm__fields {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .fd--msg,
+    .cn,
+    .fm__go {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .fn__grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: 6vw;
+    }
+  }
+</style>
