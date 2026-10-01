@@ -2,7 +2,7 @@
 import SecTag from './SecTag.astro';
 import Words from './Words.astro';
 import Arrow from './Arrow.astro';
-import { cases, reviews, reviewShots } from '../data/assistants';
+import { cases, reviews, reviewMessages, reviewShots } from '../data/assistants';
 ---
 
 <section class="section cases" id="cases" aria-labelledby="cases-title">
@@ -42,7 +42,7 @@ import { cases, reviews, reviewShots } from '../data/assistants';
     </div>
 
     <div class="reviews">
-      <h3 class="label reviews__title" data-reveal>Отзывы клиентов · имена скрыты</h3>
+      <h3 class="label reviews__title" data-reveal>Отзывы клиентов</h3>
       <ul class="reviews__grid" data-stagger>
         {reviews.map((r) => (
           <li class="review" data-tilt>
@@ -51,6 +51,17 @@ import { cases, reviews, reviewShots } from '../data/assistants';
               <p class="review__msg">{r.full}</p>
             </blockquote>
             <p class="review__who label t-muted">{r.who}</p>
+          </li>
+        ))}
+      </ul>
+
+      <ul class="messages" data-stagger>
+        {reviewMessages.map((m) => (
+          <li class="message" data-tilt>
+            <blockquote>
+              <p class="message__text">{m}</p>
+            </blockquote>
+            <p class="label t-muted">Клиент ИКР</p>
           </li>
         ))}
       </ul>
@@ -281,6 +292,60 @@ import { cases, reviews, reviewShots } from '../data/assistants';
 
   .review:hover .review__msg {
     background: var(--paper);
+  }
+
+  /* ——— Отзывы-сообщения (без крупной цитаты) ——— */
+  .messages {
+    columns: 1;
+    column-gap: 14px;
+    margin-top: 14px;
+  }
+
+  .message {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 14px;
+    padding: clamp(22px, 2.2vw, 32px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-l);
+    break-inside: avoid;
+    transition: transform 0.7s var(--ease), background 0.5s;
+  }
+
+  .message:hover {
+    background: var(--paper-2);
+  }
+
+  .message blockquote {
+    margin: 0;
+  }
+
+  .message__text {
+    position: relative;
+    padding: 14px 16px;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--paper-2);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-line;
+    transition: background 0.5s;
+  }
+
+  .message:hover .message__text {
+    background: var(--paper);
+  }
+
+  @media (min-width: 768px) {
+    .messages {
+      columns: 2;
+      margin-top: 40px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .messages {
+      columns: 3;
+    }
   }
 
   /* ——— Скриншоты ——— */

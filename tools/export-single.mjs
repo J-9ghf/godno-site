@@ -32,7 +32,7 @@ const inline = `<script>${bundle.replace(/<\/script/g, '<\\/script')}</script>`;
 html = html.replace(/<script type="module" src="[^"]+"><\/script>/, '').replace(/<\/body>/, () => `${inline}</body>`);
 
 // 3. Изображения → data URI
-html = html.replace(/(src|content)="(\/brand\/[^"]+\.png)"/g, (_, attr, p) => `${attr}="${dataUri(p)}"`);
+html = html.replace(/(src|content)="(\/(?:brand|media)\/[^"]+\.(?:png|jpg))"/g, (_, attr, p) => `${attr}="${dataUri(p)}"`);
 
 // 4. Убираем то, что хостинг задаёт сам: doctype/html/head/body, иконки, canonical
 html = html
