@@ -27,6 +27,18 @@ const index = [
         Подбор <span class="hl">ключевых сотрудников</span>
       </h2>
 
+      <!-- Компьютер: фото слева, заголовок и оглавление справа. Планшет и телефон: под заголовком -->
+      <figure class="cases__photo" data-reveal>
+        <img
+          src="/images/team.webp"
+          alt="Команда обсуждает план квартала за рабочим столом"
+          width="1200"
+          height="800"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
       <nav class="cases__index" aria-label="Разделы опыта" data-reveal style="--d: 120">
         <ol>
           {
@@ -52,20 +64,43 @@ const index = [
 
 <style>
   .cases__head {
-    align-items: end;
+    grid-template-rows: auto 1fr;
+    align-items: stretch;
     row-gap: 2.5rem;
     margin-top: clamp(2.5rem, 5vw, 4.5rem);
     margin-bottom: clamp(4rem, 8vw, 7rem);
   }
 
   .cases__title {
-    grid-column: 1 / span 8;
+    grid-column: 7 / -1;
+    grid-row: 1;
+    align-self: start;
     max-width: 13ch;
     font-size: var(--fs-display);
   }
 
   .cases__index {
-    grid-column: 9 / -1;
+    grid-column: 7 / -1;
+    grid-row: 2;
+    align-self: end;
+  }
+
+  /* Фото (чёрно-белое) — по высоте колонки с заголовком и оглавлением */
+  .cases__photo {
+    grid-column: 1 / span 6;
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+
+  .cases__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    object-position: 50% 30%;
+    background: var(--c-mist);
   }
 
   .cases__index ol {
@@ -112,9 +147,27 @@ const index = [
   }
 
   @media (max-width: 960px) {
+    .cases__head {
+      grid-template-rows: auto;
+    }
+
     .cases__title,
+    .cases__photo,
     .cases__index {
       grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .cases__photo img {
+      height: auto;
+    }
+  }
+
+  /* Телефон: кадр 4:3, все лица в кадре */
+  @media (max-width: 640px) {
+    .cases__photo img {
+      aspect-ratio: 4 / 3;
+      object-position: 60% 30%;
     }
   }
 </style>
