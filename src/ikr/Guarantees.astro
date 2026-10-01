@@ -84,7 +84,7 @@ import { guarantees } from '../data/assistants';
   }
 
   .shield__body {
-    stroke: #8fa0ff;
+    stroke: var(--accent-light);
     stroke-width: 3;
     stroke-dasharray: 400;
     stroke-dashoffset: var(--d1, 400);
@@ -92,7 +92,7 @@ import { guarantees } from '../data/assistants';
   }
 
   .shield__check {
-    stroke: #fff;
+    stroke: var(--paper);
     stroke-width: 6;
     stroke-dasharray: 80;
     stroke-dashoffset: var(--d2, 80);
@@ -109,8 +109,8 @@ import { guarantees } from '../data/assistants';
   :global(.shield.is-in) .shield__body,
   :global(html.reduced) .shield__body,
   :global(html:not(.js)) .shield__body {
-    fill: var(--signal);
-    stroke: var(--signal);
+    fill: var(--accent);
+    stroke: var(--accent);
   }
 
   .guar__grid {
@@ -137,13 +137,13 @@ import { guarantees } from '../data/assistants';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: radial-gradient(120% 90% at 0% 100%, rgb(46 75 255 / 0.45), transparent 60%);
+    background: radial-gradient(120% 90% at 0% 100%, rgb(var(--accent-rgb) / 0.45), transparent 60%);
     opacity: 0;
     transition: opacity 0.7s var(--ease);
   }
 
   .g:hover {
-    border-color: rgb(143 160 255 / 0.6);
+    border-color: rgb(var(--accent-light-rgb) / 0.6);
   }
 
   .g:hover::before {
@@ -151,7 +151,7 @@ import { guarantees } from '../data/assistants';
   }
 
   .g__n {
-    color: #8fa0ff;
+    color: var(--accent-light);
   }
 
   .g__big {
@@ -220,26 +220,26 @@ import { guarantees } from '../data/assistants';
   }
 
   .pay__seg--1 {
-    background: rgb(245 243 239 / 0.08);
+    background: rgb(244 241 234 / 0.08);
   }
 
   .pay__seg--1 i {
     position: absolute;
     inset: 0;
-    background: var(--signal);
+    background: var(--accent);
     transform: scaleX(var(--p1, 0));
     transform-origin: left;
     transition: transform 1.2s var(--ease-io);
   }
 
   .pay__seg--2 {
-    border: 1.5px dashed rgb(245 243 239 / 0.35);
+    border: 1.5px dashed rgb(244 241 234 / 0.35);
   }
 
   .pay__seg--2 i {
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(143 160 255 / 0.25) 10px 12px);
+    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(var(--accent-light-rgb) / 0.25) 10px 12px);
     transform: scaleX(var(--p2, 0));
     transform-origin: left;
     transition: transform 1.2s var(--ease-io) 0.9s;
@@ -269,7 +269,7 @@ import { guarantees } from '../data/assistants';
   .pay__share {
     flex: none;
     font-weight: 650;
-    color: #8fa0ff;
+    color: var(--accent-light);
     min-width: 3ch;
   }
 

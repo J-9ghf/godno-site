@@ -1,26 +1,37 @@
-/* ИКР.Ассистенты — дизайн-система.
-   Палитра выведена из логотипа: бумага #F5F3EF (фон знака), графит #1B1B1D, тёмно-синий #142758.
-   Сигнальный кобальт — единственный «цифровой» акцент: движение, активные состояния, CTA. */
+/* ИКР.Ассистенты — дизайн-система (вариант 1, тёплая палитра).
+   Тёплый ivory-фон, глубокий графит и приглушённый шалфейно-оливковый акцент.
+   Акцент — точечно: метки, активные состояния, CTA, ключевые цифры; не заливка всего подряд. */
 
 :root {
-  --paper: #f5f3ef;
-  --paper-2: #ebe7df;
-  --paper-3: #e1dcd2;
-  --ink: #1b1b1d;
-  --ink-deep: #111113;
-  --ink-2: #26262a;
-  --navy: #142758;
-  --navy-2: #1c3370;
-  --signal: #2e4bff;
-  --signal-ink: #1f38d6;
-  --signal-soft: #dde3ff;
-  --muted: #67645f;
-  --line: rgb(27 27 29 / 0.14);
-  --line-strong: rgb(27 27 29 / 0.32);
+  /* фон */
+  --paper: #f4f1ea;
+  --paper-2: #e8e9de; /* вторичный фон — очень светлый оттенок акцента */
+  --paper-3: #e2ddd2; /* тёплый нейтральный — плейсхолдеры, подложки */
+  /* текст */
+  --ink: #23241f;
+  --ink-deep: #1e1f1b;
+  --ink-2: #3a3b35;
+  --muted: #6b6860;
+  /* тёмное поле процесса — глубокий оливковый графит */
+  --deep: #2f3429;
+  /* акцент */
+  --accent: #6e7a58; /* графика, крупные цифры и слова */
+  --accent-strong: #5f6b48; /* заливки с текстом (кнопки, плашки) */
+  --accent-hover: #536140; /* hover — чуть насыщеннее */
+  --accent-ink: #525c3f; /* мелкий текст акцентом на светлом */
+  --accent-light: #b9c2a1; /* акцент на тёмных полях */
+  --accent-soft: #e3e6d7;
+  --accent-rgb: 110 122 88;
+  --accent-light-rgb: 185 194 161;
+  --shadow-rgb: 52 48 38;
+  --error: #9a5b3f;
+  /* линии — мягкий серо-бежевый */
+  --line: rgb(70 62 48 / 0.14);
+  --line-strong: rgb(70 62 48 / 0.3);
 
-  --d-text: #f5f3ef;
-  --d-muted: rgb(245 243 239 / 0.62);
-  --d-line: rgb(245 243 239 / 0.14);
+  --d-text: #f4f1ea;
+  --d-muted: rgb(244 241 234 / 0.64);
+  --d-line: rgb(244 241 234 / 0.13);
 
   --f-sans: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
@@ -120,12 +131,12 @@ button {
 }
 
 ::selection {
-  background: var(--signal);
-  color: #fff;
+  background: var(--accent-soft);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -165,7 +176,7 @@ button {
   inset: 0;
   z-index: 150;
   pointer-events: none;
-  opacity: 0.07;
+  opacity: 0.05;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -188,8 +199,8 @@ button {
   color: var(--d-text);
 }
 
-.section--navy {
-  background: var(--navy);
+.section--deep {
+  background: var(--deep);
   color: var(--d-text);
 }
 
@@ -249,7 +260,7 @@ button {
 }
 
 .section--dark .t-muted,
-.section--navy .t-muted {
+.section--deep .t-muted {
   color: var(--d-muted);
 }
 
@@ -263,12 +274,12 @@ button {
 }
 
 .accent {
-  color: var(--signal);
+  color: var(--accent-ink);
 }
 
 .section--dark .accent,
-.section--navy .accent {
-  color: #8fa0ff;
+.section--deep .accent {
+  color: var(--accent-light);
 }
 
 /* Метка секции: [02] ——— Зачем ассистент */
@@ -284,12 +295,12 @@ button {
 }
 
 .sec-tag__n {
-  color: var(--signal);
+  color: var(--accent-ink);
 }
 
 .section--dark .sec-tag__n,
-.section--navy .sec-tag__n {
-  color: #8fa0ff;
+.section--deep .sec-tag__n {
+  color: var(--accent-light);
 }
 
 .sec-tag__line {
@@ -328,7 +339,7 @@ button {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--signal);
+  background: var(--accent-strong);
   transform: translateY(101%);
   transition: transform var(--t) var(--ease);
 }
@@ -339,8 +350,8 @@ button {
   width: 40px;
   height: 40px;
   border-radius: 4px;
-  background: var(--signal);
-  color: #fff;
+  background: var(--accent-strong);
+  color: var(--paper);
   overflow: hidden;
   transition: background var(--t) var(--ease);
 }
@@ -382,21 +393,22 @@ button {
   }
 }
 
-.btn--signal {
-  --bg: var(--signal);
-  --fg: #fff;
+.btn--accent {
+  --bg: var(--accent-strong);
+  --fg: var(--paper);
 }
 
-.btn--signal::before {
-  background: var(--ink);
+/* hover — мягко: чуть более насыщенный акцент вместо резкой смены на чёрный */
+.btn--accent::before {
+  background: var(--accent-hover);
 }
 
-.btn--signal .btn__arrow {
-  background: rgb(255 255 255 / 0.16);
+.btn--accent .btn__arrow {
+  background: rgb(244 241 234 / 0.14);
 }
 
-.btn--signal:hover .btn__arrow {
-  background: var(--signal);
+.btn--accent:hover .btn__arrow {
+  background: rgb(244 241 234 / 0.2);
 }
 
 .btn--light {
@@ -405,7 +417,7 @@ button {
 }
 
 .btn--light:hover {
-  color: #fff;
+  color: var(--paper);
 }
 
 .link-u {
@@ -460,26 +472,26 @@ button {
   text-transform: uppercase;
   text-align: center;
   background:
-    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(27 27 29 / 0.035) 10px 11px);
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(70 62 48 / 0.035) 10px 11px);
 }
 
 .section--dark .ph,
-.section--navy .ph {
+.section--deep .ph {
   border-color: var(--d-line);
   color: var(--d-muted);
   background:
-    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(245 243 239 / 0.04) 10px 11px);
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(244 241 234 / 0.04) 10px 11px);
 }
 
 /* ——— Анимации: исходные состояния только при включённом JS и без reduced motion ——— */
 html.js:not(.reduced) [data-reveal] {
   opacity: 0;
-  transform: translateY(42px);
+  transform: translateY(32px);
 }
 
 html.js:not(.reduced) [data-stagger] > * {
   opacity: 0;
-  transform: translateY(36px);
+  transform: translateY(28px);
 }
 
 /* Слово-маска для kinetic-заголовков */

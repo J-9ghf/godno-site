@@ -4,7 +4,7 @@ import Words from './Words.astro';
 import { steps } from '../data/assistants';
 ---
 
-<section class="section--navy process" id="process" aria-labelledby="process-title" data-process>
+<section class="section--deep process" id="process" aria-labelledby="process-title" data-process>
   <div class="process__pin" data-process-pin>
     <div class="wrap process__head">
       <SecTag n="06" label="Процесс" />
@@ -54,7 +54,7 @@ import { steps } from '../data/assistants';
   }
 
   .process__muted {
-    color: rgb(245 243 239 / 0.45);
+    color: rgb(244 241 234 / 0.45);
   }
 
   .process__count {
@@ -64,7 +64,7 @@ import { steps } from '../data/assistants';
   }
 
   .process__count span {
-    color: #fff;
+    color: var(--paper);
   }
 
   .tl {
@@ -89,7 +89,7 @@ import { steps } from '../data/assistants';
   .tl__rail i {
     position: absolute;
     inset: 0;
-    background: #8fa0ff;
+    background: var(--accent-light);
     transform: scaleY(var(--p, 0));
     transform-origin: top;
   }
@@ -114,7 +114,7 @@ import { steps } from '../data/assistants';
     margin-top: 4px;
     border-radius: 50%;
     border: 2px solid var(--d-muted);
-    background: var(--navy);
+    background: var(--deep);
     transition: background 0.5s, border-color 0.5s, transform 0.6s var(--ease);
   }
 
@@ -125,7 +125,7 @@ import { steps } from '../data/assistants';
     letter-spacing: -0.07em;
     line-height: 0.8;
     color: transparent;
-    -webkit-text-stroke: 1.2px rgb(245 243 239 / 0.35);
+    -webkit-text-stroke: 1.2px rgb(244 241 234 / 0.35);
     transition: color 0.7s var(--ease), -webkit-text-stroke-color 0.7s;
   }
 
@@ -149,16 +149,16 @@ import { steps } from '../data/assistants';
   .step__mark {
     padding: 6px 10px;
     border-radius: 4px;
-    background: rgb(245 243 239 / 0.1);
-    color: #fff;
+    background: rgb(244 241 234 / 0.1);
+    color: var(--paper);
     transition: background 0.5s;
   }
 
   :global(.step.is-active) .step__dot,
   :global(html.reduced) .step__dot,
   :global(html:not(.js)) .step__dot {
-    background: #8fa0ff;
-    border-color: #8fa0ff;
+    background: var(--accent-light);
+    border-color: var(--accent-light);
     transform: scale(1.25);
   }
 
@@ -177,11 +177,11 @@ import { steps } from '../data/assistants';
   }
 
   :global(.step.is-active) .step__mark {
-    background: var(--signal);
+    background: var(--accent);
   }
 
   .step:hover .step__n {
-    -webkit-text-stroke-color: #8fa0ff;
+    -webkit-text-stroke-color: var(--accent-light);
   }
 
   /* Горизонтальный режим (desktop + анимации): включается из JS классом .is-horizontal */

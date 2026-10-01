@@ -230,7 +230,7 @@ function initReveals() {
     once: true,
     onEnter: (batch) => {
       batch.forEach((el) => el.classList.add('is-in'));
-      gsap.to(batch, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.1 });
+      gsap.to(batch, { opacity: 1, y: 0, duration: 1.3, ease: 'expo.out', stagger: 0.1 });
     },
   });
 
@@ -508,8 +508,8 @@ function initPointer() {
     const yTo = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3.out' });
     el.addEventListener('pointermove', (e) => {
       const r = el.getBoundingClientRect();
-      xTo((e.clientX - r.left - r.width / 2) * 0.18);
-      yTo((e.clientY - r.top - r.height / 2) * 0.3);
+      xTo((e.clientX - r.left - r.width / 2) * 0.12);
+      yTo((e.clientY - r.top - r.height / 2) * 0.2);
     });
     el.addEventListener('pointerleave', () => {
       xTo(0);
@@ -526,8 +526,8 @@ function initPointer() {
       const r = el.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
-      ry(px * 5);
-      rx(-py * 5);
+      ry(px * 3);
+      rx(-py * 3);
       ty(-1.2);
     });
     el.addEventListener('pointerleave', () => {

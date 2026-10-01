@@ -117,7 +117,7 @@ import { cases, reviews } from '../data/assistants';
 
   .case:hover {
     transform: translateY(-6px);
-    box-shadow: 0 50px 90px -60px rgb(20 39 88 / 0.7);
+    box-shadow: 0 50px 90px -60px rgb(var(--shadow-rgb) / 0.7);
   }
 
   .case__meta {
@@ -131,11 +131,11 @@ import { cases, reviews } from '../data/assistants';
     font-weight: 600;
     letter-spacing: -0.06em;
     line-height: 0.85;
-    color: var(--signal);
+    color: var(--accent);
   }
 
   .case--2 .case__n {
-    color: #8fa0ff;
+    color: var(--accent-light);
   }
 
   .case__meta .label {
@@ -160,11 +160,11 @@ import { cases, reviews } from '../data/assistants';
   }
 
   .case__rows dt {
-    color: var(--signal);
+    color: var(--accent-ink);
   }
 
   .case--2 .case__rows dt {
-    color: #8fa0ff;
+    color: var(--accent-light);
   }
 
   .case__rows dd {
@@ -180,8 +180,8 @@ import { cases, reviews } from '../data/assistants';
     gap: 12px;
     padding: clamp(22px, 2.4vw, 36px);
     border-radius: calc(var(--r-l) - 8px);
-    background: var(--signal);
-    color: #fff;
+    background: var(--accent-strong);
+    color: var(--paper);
     overflow: hidden;
   }
 

@@ -107,12 +107,12 @@ const [sNew, sTried] = scenarios;
   .split__glyph {
     width: 64px;
     height: 64px;
-    color: var(--signal);
+    color: var(--accent);
     transition: transform 1s var(--ease);
   }
 
   .split__side--tried .split__glyph {
-    color: #8fa0ff;
+    color: var(--accent-light);
   }
 
   .split__glyph svg {
@@ -146,8 +146,8 @@ const [sNew, sTried] = scenarios;
     height: 64px;
     margin: -32px 0 0 -32px;
     border-radius: 50%;
-    background: var(--signal);
-    color: #fff;
+    background: var(--accent);
+    color: var(--paper);
     box-shadow: 0 0 0 8px var(--paper);
   }
 
@@ -193,9 +193,10 @@ const [sNew, sTried] = scenarios;
   }
 
   .reason__n {
+    --c: var(--accent-ink);
     font-family: var(--f-mono);
     font-size: var(--fs-label);
-    color: var(--signal);
+    color: var(--c);
     padding-top: 0.6em;
     transition: transform 0.6s var(--ease);
   }
@@ -239,7 +240,7 @@ const [sNew, sTried] = scenarios;
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: var(--signal);
+    background: var(--accent-strong);
     clip-path: circle(0% at 100% 0%);
     transition: clip-path 0.9s var(--ease);
   }
@@ -298,8 +299,8 @@ const [sNew, sTried] = scenarios;
 
   .service:hover,
   .service:focus-visible {
-    color: #fff;
-    border-color: var(--signal);
+    color: var(--paper);
+    border-color: var(--accent);
   }
 
   .service:hover::before,
@@ -309,8 +310,8 @@ const [sNew, sTried] = scenarios;
 
   .service:hover .service__arrow {
     transform: rotate(45deg) scale(1.1);
-    background: #fff;
-    color: var(--signal);
+    background: #faf8f3;
+    color: var(--accent);
   }
 
   @media (min-width: 900px) {

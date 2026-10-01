@@ -41,7 +41,7 @@ import { finalCta, contacts } from '../data/assistants';
             <span class="consent__box" aria-hidden="true"></span>
             <span>Согласен(на) на обработку персональных данных и с <a href="/privacy">политикой конфиденциальности</a></span>
           </label>
-          <button class="btn btn--signal form__submit" type="submit" data-magnetic>
+          <button class="btn btn--accent form__submit" type="submit" data-magnetic>
             <span>{finalCta.button}</span>
             <span class="btn__arrow"><Arrow /></span>
           </button>
@@ -86,7 +86,7 @@ import { finalCta, contacts } from '../data/assistants';
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 1px solid rgb(143 160 255 / 0.18);
+    border: 1px solid rgb(var(--accent-light-rgb) / 0.18);
     animation: spin 40s linear infinite;
   }
 
@@ -99,7 +99,7 @@ import { finalCta, contacts } from '../data/assistants';
 
   .final__orbit span:nth-child(3) {
     inset: 30%;
-    background: radial-gradient(closest-side, rgb(46 75 255 / 0.28), transparent);
+    background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.28), transparent);
     border: 0;
   }
 
@@ -111,8 +111,8 @@ import { finalCta, contacts } from '../data/assistants';
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--signal);
-    box-shadow: 0 0 20px 4px rgb(46 75 255 / 0.7);
+    background: var(--accent);
+    box-shadow: 0 0 20px 4px rgb(var(--accent-rgb) / 0.7);
   }
 
   @keyframes spin {
@@ -128,7 +128,7 @@ import { finalCta, contacts } from '../data/assistants';
   }
 
   .final__tag {
-    color: #8fa0ff;
+    color: var(--accent-light);
     margin-bottom: 28px;
   }
 
@@ -202,9 +202,9 @@ import { finalCta, contacts } from '../data/assistants';
 
   .field input:focus,
   .field textarea:focus {
-    border-color: var(--signal);
-    box-shadow: 0 0 0 4px rgb(46 75 255 / 0.14);
-    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.14);
+    background: #faf8f3;
   }
 
   .field input:focus + span,
@@ -212,7 +212,7 @@ import { finalCta, contacts } from '../data/assistants';
   .field textarea:focus + span,
   .field textarea:not(:placeholder-shown) + span {
     transform: translateY(-10px) scale(0.72);
-    color: var(--signal);
+    color: var(--accent-ink);
   }
 
   .field__err {
@@ -220,11 +220,11 @@ import { finalCta, contacts } from '../data/assistants';
     margin-top: 6px;
     font-style: normal;
     font-size: 0.82rem;
-    color: #c22d2d;
+    color: var(--error);
   }
 
   :global(.field.is-invalid) input {
-    border-color: #c22d2d;
+    border-color: var(--error);
   }
 
   :global(.field.is-invalid) .field__err {
@@ -261,17 +261,17 @@ import { finalCta, contacts } from '../data/assistants';
   }
 
   .consent input:checked + .consent__box {
-    background: var(--signal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3L9.5 3.8' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E") center / 14px no-repeat;
-    border-color: var(--signal);
+    background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3L9.5 3.8' fill='none' stroke='%23F4F1EA' stroke-width='1.8'/%3E%3C/svg%3E") center / 14px no-repeat;
+    border-color: var(--accent);
   }
 
   .consent input:focus-visible + .consent__box {
-    outline: 2px solid var(--signal);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
   :global(.consent.is-invalid) .consent__box {
-    border-color: #c22d2d;
+    border-color: var(--error);
   }
 
   .consent a {
@@ -304,14 +304,14 @@ import { finalCta, contacts } from '../data/assistants';
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: var(--signal);
+    background: var(--accent);
     animation: pop 0.7s var(--ease);
   }
 
   .form__ok-icon svg {
     width: 34px;
     fill: none;
-    stroke: #fff;
+    stroke: var(--paper);
     stroke-width: 2.4;
   }
 

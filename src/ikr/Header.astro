@@ -6,7 +6,7 @@ import { nav, contacts, hero } from '../data/assistants';
 <header class="hdr" data-header>
   <div class="hdr__bar wrap">
     <a class="hdr__brand" href="#top" aria-label="ИКР.Ассистенты — Институт кадровых решений, в начало страницы">
-      <img src="/brand/ikr-logo.png" width="242" height="56" alt="ИКР — Институт кадровых решений" />
+      <img src="/brand/ikr-logo-sage.png" width="242" height="56" alt="ИКР — Институт кадровых решений" />
       <span class="hdr__divider" aria-hidden="true"></span>
       <span class="hdr__product">ИКР.Ассистенты</span>
     </a>
@@ -17,7 +17,7 @@ import { nav, contacts, hero } from '../data/assistants';
       </ul>
     </nav>
 
-    <a class="btn btn--signal hdr__cta" href="#contact">
+    <a class="btn btn--accent hdr__cta" href="#contact">
       <span>Рассказать о ситуации</span>
       <span class="btn__arrow"><Arrow /></span>
     </a>
@@ -41,7 +41,7 @@ import { nav, contacts, hero } from '../data/assistants';
         ))}
       </ol>
       <div class="menu__foot">
-        <a class="btn btn--signal" href="#contact" data-menu-link>
+        <a class="btn btn--accent" href="#contact" data-menu-link>
           <span>{hero.cta}</span>
           <span class="btn__arrow"><Arrow /></span>
         </a>
@@ -54,7 +54,7 @@ import { nav, contacts, hero } from '../data/assistants';
 
 <!-- Мобильный CTA: всегда под рукой, прячется у формы -->
 <div class="dock" data-dock>
-  <a class="btn btn--signal dock__btn" href="#contact">
+  <a class="btn btn--accent dock__btn" href="#contact">
     <span>{hero.cta}</span>
     <span class="btn__arrow"><Arrow /></span>
   </a>
@@ -79,7 +79,7 @@ import { nav, contacts, hero } from '../data/assistants';
     content: '';
     position: absolute;
     inset: 0;
-    background: rgb(245 243 239 / 0.86);
+    background: rgb(244 241 234 / 0.86);
     backdrop-filter: blur(14px) saturate(1.4);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     border-bottom: 1px solid transparent;
@@ -167,7 +167,7 @@ import { nav, contacts, hero } from '../data/assistants';
   }
 
   .hdr__nav a.is-current {
-    color: var(--signal);
+    color: var(--accent-ink);
   }
 
   .hdr__cta {
@@ -255,7 +255,7 @@ import { nav, contacts, hero } from '../data/assistants';
   }
 
   .menu__nav ol .label {
-    color: var(--signal);
+    color: var(--accent-ink);
   }
 
   .menu.is-in li {
@@ -308,7 +308,7 @@ import { nav, contacts, hero } from '../data/assistants';
     font-size: 0.92rem;
     white-space: nowrap;
     justify-content: space-between;
-    box-shadow: 0 12px 32px -12px rgb(46 75 255 / 0.6);
+    box-shadow: 0 12px 32px -12px rgb(var(--accent-rgb) / 0.6);
   }
 
   .dock__tg {

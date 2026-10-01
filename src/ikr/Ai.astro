@@ -76,7 +76,7 @@ import { ai } from '../data/assistants';
     width: 70vw;
     height: 70vw;
     border-radius: 50%;
-    background: radial-gradient(closest-side, rgb(46 75 255 / 0.22), transparent);
+    background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.22), transparent);
     pointer-events: none;
   }
 
@@ -120,7 +120,7 @@ import { ai } from '../data/assistants';
   .scheme__rail i {
     position: absolute;
     inset: 0;
-    background: var(--signal);
+    background: var(--accent);
     transform: scaleY(var(--p, 0));
     transform-origin: top;
   }
@@ -133,8 +133,8 @@ import { ai } from '../data/assistants';
     height: 10px;
     margin: -5px 0 0 -5px;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 0 6px rgb(46 75 255 / 0.35), 0 0 24px 6px rgb(46 75 255 / 0.6);
+    background: #faf8f3;
+    box-shadow: 0 0 0 6px rgb(var(--accent-rgb) / 0.35), 0 0 24px 6px rgb(var(--accent-rgb) / 0.6);
     opacity: 0;
     transition: opacity 0.4s;
   }
@@ -208,9 +208,9 @@ import { ai } from '../data/assistants';
   }
 
   :global(.node.is-active) .node__icon {
-    background: var(--signal);
-    border-color: var(--signal);
-    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
   }
 
   :global(.node.is-active) .node__label {
@@ -228,8 +228,8 @@ import { ai } from '../data/assistants';
 
   :global(html.reduced) .node__icon,
   :global(html:not(.js)) .node__icon {
-    background: var(--signal);
-    color: #fff;
+    background: var(--accent);
+    color: var(--paper);
   }
 
   :global(html.reduced) .node__label,
@@ -273,11 +273,11 @@ import { ai } from '../data/assistants';
     font-size: clamp(8rem, 14vw, 14rem);
     line-height: 1;
     font-weight: 700;
-    color: var(--signal);
+    color: var(--accent);
   }
 
   .story__label {
-    color: var(--signal);
+    color: var(--accent-ink);
     margin-bottom: 20px;
   }
 
@@ -289,7 +289,7 @@ import { ai } from '../data/assistants';
     min-height: 180px;
     border-color: var(--line-strong);
     color: var(--muted);
-    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(27 27 29 / 0.035) 10px 11px);
+    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(70 62 48 / 0.035) 10px 11px);
   }
 
   .story__avatar {
