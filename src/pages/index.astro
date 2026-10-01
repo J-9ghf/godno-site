@@ -1,36 +1,35 @@
 ---
-import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
-import Principles from '../components/Principles.astro';
-import Cases from '../components/Cases.astro';
-import Consulting from '../components/Consulting.astro';
-import AlsoFound from '../components/AlsoFound.astro';
-import Reviews from '../components/Reviews.astro';
-import Process from '../components/Process.astro';
-import Faq from '../components/Faq.astro';
-import FinalCta from '../components/FinalCta.astro';
-import Footer from '../components/Footer.astro';
+import Assist from '../layouts/Assist.astro';
+import Header from '../ikr/Header.astro';
+import Hero from '../ikr/Hero.astro';
+import Why from '../ikr/Why.astro';
+import Ai from '../ikr/Ai.astro';
+import Us from '../ikr/Us.astro';
+import About from '../ikr/About.astro';
+import Process from '../ikr/Process.astro';
+import Cases from '../ikr/Cases.astro';
+import Guarantees from '../ikr/Guarantees.astro';
+import Faq from '../ikr/Faq.astro';
+import FinalCta from '../ikr/FinalCta.astro';
+import Footer from '../ikr/Footer.astro';
 ---
 
-<Base
-  title="Институт кадровых решений"
-  description="Находим людей, которые остаются, и понимаем, почему предыдущие уходили. Подбор ключевых сотрудников для собственников, которые устали искать. Подбор, бизнес-аналитика и управленческий консалтинг."
+<Assist
+  title="ИКР.Ассистенты — ассистент, с которым вы успеваете в разы больше"
+  description="Подбираем ассистентов, которые остаются, и налаживаем работу с ними. Первая подборка за 5–7 рабочих дней, 99% приживаемость сотрудников за 1 год. Направление Института кадровых решений."
 >
-  <link slot="head" rel="preload" as="image" href="/media/hero-poster.jpg" fetchpriority="high" />
-  <Header overlay />
+  <Header />
   <main id="main">
     <Hero />
+    <Why />
+    <Ai />
+    <Us />
     <About />
-    <Principles />
-    <Cases />
-    <Consulting />
-    <AlsoFound />
-    <Reviews />
     <Process />
+    <Cases />
+    <Guarantees />
     <Faq />
     <FinalCta />
   </main>
   <Footer />
-</Base>
+</Assist>

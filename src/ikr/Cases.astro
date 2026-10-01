@@ -1,0 +1,403 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import Arrow from './Arrow.astro';
+import { cases, reviews } from '../data/assistants';
+---
+
+<section class="section cases" id="cases" aria-labelledby="cases-title">
+  <div class="wrap">
+    <SecTag n="07" label="Кейсы и отзывы" />
+    <div class="cases__head">
+      <h2 class="t-xl" id="cases-title" data-words><Words text="Кейсы" /></h2>
+      <p class="t-lead t-muted cases__intro" data-reveal>Ниша, задача, ситуация до, что сделали и результат.</p>
+    </div>
+
+    <div class="case-list">
+      {cases.map((c, i) => (
+        <article class:list={['case', `case--${i + 1}`]} data-case aria-labelledby={`case-${c.n}`}>
+          <header class="case__meta">
+            <span class="case__n">{c.n}</span>
+            <span class="label">{c.niche}</span>
+            <h3 class="t-m" id={`case-${c.n}`}>{c.role}</h3>
+          </header>
+
+          <dl class="case__rows">
+            <div><dt class="label">Задача</dt><dd>{c.task}</dd></div>
+            <div><dt class="label">Было</dt><dd>{c.before}</dd></div>
+            <div><dt class="label">Что сделали</dt><dd>{c.did}</dd></div>
+          </dl>
+
+          <div class="case__result">
+            <span class="label">Результат</span>
+            <p class="case__value">
+              <span data-count>{c.result.value}</span>
+              <small>{c.result.unit}</small>
+            </p>
+            <p class="case__caption">{c.result.caption}</p>
+            <p class="case__outcome">{c.outcome}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="reviews">
+      <h3 class="label reviews__title" data-reveal>Отзывы клиентов · имена скрыты</h3>
+      <ul class="reviews__grid" data-stagger>
+        {reviews.map((r) => (
+          <li class="review" data-tilt>
+            <blockquote>
+              <p class="review__quote">«{r.quote}»</p>
+              <p class="review__msg">{r.full}</p>
+            </blockquote>
+            <p class="review__who label t-muted">{r.who}</p>
+          </li>
+        ))}
+      </ul>
+
+      <div class="shots" data-reveal>
+        <div class="shots__bar">
+          <p class="label">Скриншоты переписок</p>
+          <div class="shots__nav">
+            <button type="button" class="shots__btn shots__btn--prev" data-shots-prev aria-label="Предыдущий скриншот"><Arrow /></button>
+            <button type="button" class="shots__btn" data-shots-next aria-label="Следующий скриншот"><Arrow /></button>
+          </div>
+        </div>
+        <ul class="shots__track" data-shots tabindex="0" aria-label="Скриншоты переписок с клиентами">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <li class="shot">
+              <!-- Заменить на <img src="/media/reviews/0N.jpg" alt="Отзыв клиента, имя скрыто" /> -->
+              <div class="ph shot__ph">
+                <span>Скриншот {String(i + 1).padStart(2, '0')}</span>
+                <span>имя и личные данные скрыты</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cases__head {
+    display: grid;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  .cases__intro {
+    max-width: 30ch;
+  }
+
+  .case-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .case {
+    display: grid;
+    gap: clamp(24px, 3vw, 48px);
+    padding: clamp(22px, 3vw, 48px);
+    border-radius: var(--r-l);
+    background: var(--paper-2);
+    transition: transform 0.7s var(--ease), box-shadow 0.7s var(--ease);
+  }
+
+  .case--2 {
+    background: var(--ink);
+    color: var(--d-text);
+  }
+
+  .case--2 .case__rows dd,
+  .case--2 .case__meta .label {
+    color: var(--d-muted);
+  }
+
+  .case:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 50px 90px -60px rgb(20 39 88 / 0.7);
+  }
+
+  .case__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .case__n {
+    font-size: clamp(3rem, 2rem + 3vw, 5.5rem);
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    line-height: 0.85;
+    color: var(--signal);
+  }
+
+  .case--2 .case__n {
+    color: #8fa0ff;
+  }
+
+  .case__meta .label {
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .case__rows {
+    display: grid;
+    gap: 18px;
+  }
+
+  .case__rows div {
+    display: grid;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .case--2 .case__rows div {
+    border-color: var(--d-line);
+  }
+
+  .case__rows dt {
+    color: var(--signal);
+  }
+
+  .case--2 .case__rows dt {
+    color: #8fa0ff;
+  }
+
+  .case__rows dd {
+    color: var(--ink-2);
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .case__result {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: clamp(22px, 2.4vw, 36px);
+    border-radius: calc(var(--r-l) - 8px);
+    background: var(--signal);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .case__result .label {
+    opacity: 0.75;
+  }
+
+  .case__value {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    font-size: clamp(3rem, 1.6rem + 4.6vw, 6.25rem);
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    transition: transform 0.7s var(--ease);
+    overflow-wrap: anywhere;
+  }
+
+  .case--2 .case__value {
+    font-size: min(4rem, 15.5cqi);
+    overflow-wrap: normal;
+  }
+
+  .case__value small {
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.6rem);
+    font-weight: 550;
+    letter-spacing: -0.02em;
+  }
+
+  .case:hover .case__value {
+    transform: translateX(6px);
+  }
+
+  .case__caption {
+    font-weight: 550;
+    line-height: 1.35;
+  }
+
+  .case__outcome {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgb(255 255 255 / 0.25);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  /* ——— Отзывы ——— */
+  .reviews {
+    margin-top: clamp(96px, 12vw, 200px);
+  }
+
+  .reviews__title {
+    margin-bottom: 28px;
+  }
+
+  .reviews__grid {
+    display: grid;
+    gap: 14px;
+    align-items: start;
+  }
+
+  .review {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 28px;
+    padding: clamp(24px, 2.6vw, 40px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-l);
+    transition: transform 0.7s var(--ease), background 0.5s;
+  }
+
+  .review:hover {
+    background: var(--paper-2);
+  }
+
+  .review__quote {
+    font-size: clamp(1.7rem, 1rem + 2.2vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    margin-bottom: 24px;
+  }
+
+  .review__msg {
+    position: relative;
+    max-width: 34ch;
+    padding: 12px 14px;
+    border-radius: 14px 14px 14px 4px;
+    background: var(--paper-2);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    white-space: pre-line;
+    transition: background 0.5s;
+  }
+
+  .review:hover .review__msg {
+    background: var(--paper);
+  }
+
+  /* ——— Скриншоты ——— */
+  .shots {
+    margin-top: clamp(48px, 6vw, 80px);
+  }
+
+  .shots__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .shots__nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  .shots__btn {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: none;
+    transition: background 0.4s, color 0.4s, transform 0.4s var(--ease);
+  }
+
+  .shots__btn :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .shots__btn--prev :global(svg) {
+    transform: scaleX(-1);
+  }
+
+  .shots__btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: scale(1.06);
+  }
+
+  .shots__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(220px, 62vw, 300px);
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
+
+  .shots__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shot {
+    scroll-snap-align: start;
+  }
+
+  .shot__ph {
+    aspect-ratio: 9 / 16;
+    border-radius: 24px;
+    align-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .cases__head {
+      grid-template-columns: 1fr auto;
+    }
+
+    .reviews__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .review:nth-child(1) {
+      grid-column: 1 / -1;
+      width: 66%;
+    }
+
+    .review:nth-child(3) {
+      margin-top: 80px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .case {
+      grid-template-columns: 3fr 5fr 4fr;
+      align-items: stretch;
+    }
+
+    .reviews__grid {
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    .review:nth-child(1) {
+      grid-column: 1 / span 7;
+      width: auto;
+    }
+
+    .review:nth-child(2) {
+      grid-column: 9 / span 4;
+      margin-top: 120px;
+    }
+
+    .review:nth-child(3) {
+      grid-column: 3 / span 6;
+      margin-top: 0;
+    }
+  }
+</style>

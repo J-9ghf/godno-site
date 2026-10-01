@@ -1,0 +1,12 @@
+---
+interface Props {
+  n: string;
+  label: string;
+}
+const { n, label } = Astro.props;
+---
+<p class="sec-tag" data-reveal>
+  <span class="sec-tag__n">[{n}]</span>
+  <span class="sec-tag__line" aria-hidden="true"></span>
+  <span>{label}</span>
+</p>

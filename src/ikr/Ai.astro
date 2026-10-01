@@ -1,0 +1,387 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import { ai } from '../data/assistants';
+---
+
+<section class="section section--dark ai" id="ai" aria-labelledby="ai-title">
+  <div class="ai__glow" aria-hidden="true" data-parallax="0.25"></div>
+  <div class="wrap">
+    <SecTag n="03" label="ИИ и живой ассистент" />
+
+    <h2 class="ai__title" id="ai-title" data-words>
+      <span class="ai__quote t-l"><Words text={ai.quote} /></span>
+      <span class="t-xl"><Words text={ai.title} /></span>
+    </h2>
+
+    <ol class="scheme" data-scheme aria-label="Схема работы: Вы, Ассистент, ИИ и инструменты, Результат">
+      <span class="scheme__rail" aria-hidden="true"><i data-scheme-fill></i><b data-scheme-dot></b></span>
+      {ai.scheme.map((s, i) => (
+        <li class="node" data-node={i} tabindex="0">
+          <span class="node__icon" aria-hidden="true">
+            {s.key === 'you' && (
+              <svg viewBox="0 0 32 32"><path d="M9 6l13 6.5-5.6 1.9L14.5 20z" /></svg>
+            )}
+            {s.key === 'assistant' && (
+              <svg viewBox="0 0 32 32"><circle cx="16" cy="11" r="5" /><path d="M6.5 26c1.4-5 5-7.5 9.5-7.5s8.1 2.5 9.5 7.5" /></svg>
+            )}
+            {s.key === 'tools' && (
+              <svg viewBox="0 0 32 32"><rect x="6" y="6" width="8" height="8" rx="1.5" /><rect x="18" y="6" width="8" height="8" rx="4" /><rect x="6" y="18" width="8" height="8" rx="4" /><rect x="18" y="18" width="8" height="8" rx="1.5" /></svg>
+            )}
+            {s.key === 'result' && (
+              <svg viewBox="0 0 32 32"><path d="M7 16.5l6 6L25 10" /></svg>
+            )}
+          </span>
+          <span class="node__n label">0{i + 1}</span>
+          <span class="node__label">{s.label}</span>
+          <span class="node__text">{s.text}</span>
+        </li>
+      ))}
+    </ol>
+
+    <div class="ai__outro">
+      <p class="ai__conclusion t-m" data-reveal>
+        <strong>{ai.conclusionLead}</strong>
+        <span class="t-muted"> {ai.conclusion} </span>
+        <span class="accent">{ai.conclusionTail}</span>
+      </p>
+
+      <figure class="story" data-reveal data-tilt>
+        <span class="story__mark" aria-hidden="true">“</span>
+        <p class="label story__label">{ai.story.label}</p>
+        <blockquote class="story__body">
+          <div class="ph story__ph">{ai.story.placeholder}</div>
+        </blockquote>
+        <figcaption class="story__by">
+          <span class="story__avatar ph" aria-hidden="true">фото</span>
+          <span>
+            <b>{ai.story.author}</b>
+            <span class="t-muted">{ai.story.role}</span>
+          </span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ai {
+    overflow: hidden;
+  }
+
+  .ai__glow {
+    position: absolute;
+    top: 10%;
+    right: -20vw;
+    width: 70vw;
+    height: 70vw;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(46 75 255 / 0.22), transparent);
+    pointer-events: none;
+  }
+
+  .ai__title {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    font-weight: 600;
+  }
+
+  .ai__title > span {
+    max-width: 15ch;
+  }
+
+  .ai__quote {
+    color: transparent;
+    -webkit-text-stroke: 1.2px var(--d-muted);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* ——— Схема ——— */
+  .scheme {
+    --rail-x: 31px;
+    position: relative;
+    display: grid;
+    gap: 34px;
+    margin-block: clamp(64px, 9vw, 150px);
+  }
+
+  .scheme__rail {
+    position: absolute;
+    top: 32px;
+    bottom: 32px;
+    left: var(--rail-x);
+    width: 2px;
+    background: var(--d-line);
+  }
+
+  .scheme__rail i {
+    position: absolute;
+    inset: 0;
+    background: var(--signal);
+    transform: scaleY(var(--p, 0));
+    transform-origin: top;
+  }
+
+  .scheme__rail b {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 6px rgb(46 75 255 / 0.35), 0 0 24px 6px rgb(46 75 255 / 0.6);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  :global(.scheme.is-complete) .scheme__rail b {
+    opacity: 1;
+    animation: travel-y 2.4s var(--ease-io) infinite;
+  }
+
+  @keyframes travel-y {
+    from { top: 0; }
+    to { top: 100%; }
+  }
+
+  .node {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    column-gap: 20px;
+    row-gap: 4px;
+    align-items: start;
+    outline: none;
+    cursor: default;
+  }
+
+  .node__icon {
+    grid-row: span 3;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    border: 1px solid var(--d-line);
+    background: var(--ink-deep);
+    color: var(--d-muted);
+    transition: background 0.6s var(--ease), color 0.6s, border-color 0.6s, transform 0.6s var(--ease);
+  }
+
+  .node__icon svg {
+    width: 30px;
+    height: 30px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+  }
+
+  .node__n {
+    color: var(--d-muted);
+    padding-top: 4px;
+  }
+
+  .node__label {
+    font-size: clamp(1.6rem, 1rem + 2vw, 2.8rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--d-muted);
+    transition: color 0.6s var(--ease);
+  }
+
+  .node__text {
+    max-width: 28ch;
+    color: var(--d-muted);
+    font-size: 0.98rem;
+    line-height: 1.45;
+    opacity: 0.55;
+    transition: opacity 0.6s var(--ease);
+  }
+
+  :global(.node.is-active) .node__icon {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: #fff;
+  }
+
+  :global(.node.is-active) .node__label {
+    color: var(--d-text);
+  }
+
+  :global(.node.is-active) .node__text {
+    opacity: 1;
+  }
+
+  .node:hover .node__icon,
+  .node:focus-visible .node__icon {
+    transform: scale(1.08) rotate(-4deg);
+  }
+
+  :global(html.reduced) .node__icon,
+  :global(html:not(.js)) .node__icon {
+    background: var(--signal);
+    color: #fff;
+  }
+
+  :global(html.reduced) .node__label,
+  :global(html:not(.js)) .node__label {
+    color: var(--d-text);
+  }
+
+  :global(html.reduced) .node__text,
+  :global(html:not(.js)) .node__text {
+    opacity: 1;
+  }
+
+  /* ——— Вывод и история ——— */
+  .ai__outro {
+    display: grid;
+    gap: clamp(40px, 6vw, 80px);
+  }
+
+  .ai__conclusion {
+    font-weight: 550;
+    max-width: 30ch;
+  }
+
+  .ai__conclusion strong {
+    font-weight: 650;
+  }
+
+  .story {
+    position: relative;
+    padding: clamp(26px, 3vw, 44px);
+    border-radius: var(--r-l);
+    background: var(--paper);
+    color: var(--ink);
+    transition: transform 0.7s var(--ease);
+  }
+
+  .story__mark {
+    position: absolute;
+    top: -0.18em;
+    right: 0.12em;
+    font-size: clamp(8rem, 14vw, 14rem);
+    line-height: 1;
+    font-weight: 700;
+    color: var(--signal);
+  }
+
+  .story__label {
+    color: var(--signal);
+    margin-bottom: 20px;
+  }
+
+  .story__body {
+    margin: 0 0 28px;
+  }
+
+  .story__ph {
+    min-height: 180px;
+    border-color: var(--line-strong);
+    color: var(--muted);
+    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(27 27 29 / 0.035) 10px 11px);
+  }
+
+  .story__avatar {
+    border-color: var(--line-strong) !important;
+    color: var(--muted) !important;
+  }
+
+  .story__by {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .story__by b {
+    display: block;
+    font-weight: 650;
+  }
+
+  .story__avatar {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0.55rem;
+  }
+
+  @media (min-width: 900px) {
+    .scheme {
+      --rail-y: 32px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .scheme__rail {
+      top: var(--rail-y);
+      bottom: auto;
+      left: 32px;
+      right: calc(25% - 50px);
+      width: auto;
+      height: 2px;
+    }
+
+    .scheme__rail i {
+      transform: scaleX(var(--p, 0));
+      transform-origin: left;
+    }
+
+    .scheme__rail b {
+      top: 50%;
+      left: 0;
+    }
+
+    :global(.scheme.is-complete) .scheme__rail b {
+      animation-name: travel-x;
+    }
+
+    .node {
+      grid-template-columns: 1fr;
+      row-gap: 10px;
+    }
+
+    .node__icon {
+      grid-row: auto;
+      margin-bottom: 18px;
+    }
+
+    .node__icon {
+      width: 64px;
+      height: 64px;
+    }
+
+    .ai__outro {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: start;
+    }
+
+    .story {
+      margin-top: 60px;
+    }
+  }
+
+  @keyframes travel-x {
+    from { left: 0; }
+    to { left: 100%; }
+  }
+
+  @media (min-width: 900px) {
+    .node__icon {
+      width: 64px;
+    }
+  }
+</style>

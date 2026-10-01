@@ -1,0 +1,331 @@
+---
+import Words from './Words.astro';
+import Arrow from './Arrow.astro';
+import { finalCta, contacts } from '../data/assistants';
+---
+
+<section class="final" id="contact" aria-labelledby="final-title" data-final>
+  <div class="final__panel" data-final-panel>
+    <div class="final__orbit" aria-hidden="true" data-parallax="0.2">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="wrap final__grid">
+      <div class="final__copy">
+        <p class="label final__tag">[10] — Заявка</p>
+        <h2 class="t-xl" id="final-title" data-words><Words text={finalCta.title} /></h2>
+        <p class="t-lead final__text" data-reveal>{finalCta.text}</p>
+        <div class="final__alt" data-reveal>
+          <a class="link-u" href={contacts.telegramUrl} target="_blank" rel="noopener">Telegram {contacts.telegram} <Arrow dir="up-right" /></a>
+          <a class="link-u" href={contacts.phoneHref}>{contacts.phone}</a>
+        </div>
+      </div>
+
+      <form class="form" data-form novalidate data-reveal>
+        <div class="form__fields" data-form-fields>
+          <label class="field">
+            <input type="text" name="name" autocomplete="name" required placeholder=" " />
+            <span>{finalCta.fields.name}</span>
+            <em class="field__err" data-err>Как к вам обращаться?</em>
+          </label>
+          <label class="field">
+            <input type="text" name="contact" autocomplete="tel" required placeholder=" " />
+            <span>{finalCta.fields.contact}</span>
+            <em class="field__err" data-err>Оставьте телефон или ник в Telegram</em>
+          </label>
+          <label class="field field--area">
+            <textarea name="message" rows="4" placeholder=" "></textarea>
+            <span>{finalCta.fields.message}</span>
+          </label>
+          <label class="consent">
+            <input type="checkbox" name="consent" required />
+            <span class="consent__box" aria-hidden="true"></span>
+            <span>Согласен(на) на обработку персональных данных и с <a href="/privacy">политикой конфиденциальности</a></span>
+          </label>
+          <button class="btn btn--signal form__submit" type="submit" data-magnetic>
+            <span>{finalCta.button}</span>
+            <span class="btn__arrow"><Arrow /></span>
+          </button>
+        </div>
+        <div class="form__ok" data-form-ok hidden tabindex="-1">
+          <span class="form__ok-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+          </span>
+          <p class="t-m">Спасибо! Заявка у нас.</p>
+          <p class="t-muted">Свяжемся с вами по указанному контакту. Если срочно — пишите в Telegram {contacts.telegram}.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final {
+    position: relative;
+    padding-block: 0 clamp(12px, 1.5vw, 24px);
+  }
+
+  .final__panel {
+    position: relative;
+    padding-block: var(--sec-y);
+    background: var(--ink-deep);
+    color: var(--d-text);
+    overflow: hidden;
+    clip-path: inset(var(--inset-y, 0px) var(--inset-x, 0px) round var(--inset-r, 0px));
+  }
+
+  .final__orbit {
+    position: absolute;
+    top: -30%;
+    right: -25%;
+    width: 90vw;
+    aspect-ratio: 1;
+    pointer-events: none;
+  }
+
+  .final__orbit span {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgb(143 160 255 / 0.18);
+    animation: spin 40s linear infinite;
+  }
+
+  .final__orbit span:nth-child(2) {
+    inset: 14%;
+    border-style: dashed;
+    animation-duration: 60s;
+    animation-direction: reverse;
+  }
+
+  .final__orbit span:nth-child(3) {
+    inset: 30%;
+    background: radial-gradient(closest-side, rgb(46 75 255 / 0.28), transparent);
+    border: 0;
+  }
+
+  .final__orbit span:first-child::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 20px 4px rgb(46 75 255 / 0.7);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .final__grid {
+    position: relative;
+    display: grid;
+    gap: clamp(48px, 6vw, 96px);
+  }
+
+  .final__tag {
+    color: #8fa0ff;
+    margin-bottom: 28px;
+  }
+
+  .final__copy h2 {
+    max-width: 12ch;
+  }
+
+  .final__text {
+    max-width: 38ch;
+    margin-top: 32px;
+    color: var(--d-muted);
+  }
+
+  .final__alt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 32px;
+  }
+
+  /* ——— Форма ——— */
+  .form {
+    position: relative;
+    padding: clamp(22px, 3vw, 44px);
+    border-radius: var(--r-l);
+    background: var(--paper);
+    color: var(--ink);
+    align-self: start;
+  }
+
+  .form__fields {
+    display: grid;
+    gap: 14px;
+  }
+
+  .field {
+    position: relative;
+    display: block;
+  }
+
+  .field input,
+  .field textarea {
+    display: block;
+    width: 100%;
+    padding: 26px 16px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: transparent;
+    font-size: 1.05rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 130px;
+  }
+
+  .field > span {
+    position: absolute;
+    left: 17px;
+    top: 18px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform 0.35s var(--ease), color 0.3s;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--signal);
+    box-shadow: 0 0 0 4px rgb(46 75 255 / 0.14);
+    background: #fff;
+  }
+
+  .field input:focus + span,
+  .field input:not(:placeholder-shown) + span,
+  .field textarea:focus + span,
+  .field textarea:not(:placeholder-shown) + span {
+    transform: translateY(-10px) scale(0.72);
+    color: var(--signal);
+  }
+
+  .field__err {
+    display: none;
+    margin-top: 6px;
+    font-style: normal;
+    font-size: 0.82rem;
+    color: #c22d2d;
+  }
+
+  :global(.field.is-invalid) input {
+    border-color: #c22d2d;
+  }
+
+  :global(.field.is-invalid) .field__err {
+    display: block;
+  }
+
+  .consent {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-block: 6px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .consent input {
+    position: absolute;
+    opacity: 0;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+  }
+
+  .consent__box {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 5px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .consent input:checked + .consent__box {
+    background: var(--signal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3L9.5 3.8' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E") center / 14px no-repeat;
+    border-color: var(--signal);
+  }
+
+  .consent input:focus-visible + .consent__box {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+
+  :global(.consent.is-invalid) .consent__box {
+    border-color: #c22d2d;
+  }
+
+  .consent a {
+    color: var(--ink);
+  }
+
+  .form__submit {
+    justify-content: space-between;
+    width: 100%;
+    min-height: 64px;
+    margin-top: 6px;
+    font-size: 1.05rem;
+  }
+
+  .form__ok {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    padding-block: 24px;
+    outline: none;
+  }
+
+  .form__ok[hidden] {
+    display: none;
+  }
+
+  .form__ok-icon {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--signal);
+    animation: pop 0.7s var(--ease);
+  }
+
+  .form__ok-icon svg {
+    width: 34px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.4;
+  }
+
+  @keyframes pop {
+    from {
+      transform: scale(0.4);
+      opacity: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .final__grid {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: start;
+    }
+  }
+</style>

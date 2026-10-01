@@ -1,0 +1,306 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import { guarantees } from '../data/assistants';
+---
+
+<section class="section section--dark guar" id="guarantees" aria-labelledby="guar-title">
+  <div class="wrap">
+    <SecTag n="08" label="Условия и гарантии" />
+
+    <div class="guar__head">
+      <h2 class="t-xl" id="guar-title" data-words><Words text={guarantees.title} /></h2>
+      <div class="guar__side">
+        <svg class="shield" viewBox="0 0 120 140" aria-hidden="true" data-shield>
+          <path class="shield__body" d="M60 6 110 24v40c0 34-22 58-50 70C32 122 10 98 10 64V24z" />
+          <path class="shield__check" d="M38 70l15 15 30-32" />
+        </svg>
+        <p class="t-lead" data-reveal>{guarantees.intro}</p>
+      </div>
+    </div>
+
+    <ul class="guar__grid" data-stagger>
+      {guarantees.items.map((g, i) => (
+        <li class="g" data-tilt>
+          <span class="label g__n">0{i + 1} · {g.label}</span>
+          <span class="g__big" aria-hidden="true">
+            {g.big === '↺' ? (
+              <svg viewBox="0 0 64 64"><path d="M14 30a20 20 0 1 1 6 16" /><path d="M6 22l8 10 10-8" /></svg>
+            ) : (
+              <><span data-count>{g.big}</span>{g.unit && <small>{g.unit}</small>}</>
+            )}
+          </span>
+          <p class="g__text">{g.text}</p>
+        </li>
+      ))}
+    </ul>
+
+    <div class="pay" data-reveal>
+      <p class="label pay__title">Условия оплаты</p>
+      <div class="pay__bar" data-pay aria-hidden="true">
+        <span class="pay__seg pay__seg--1"><i></i></span>
+        <span class="pay__seg pay__seg--2"><i></i></span>
+      </div>
+      <ul class="pay__list">
+        {guarantees.payment.map((p) => (
+          <li><span class="pay__share">{p.share}</span><span>{p.text}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .guar__head {
+    display: grid;
+    gap: 36px;
+    margin-bottom: clamp(48px, 7vw, 110px);
+  }
+
+  .guar__head h2 {
+    max-width: 13ch;
+  }
+
+  .guar__side {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+  }
+
+  .guar__side p {
+    max-width: 26ch;
+  }
+
+  .shield {
+    flex: none;
+    width: clamp(72px, 9vw, 140px);
+    overflow: visible;
+  }
+
+  .shield path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .shield__body {
+    stroke: #8fa0ff;
+    stroke-width: 3;
+    stroke-dasharray: 400;
+    stroke-dashoffset: var(--d1, 400);
+    transition: stroke-dashoffset 1.6s var(--ease-io), fill 0.8s 1.2s;
+  }
+
+  .shield__check {
+    stroke: #fff;
+    stroke-width: 6;
+    stroke-dasharray: 80;
+    stroke-dashoffset: var(--d2, 80);
+    transition: stroke-dashoffset 0.7s var(--ease) 1.2s;
+  }
+
+  :global(.shield.is-in),
+  :global(html.reduced) .shield,
+  :global(html:not(.js)) .shield {
+    --d1: 0;
+    --d2: 0;
+  }
+
+  :global(.shield.is-in) .shield__body,
+  :global(html.reduced) .shield__body,
+  :global(html:not(.js)) .shield__body {
+    fill: var(--signal);
+    stroke: var(--signal);
+  }
+
+  .guar__grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .g {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-height: clamp(220px, 26vw, 320px);
+    padding: clamp(24px, 2.8vw, 40px);
+    border: 1px solid var(--d-line);
+    border-radius: var(--r-l);
+    overflow: hidden;
+    isolation: isolate;
+    transition: border-color 0.5s, transform 0.7s var(--ease);
+  }
+
+  .g::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(120% 90% at 0% 100%, rgb(46 75 255 / 0.45), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.7s var(--ease);
+  }
+
+  .g:hover {
+    border-color: rgb(143 160 255 / 0.6);
+  }
+
+  .g:hover::before {
+    opacity: 1;
+  }
+
+  .g__n {
+    color: #8fa0ff;
+  }
+
+  .g__big {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: clamp(4.5rem, 2.4rem + 7vw, 10rem);
+    font-weight: 600;
+    letter-spacing: -0.07em;
+    line-height: 0.82;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .g__big small {
+    font-size: 0.3em;
+    letter-spacing: -0.02em;
+  }
+
+  .g__big svg {
+    width: 0.9em;
+    height: 0.9em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: transform 1s var(--ease);
+  }
+
+  .g:hover .g__big {
+    transform: translateX(8px);
+  }
+
+  .g:hover .g__big svg {
+    transform: rotate(-300deg);
+  }
+
+  .g__text {
+    max-width: 30ch;
+    margin-top: auto;
+    font-size: var(--fs-s);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  .pay {
+    margin-top: clamp(64px, 8vw, 128px);
+  }
+
+  .pay__title {
+    color: var(--d-muted);
+    margin-bottom: 18px;
+  }
+
+  .pay__bar {
+    display: flex;
+    gap: 6px;
+    height: clamp(56px, 7vw, 96px);
+  }
+
+  .pay__seg {
+    flex: 1;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .pay__seg--1 {
+    background: rgb(245 243 239 / 0.08);
+  }
+
+  .pay__seg--1 i {
+    position: absolute;
+    inset: 0;
+    background: var(--signal);
+    transform: scaleX(var(--p1, 0));
+    transform-origin: left;
+    transition: transform 1.2s var(--ease-io);
+  }
+
+  .pay__seg--2 {
+    border: 1.5px dashed rgb(245 243 239 / 0.35);
+  }
+
+  .pay__seg--2 i {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(143 160 255 / 0.25) 10px 12px);
+    transform: scaleX(var(--p2, 0));
+    transform-origin: left;
+    transition: transform 1.2s var(--ease-io) 0.9s;
+  }
+
+  :global(.pay__bar.is-in),
+  :global(html.reduced) .pay__bar,
+  :global(html:not(.js)) .pay__bar {
+    --p1: 1;
+    --p2: 1;
+  }
+
+  .pay__list {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .pay__list li {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    font-size: var(--fs-s);
+    line-height: 1.3;
+  }
+
+  .pay__share {
+    flex: none;
+    font-weight: 650;
+    color: #8fa0ff;
+    min-width: 3ch;
+  }
+
+  @media (min-width: 768px) {
+    .guar__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .guar__grid {
+      align-items: start;
+      padding-bottom: 64px;
+    }
+
+    .g:nth-child(even) {
+      translate: 0 64px;
+    }
+
+    .pay__list {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .guar__head {
+      grid-template-columns: 1.4fr 1fr;
+      align-items: end;
+    }
+
+    .guar__side {
+      justify-content: flex-end;
+    }
+  }
+</style>

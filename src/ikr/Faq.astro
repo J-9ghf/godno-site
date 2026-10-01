@@ -1,0 +1,159 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import { faq, contacts } from '../data/assistants';
+---
+
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="wrap faq__grid">
+    <div class="faq__head">
+      <SecTag n="09" label="Вопросы" />
+      <h2 class="t-xl" id="faq-title" data-words><Words text="Вопросы" /></h2>
+      <p class="faq__contact t-muted" data-reveal>
+        Не нашли ответ? Напишите в Telegram{' '}
+        <a class="link-u" href={contacts.telegramUrl} target="_blank" rel="noopener">{contacts.telegram}</a>
+      </p>
+    </div>
+
+    <div class="faq__list" data-stagger>
+      {faq.map((f, i) => (
+        <details class="qa" data-qa>
+          <summary>
+            <span class="qa__n label">{String(i + 1).padStart(2, '0')}</span>
+            <span class="qa__q">{f.q}</span>
+            <span class="qa__icon" aria-hidden="true"><i></i><i></i></span>
+          </summary>
+          <div class="qa__a" data-qa-body>
+            <p>{f.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    gap: 40px;
+  }
+
+  .faq__contact {
+    margin-top: 24px;
+    max-width: 28ch;
+  }
+
+  .faq__list {
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .qa {
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .qa summary {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: clamp(14px, 2vw, 32px);
+    min-height: 64px;
+    padding-block: clamp(20px, 2.2vw, 32px);
+    cursor: pointer;
+    list-style: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .qa summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .qa__n {
+    color: var(--signal);
+    align-self: start;
+    padding-top: 0.5em;
+  }
+
+  .qa__q {
+    font-size: var(--fs-s);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    transition: transform 0.5s var(--ease), color 0.4s;
+  }
+
+  .qa summary:hover .qa__q {
+    transform: translateX(6px);
+  }
+
+  .qa__icon {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    transition: background 0.4s, border-color 0.4s, transform 0.6s var(--ease);
+  }
+
+  .qa__icon i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 1.8px;
+    margin: -0.9px 0 0 -8px;
+    background: currentColor;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .qa__icon i:last-child {
+    transform: rotate(90deg);
+  }
+
+  .qa summary:hover .qa__icon {
+    border-color: var(--ink);
+  }
+
+  .qa[open] .qa__icon {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: #fff;
+    transform: rotate(180deg);
+  }
+
+  .qa[open] .qa__icon i:last-child {
+    transform: rotate(0deg);
+  }
+
+  .qa__a {
+    overflow: hidden;
+  }
+
+  .qa__a p {
+    max-width: 58ch;
+    padding: 0 0 clamp(24px, 2.6vw, 36px);
+    font-size: var(--fs-body);
+    color: var(--ink-2);
+  }
+
+  @media (min-width: 768px) {
+    .qa__a p {
+      padding-left: calc(clamp(14px, 2vw, 32px) + 2.2em);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .faq__grid {
+      grid-template-columns: 5fr 7fr;
+      gap: 48px;
+    }
+
+    .faq__head {
+      position: sticky;
+      top: calc(var(--header-h) + 32px);
+      align-self: start;
+    }
+  }
+</style>

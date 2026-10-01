@@ -1,0 +1,147 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import { about } from '../data/assistants';
+---
+
+<section class="section section--paper2 about" id="about" aria-labelledby="about-title">
+  <div class="wrap">
+    <SecTag n="05" label="О нас" />
+
+    <div class="about__grid">
+      <figure class="portrait" data-reveal>
+        <div class="portrait__frame" data-parallax-img>
+          <!-- Заменить на фото: <img src="/media/ekaterina.jpg" alt="Екатерина Яковлева" /> -->
+          <div class="ph portrait__ph">
+            <span>Фото Екатерины Яковлевой</span>
+            <span>вертикальное, от 1200 × 1500</span>
+          </div>
+        </div>
+        <figcaption class="portrait__cap">
+          <span class="t-s">{about.name}</span>
+          <span class="label t-muted">{about.role}</span>
+        </figcaption>
+      </figure>
+
+      <div class="about__story">
+        <h2 class="about__quote t-xl" id="about-title" data-words>
+          <span class="about__q" aria-hidden="true">«</span><Words text={about.quote} /><span class="about__q" aria-hidden="true">»</span>
+        </h2>
+
+        <div class="ph about__ph" data-reveal>{about.storyPlaceholder}</div>
+
+        <dl class="facts-list" data-stagger>
+          {about.facts.map((f, i) => (
+            <div class="facts-list__row">
+              <dt><span class="label accent">{String(i + 1).padStart(2, '0')}</span>{f.label}</dt>
+              <dd class="ph">{f.placeholder}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    gap: clamp(40px, 6vw, 96px);
+  }
+
+  .portrait {
+    position: relative;
+  }
+
+  .portrait__frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--r-l);
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+
+  .portrait__ph {
+    position: absolute;
+    inset: -8% 0;
+    border: 0;
+    border-radius: 0;
+    align-content: center;
+  }
+
+  .portrait__frame :global(img) {
+    position: absolute;
+    inset: -8% 0;
+    width: 100%;
+    height: 116%;
+    object-fit: cover;
+  }
+
+  .portrait__cap {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    padding-top: 16px;
+  }
+
+  .about__quote {
+    position: relative;
+    margin-bottom: clamp(32px, 4vw, 56px);
+  }
+
+  .about__q {
+    color: var(--signal);
+  }
+
+  .about__ph {
+    min-height: 220px;
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+
+  .facts-list__row {
+    display: grid;
+    gap: 10px;
+    padding-block: 18px;
+    border-top: 1px solid var(--line);
+    transition: padding 0.5s var(--ease);
+  }
+
+  .facts-list__row:hover {
+    padding-left: 10px;
+  }
+
+  .facts-list dt {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-size: var(--fs-s);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .facts-list dd {
+    padding: 10px 14px;
+    place-items: start;
+    text-align: left;
+    border-radius: 8px;
+  }
+
+  @media (min-width: 900px) {
+    .about__grid {
+      grid-template-columns: 5fr 7fr;
+      align-items: start;
+    }
+
+    .portrait {
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+    }
+
+    .facts-list__row {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+  }
+</style>

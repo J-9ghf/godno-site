@@ -1,0 +1,366 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import { why } from '../data/assistants';
+
+const [c1, c2, c3, c4] = why.cards;
+---
+
+<section class="section why" id="why" aria-labelledby="why-title">
+  <div class="wrap">
+    <SecTag n="02" label="Зачем собственнику ассистент" />
+
+    <h2 class="why__title t-xl" id="why-title" data-words>
+      <Words text={why.title.before} />{' '}<span class="strike" data-strike><Words text={why.title.struck} /></span><span class="w"><span>,</span></span>{' '}<span class="why__after"><Words text={why.title.after} /></span>
+    </h2>
+
+    <div class="bento">
+      <article class="card card--ink card--1" data-reveal data-tilt>
+        <div class="card__head">
+          <span class="card__n">{c1.n}</span>
+          <h3 class="t-m">{c1.title}</h3>
+        </div>
+        <div class="bars" aria-hidden="true">
+          {[22, 30, 38, 52, 64, 78, 92].map((h, i) => (
+            <span style={`--h:${h}%;--i:${i}`}><i></i></span>
+          ))}
+        </div>
+        <p class="card__text">{c1.text}</p>
+      </article>
+
+      <article class="card card--signal card--2" data-reveal data-tilt>
+        <div class="speed" aria-hidden="true">
+          {Array.from({ length: 6 }).map((_, i) => <i style={`--i:${i}`}></i>)}
+        </div>
+        <div class="card__head">
+          <span class="card__n">{c2.n}</span>
+          <h3 class="t-m">{c2.title}</h3>
+        </div>
+        <p class="card__text">{c2.text}</p>
+      </article>
+
+      <article class="card card--line card--3" data-reveal data-tilt>
+        <span class="spark" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><path d="M20 0v40M0 20h40M6 6l28 28M34 6L6 34" /></svg>
+        </span>
+        <div class="card__head">
+          <span class="card__n">{c3.n}</span>
+          <h3 class="t-m">{c3.title}</h3>
+        </div>
+        <p class="card__text">{c3.text}</p>
+      </article>
+
+      <article class="card card--paper card--4" data-reveal data-tilt>
+        <div class="card__head">
+          <span class="card__n">{c4.n}</span>
+          <h3 class="t-m">{c4.title}</h3>
+        </div>
+        <div class="done" aria-hidden="true" data-progress>
+          <span class="done__bar"><i></i></span>
+          <span class="done__check">
+            <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+          </span>
+        </div>
+        <p class="card__text">{c4.text}</p>
+      </article>
+    </div>
+
+    <p class="why__reliable t-l" data-scrub-words>{why.reliability}</p>
+  </div>
+</section>
+
+<style>
+  .why__title {
+    max-width: 15ch;
+  }
+
+  .why__after {
+    color: var(--signal);
+  }
+
+  .strike {
+    position: relative;
+    display: inline-block;
+    color: var(--muted);
+  }
+
+  .strike::after {
+    content: '';
+    position: absolute;
+    left: -0.04em;
+    right: -0.04em;
+    top: 52%;
+    height: 0.075em;
+    background: var(--ink);
+    transform: scaleX(var(--s, 0));
+    transform-origin: left;
+    transition: transform 0.9s var(--ease-io) 0.4s;
+  }
+
+  :global(.strike.is-in),
+  :global(html.reduced) .strike,
+  :global(html:not(.js)) .strike {
+    --s: 1;
+  }
+
+  .bento {
+    display: grid;
+    gap: 12px;
+    margin-top: clamp(48px, 7vw, 120px);
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-height: 300px;
+    padding: clamp(22px, 2.6vw, 40px);
+    border-radius: var(--r-l);
+    overflow: hidden;
+    transition: transform 0.7s var(--ease), box-shadow 0.7s var(--ease);
+    transform-style: preserve-3d;
+  }
+
+  .card:hover {
+    box-shadow: 0 40px 80px -50px rgb(20 39 88 / 0.65);
+  }
+
+  .card__head {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card__n {
+    font-family: var(--f-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
+
+  .card__text {
+    position: relative;
+    max-width: 36ch;
+    margin-top: auto;
+    font-size: var(--fs-body);
+    line-height: 1.45;
+  }
+
+  .card--ink {
+    background: var(--ink);
+    color: var(--d-text);
+  }
+
+  .card--ink .card__text {
+    color: var(--d-muted);
+  }
+
+  .card--signal {
+    background: var(--signal);
+    color: #fff;
+  }
+
+  .card--line {
+    border: 1px solid var(--line-strong);
+  }
+
+  .card--paper {
+    background: var(--paper-2);
+  }
+
+  /* Столбики роста */
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(6px, 1vw, 12px);
+    height: clamp(120px, 14vw, 220px);
+    margin-top: 12px;
+  }
+
+  .bars span {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .bars i {
+    display: block;
+    width: 100%;
+    height: var(--h);
+    border-radius: 4px 4px 0 0;
+    background: linear-gradient(to top, rgb(245 243 239 / 0.12), rgb(245 243 239 / 0.28));
+    transform: scaleY(var(--grow, 0));
+    transform-origin: bottom;
+    transition: transform 1.1s var(--ease) calc(var(--i) * 0.07s), background 0.4s;
+  }
+
+  .bars span:last-child i {
+    background: var(--signal);
+  }
+
+  :global(.is-in) .bars i,
+  :global(html.reduced) .bars i,
+  :global(html:not(.js)) .bars i {
+    --grow: 1;
+  }
+
+  .card--1:hover .bars i {
+    transform: scaleY(1.06);
+  }
+
+  /* Линии скорости */
+  .speed {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .speed i {
+    position: absolute;
+    right: -40%;
+    top: calc(14% + var(--i) * 13%);
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55));
+    animation: dash 2.6s linear infinite;
+    animation-delay: calc(var(--i) * -0.43s);
+  }
+
+  @keyframes dash {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-360%);
+    }
+  }
+
+  .card--2:hover .speed i {
+    animation-duration: 0.9s;
+  }
+
+  .spark {
+    position: absolute;
+    top: clamp(22px, 2.6vw, 40px);
+    right: clamp(22px, 2.6vw, 40px);
+    width: 56px;
+    height: 56px;
+    color: var(--signal);
+    transition: transform 1s var(--ease);
+  }
+
+  .spark svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+
+  .card--3:hover .spark {
+    transform: rotate(135deg) scale(1.15);
+  }
+
+  .done {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .done__bar {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--paper-3);
+    overflow: hidden;
+  }
+
+  .done__bar i {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+
+  .done__check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    transition: background 0.4s, border-color 0.4s;
+  }
+
+  .done__check svg {
+    width: 22px;
+    fill: none;
+    stroke: var(--paper);
+    stroke-width: 2.2;
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 0.6s var(--ease) 0.1s;
+  }
+
+  :global(.done.is-done) .done__check {
+    background: var(--signal);
+    border-color: var(--signal);
+  }
+
+  :global(.done.is-done) .done__check svg {
+    stroke-dashoffset: 0;
+  }
+
+  :global(html.reduced) .done__bar i,
+  :global(html:not(.js)) .done__bar i {
+    --p: 1;
+  }
+
+  .why__reliable {
+    max-width: 22ch;
+    margin-top: clamp(80px, 10vw, 180px);
+    margin-left: auto;
+    font-weight: 550;
+  }
+
+  @media (min-width: 768px) {
+    .bento {
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    .card--1 {
+      grid-column: 1 / span 7;
+      grid-row: span 2;
+      min-height: 560px;
+    }
+
+    .card--2,
+    .card--3 {
+      grid-column: 8 / span 5;
+    }
+
+    .card--4 {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 24px 48px;
+      min-height: 0;
+    }
+
+    .card--4 .done {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .card--4 .card__text {
+      margin: 0;
+      justify-self: end;
+    }
+  }
+</style>

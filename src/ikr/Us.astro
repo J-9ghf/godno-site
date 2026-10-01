@@ -1,0 +1,351 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import Arrow from './Arrow.astro';
+import { scenarios, reasons, services } from '../data/assistants';
+
+const [sNew, sTried] = scenarios;
+---
+
+<section class="section us" id="us" aria-labelledby="us-title">
+  <div class="wrap">
+    <SecTag n="04" label="Почему именно мы" />
+
+    <div class="split" data-stagger>
+      <article class="split__side split__side--new">
+        <span class="split__glyph" aria-hidden="true">
+          <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" stroke-dasharray="4 6" /></svg>
+        </span>
+        <h3 class="t-l">{sNew.title}</h3>
+        <p class="t-lead">{sNew.text}</p>
+      </article>
+      <span class="split__or label" aria-hidden="true">или</span>
+      <article class="split__side split__side--tried">
+        <span class="split__glyph" aria-hidden="true">
+          <svg viewBox="0 0 80 80"><path d="M64 40a24 24 0 1 1-7-17" /><path d="M58 12v12H46" /></svg>
+        </span>
+        <h3 class="t-l">{sTried.title}</h3>
+        <p class="t-lead">{sTried.text}</p>
+      </article>
+    </div>
+
+    <div class="reasons">
+      <div class="reasons__head">
+        <h2 class="t-xl" id="us-title" data-words><Words text="Почему мы" /></h2>
+      </div>
+      <ol class="reasons__list" data-stagger>
+        {reasons.map((r, i) => (
+          <li class="reason">
+            <span class="reason__n">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="t-m">{r.title}</h3>
+              <p class="t-muted">{r.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="services" data-stagger>
+      {services.map((s) => (
+        <a class="service" href="#contact">
+          <span class="service__top">
+            <span class="label">Услуга {s.n}</span>
+            <span class="service__arrow"><Arrow dir="up-right" /></span>
+          </span>
+          <span class="service__title">{s.title}</span>
+          <span class="service__text">{s.text}</span>
+          <span class="service__points">
+            {s.points.map((p) => <span>{p}</span>)}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ——— Два сценария ——— */
+  .split {
+    position: relative;
+    display: grid;
+    gap: 10px;
+  }
+
+  .split__side {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: clamp(28px, 4vw, 64px);
+    border-radius: var(--r-l);
+    min-height: clamp(340px, 34vw, 520px);
+    transition: transform 0.7s var(--ease);
+  }
+
+  .split__side h3 {
+    max-width: 11ch;
+  }
+
+  .split__side p {
+    max-width: 34ch;
+    margin-top: auto;
+  }
+
+  .split__side--new {
+    background: var(--paper-2);
+  }
+
+  .split__side--tried {
+    background: var(--ink);
+    color: var(--d-text);
+  }
+
+  .split__side--tried p {
+    color: var(--d-muted);
+  }
+
+  .split__glyph {
+    width: 64px;
+    height: 64px;
+    color: var(--signal);
+    transition: transform 1s var(--ease);
+  }
+
+  .split__side--tried .split__glyph {
+    color: #8fa0ff;
+  }
+
+  .split__glyph svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+  }
+
+  .split__side:hover {
+    transform: translateY(-6px);
+  }
+
+  .split__side--new:hover .split__glyph {
+    transform: rotate(90deg);
+  }
+
+  .split__side--tried:hover .split__glyph {
+    transform: rotate(-200deg);
+  }
+
+  .split__or {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-radius: 50%;
+    background: var(--signal);
+    color: #fff;
+    box-shadow: 0 0 0 8px var(--paper);
+  }
+
+  /* ——— Почему мы ——— */
+  .reasons {
+    display: grid;
+    gap: 40px;
+    margin-top: clamp(96px, 12vw, 200px);
+  }
+
+  .reasons__head h2 {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+
+  .reason {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(16px, 3vw, 48px);
+    padding-block: clamp(22px, 2.6vw, 36px);
+    border-top: 1px solid var(--line);
+    isolation: isolate;
+  }
+
+  .reason:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .reason::before {
+    content: '';
+    position: absolute;
+    inset: 0 calc(-1 * var(--gutter));
+    z-index: -1;
+    background: var(--paper-2);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .reason:hover::before {
+    transform: scaleY(1);
+  }
+
+  .reason__n {
+    font-family: var(--f-mono);
+    font-size: var(--fs-label);
+    color: var(--signal);
+    padding-top: 0.6em;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .reason:hover .reason__n {
+    transform: translateX(8px);
+  }
+
+  .reason h3 {
+    margin-bottom: 10px;
+  }
+
+  .reason p {
+    max-width: 52ch;
+  }
+
+  /* ——— Услуги ——— */
+  .services {
+    display: grid;
+    gap: 10px;
+    margin-top: clamp(96px, 12vw, 200px);
+  }
+
+  .service {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: clamp(380px, 36vw, 560px);
+    padding: clamp(26px, 3.4vw, 52px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-l);
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+    transition: color 0.5s var(--ease), flex-grow 0.8s var(--ease), border-color 0.5s;
+  }
+
+  .service::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--signal);
+    clip-path: circle(0% at 100% 0%);
+    transition: clip-path 0.9s var(--ease);
+  }
+
+  .service__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .service__arrow {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    transition: transform 0.7s var(--ease), background 0.5s;
+  }
+
+  .service__arrow :global(svg) {
+    width: 22px;
+    height: 22px;
+  }
+
+  .service__title {
+    font-size: var(--fs-l);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    max-width: 12ch;
+    margin-top: auto;
+  }
+
+  .service__text {
+    max-width: 40ch;
+    font-size: var(--fs-body);
+  }
+
+  .service__points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .service__points span {
+    padding: 6px 10px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .service:hover,
+  .service:focus-visible {
+    color: #fff;
+    border-color: var(--signal);
+  }
+
+  .service:hover::before,
+  .service:focus-visible::before {
+    clip-path: circle(150% at 100% 0%);
+  }
+
+  .service:hover .service__arrow {
+    transform: rotate(45deg) scale(1.1);
+    background: #fff;
+    color: var(--signal);
+  }
+
+  @media (min-width: 900px) {
+    .split {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .split__side--tried {
+      margin-top: 80px;
+    }
+
+    .reasons {
+      grid-template-columns: 5fr 7fr;
+      gap: 48px;
+    }
+
+    .services {
+      display: flex;
+    }
+
+    .service {
+      flex: 1 1 0;
+    }
+
+    .service:hover {
+      flex-grow: 1.35;
+    }
+  }
+
+  @media (max-width: 899px) {
+    .split__or {
+      position: relative;
+      left: auto;
+      top: auto;
+      margin: -36px auto;
+    }
+  }
+</style>

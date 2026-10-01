@@ -1,0 +1,11 @@
+---
+/** Разбивает строку на слова-маски для kinetic-анимации (без сдвига вёрстки: разметка готова на сервере). */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const words = text.split(' ');
+---
+{words.map((w, i) => (
+  <Fragment><span class="w"><span>{w}</span></span>{i < words.length - 1 ? ' ' : ''}</Fragment>
+))}

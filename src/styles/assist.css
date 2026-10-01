@@ -1,0 +1,520 @@
+/* ИКР.Ассистенты — дизайн-система.
+   Палитра выведена из логотипа: бумага #F5F3EF (фон знака), графит #1B1B1D, тёмно-синий #142758.
+   Сигнальный кобальт — единственный «цифровой» акцент: движение, активные состояния, CTA. */
+
+:root {
+  --paper: #f5f3ef;
+  --paper-2: #ebe7df;
+  --paper-3: #e1dcd2;
+  --ink: #1b1b1d;
+  --ink-deep: #111113;
+  --ink-2: #26262a;
+  --navy: #142758;
+  --navy-2: #1c3370;
+  --signal: #2e4bff;
+  --signal-ink: #1f38d6;
+  --signal-soft: #dde3ff;
+  --muted: #67645f;
+  --line: rgb(27 27 29 / 0.14);
+  --line-strong: rgb(27 27 29 / 0.32);
+
+  --d-text: #f5f3ef;
+  --d-muted: rgb(245 243 239 / 0.62);
+  --d-line: rgb(245 243 239 / 0.14);
+
+  --f-sans: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --fs-mega: clamp(2.85rem, 0.6rem + 8.4vw, 10.25rem);
+  --fs-xl: clamp(2.35rem, 0.9rem + 5.6vw, 7rem);
+  --fs-l: clamp(1.95rem, 1rem + 3.4vw, 4.5rem);
+  --fs-m: clamp(1.4rem, 1rem + 1.3vw, 2.25rem);
+  --fs-s: clamp(1.15rem, 1rem + 0.45vw, 1.45rem);
+  --fs-lead: clamp(1.1rem, 0.98rem + 0.5vw, 1.5rem);
+  --fs-body: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --maxw: 1520px;
+  --sec-y: clamp(88px, 6rem + 6vw, 220px);
+  --r-s: 6px;
+  --r-m: 14px;
+  --r-l: clamp(18px, 2vw, 32px);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 0.25s;
+  --t: 0.5s;
+  --header-h: 72px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+}
+
+html:not(.reduced) {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--signal);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 8px;
+  z-index: 200;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--r-s);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--fs-small);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* Тонкое зерно поверх всего — «бумажность», не мешает кликам */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ——— Layout ——— */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--sec-y);
+}
+
+.section--dark {
+  background: var(--ink-deep);
+  color: var(--d-text);
+}
+
+.section--navy {
+  background: var(--navy);
+  color: var(--d-text);
+}
+
+.section--paper2 {
+  background: var(--paper-2);
+}
+
+/* ——— Typography ——— */
+.t-mega,
+.t-xl,
+.t-l,
+.t-m {
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.t-mega {
+  font-size: var(--fs-mega);
+  line-height: 0.9;
+  letter-spacing: -0.048em;
+}
+
+.t-xl {
+  font-size: var(--fs-xl);
+  line-height: 0.95;
+  letter-spacing: -0.044em;
+}
+
+.t-l {
+  font-size: var(--fs-l);
+  line-height: 1;
+  letter-spacing: -0.042em;
+}
+
+.t-m {
+  font-size: var(--fs-m);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.t-s {
+  font-size: var(--fs-s);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 550;
+}
+
+.t-lead {
+  font-size: var(--fs-lead);
+  line-height: 1.38;
+  letter-spacing: -0.012em;
+  font-weight: 450;
+}
+
+.t-muted {
+  color: var(--muted);
+}
+
+.section--dark .t-muted,
+.section--navy .t-muted {
+  color: var(--d-muted);
+}
+
+.t-mono,
+.label {
+  font-family: var(--f-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.accent {
+  color: var(--signal);
+}
+
+.section--dark .accent,
+.section--navy .accent {
+  color: #8fa0ff;
+}
+
+/* Метка секции: [02] ——— Зачем ассистент */
+.sec-tag {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(28px, 4vw, 56px);
+  font-family: var(--f-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sec-tag__n {
+  color: var(--signal);
+}
+
+.section--dark .sec-tag__n,
+.section--navy .sec-tag__n {
+  color: #8fa0ff;
+}
+
+.sec-tag__line {
+  flex: 0 0 clamp(40px, 8vw, 120px);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+  transform-origin: left;
+}
+
+/* ——— Buttons ——— */
+.btn {
+  --bg: var(--ink);
+  --fg: var(--paper);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 8px 8px 8px 22px;
+  border: 0;
+  border-radius: var(--r-s);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform var(--t) var(--ease), color var(--t-fast);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--signal);
+  transform: translateY(101%);
+  transition: transform var(--t) var(--ease);
+}
+
+.btn__arrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: var(--signal);
+  color: #fff;
+  overflow: hidden;
+  transition: background var(--t) var(--ease);
+}
+
+.btn__arrow svg {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--t) var(--ease);
+}
+
+.btn:hover::before {
+  transform: translateY(0);
+}
+
+.btn:hover .btn__arrow {
+  background: var(--ink);
+}
+
+.btn:hover .btn__arrow svg {
+  animation: arrow-loop 0.55s var(--ease);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+@keyframes arrow-loop {
+  0% {
+    transform: translateX(0);
+  }
+  45% {
+    transform: translateX(150%);
+  }
+  46% {
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.btn--signal {
+  --bg: var(--signal);
+  --fg: #fff;
+}
+
+.btn--signal::before {
+  background: var(--ink);
+}
+
+.btn--signal .btn__arrow {
+  background: rgb(255 255 255 / 0.16);
+}
+
+.btn--signal:hover .btn__arrow {
+  background: var(--signal);
+}
+
+.btn--light {
+  --bg: var(--paper);
+  --fg: var(--ink);
+}
+
+.btn--light:hover {
+  color: #fff;
+}
+
+.link-u {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  padding-block: 6px;
+}
+
+.link-u::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right;
+  transition: transform var(--t) var(--ease);
+}
+
+.link-u:hover::after {
+  transform: scaleX(0);
+}
+
+.link-u svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--t) var(--ease);
+}
+
+.link-u:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* Плейсхолдер для материалов, которых пока нет (фото, история, скриншоты) */
+.ph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: 20px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-m);
+  color: var(--muted);
+  font-family: var(--f-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(27 27 29 / 0.035) 10px 11px);
+}
+
+.section--dark .ph,
+.section--navy .ph {
+  border-color: var(--d-line);
+  color: var(--d-muted);
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(245 243 239 / 0.04) 10px 11px);
+}
+
+/* ——— Анимации: исходные состояния только при включённом JS и без reduced motion ——— */
+html.js:not(.reduced) [data-reveal] {
+  opacity: 0;
+  transform: translateY(42px);
+}
+
+html.js:not(.reduced) [data-stagger] > * {
+  opacity: 0;
+  transform: translateY(36px);
+}
+
+/* Слово-маска для kinetic-заголовков */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.w > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+html.js:not(.reduced) [data-words] .w > span {
+  transform: translateY(105%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html.js:not(.reduced) [data-hero-fade] {
+  opacity: 0;
+}
+
+html.js:not(.reduced) [data-hero-col] {
+  transform: scaleY(0);
+}

@@ -1,0 +1,240 @@
+---
+import SecTag from './SecTag.astro';
+import Words from './Words.astro';
+import { steps } from '../data/assistants';
+---
+
+<section class="section--navy process" id="process" aria-labelledby="process-title" data-process>
+  <div class="process__pin" data-process-pin>
+    <div class="wrap process__head">
+      <SecTag n="06" label="Процесс" />
+      <div class="process__titlebar">
+        <h2 class="t-xl" id="process-title" data-words><Words text="Как мы работаем" /> <span class="process__muted"><Words text="— пять шагов" /></span></h2>
+        <p class="process__count label" aria-hidden="true">
+          <span data-process-current>01</span> / 0{steps.length}
+        </p>
+      </div>
+    </div>
+
+    <div class="tl" data-tl>
+      <ol class="tl__track wrap" data-tl-track>
+        <span class="tl__rail" aria-hidden="true"><i data-tl-fill></i></span>
+        {steps.map((s, i) => (
+          <li class="step" data-step>
+            <span class="step__dot" aria-hidden="true"></span>
+            <span class="step__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="step__body">
+              {s.mark && <span class="step__mark label">{s.mark}</span>}
+              <h3 class="t-m"><span class="sr-only">Шаг {i + 1}. </span>{s.title}</h3>
+              <p>{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    position: relative;
+    padding-block: var(--sec-y);
+    overflow: hidden;
+  }
+
+  .process__titlebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+  }
+
+  .process__titlebar h2 {
+    max-width: 14ch;
+  }
+
+  .process__muted {
+    color: rgb(245 243 239 / 0.45);
+  }
+
+  .process__count {
+    flex: none;
+    font-size: 0.85rem;
+    color: var(--d-muted);
+  }
+
+  .process__count span {
+    color: #fff;
+  }
+
+  .tl {
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+
+  .tl__track {
+    position: relative;
+    display: grid;
+    gap: 0;
+  }
+
+  .tl__rail {
+    position: absolute;
+    left: calc(var(--gutter) + 7px);
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--d-line);
+  }
+
+  .tl__rail i {
+    position: absolute;
+    inset: 0;
+    background: #8fa0ff;
+    transform: scaleY(var(--p, 0));
+    transform-origin: top;
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    column-gap: 22px;
+    padding-bottom: 56px;
+  }
+
+  .step:last-child {
+    padding-bottom: 0;
+  }
+
+  .step__dot {
+    position: relative;
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    border-radius: 50%;
+    border: 2px solid var(--d-muted);
+    background: var(--navy);
+    transition: background 0.5s, border-color 0.5s, transform 0.6s var(--ease);
+  }
+
+  .step__n {
+    grid-column: 2;
+    font-size: clamp(4.5rem, 2rem + 9vw, 11rem);
+    font-weight: 600;
+    letter-spacing: -0.07em;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1.2px rgb(245 243 239 / 0.35);
+    transition: color 0.7s var(--ease), -webkit-text-stroke-color 0.7s;
+  }
+
+  .step__body {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+    opacity: 0.45;
+    transform: translateY(10px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+
+  .step__body p {
+    max-width: 36ch;
+    color: var(--d-muted);
+  }
+
+  .step__mark {
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: rgb(245 243 239 / 0.1);
+    color: #fff;
+    transition: background 0.5s;
+  }
+
+  :global(.step.is-active) .step__dot,
+  :global(html.reduced) .step__dot,
+  :global(html:not(.js)) .step__dot {
+    background: #8fa0ff;
+    border-color: #8fa0ff;
+    transform: scale(1.25);
+  }
+
+  :global(.step.is-active) .step__n,
+  :global(html.reduced) .step__n,
+  :global(html:not(.js)) .step__n {
+    color: var(--d-text);
+    -webkit-text-stroke-color: transparent;
+  }
+
+  :global(.step.is-active) .step__body,
+  :global(html.reduced) .step__body,
+  :global(html:not(.js)) .step__body {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(.step.is-active) .step__mark {
+    background: var(--signal);
+  }
+
+  .step:hover .step__n {
+    -webkit-text-stroke-color: #8fa0ff;
+  }
+
+  /* Горизонтальный режим (desktop + анимации): включается из JS классом .is-horizontal */
+  :global(.process.is-horizontal) {
+    padding-block: 0;
+  }
+
+  :global(.process.is-horizontal) .process__pin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    padding-block: calc(var(--header-h) + 24px) 48px;
+  }
+
+  :global(.process.is-horizontal) .tl {
+    overflow: visible;
+  }
+
+  :global(.process.is-horizontal) .tl__track {
+    display: flex;
+    width: max-content;
+    max-width: none;
+    padding-right: 30vw;
+  }
+
+  :global(.process.is-horizontal) .tl__rail {
+    left: var(--gutter);
+    right: 0;
+    top: 7px;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+  }
+
+  :global(.process.is-horizontal) .tl__rail i {
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+
+  :global(.process.is-horizontal) .step {
+    width: clamp(340px, 34vw, 520px);
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+    padding: 0 48px 0 0;
+  }
+
+  :global(.process.is-horizontal) .step__n,
+  :global(.process.is-horizontal) .step__body {
+    grid-column: 1;
+  }
+
+  :global(.process.is-horizontal) .step__dot {
+    margin-top: 0;
+  }
+</style>

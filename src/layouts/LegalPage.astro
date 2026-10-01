@@ -15,7 +15,7 @@ const { title, pending = false, current } = Astro.props;
 
 <Base title={`${title} — Институт кадровых решений`} description={title}>
   <meta slot="head" name="robots" content={pending ? 'noindex' : 'index'} />
-  <Header base="/" />
+  <Header base="/institute/" />
   <main id="main" class="legal">
     <div class="container legal__grid">
       <aside class="legal__aside">
@@ -50,7 +50,7 @@ const { title, pending = false, current } = Astro.props;
       </article>
     </div>
   </main>
-  <Footer base="/" />
+  <Footer base="/institute/" />
 </Base>
 
 <style>

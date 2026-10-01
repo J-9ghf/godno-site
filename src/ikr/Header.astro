@@ -1,0 +1,380 @@
+---
+import Arrow from './Arrow.astro';
+import { nav, contacts, hero } from '../data/assistants';
+---
+
+<header class="hdr" data-header>
+  <div class="hdr__bar wrap">
+    <a class="hdr__brand" href="#top" aria-label="ИКР.Ассистенты — Институт кадровых решений, в начало страницы">
+      <img src="/brand/ikr-logo.png" width="242" height="56" alt="ИКР — Институт кадровых решений" />
+      <span class="hdr__divider" aria-hidden="true"></span>
+      <span class="hdr__product">ИКР.Ассистенты</span>
+    </a>
+
+    <nav class="hdr__nav" aria-label="Разделы">
+      <ul>
+        {nav.map((i) => <li><a href={i.href} data-nav>{i.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <a class="btn btn--signal hdr__cta" href="#contact">
+      <span>Рассказать о ситуации</span>
+      <span class="btn__arrow"><Arrow /></span>
+    </a>
+
+    <button class="hdr__burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+      <span class="sr-only">Меню</span>
+      <span class="hdr__burger-lines" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="menu" id="menu" data-menu hidden>
+    <nav class="menu__nav wrap" aria-label="Меню">
+      <ol>
+        {nav.map((i, idx) => (
+          <li>
+            <a href={i.href} data-menu-link>
+              <span class="label">{String(idx + 1).padStart(2, '0')}</span>
+              {i.label}
+            </a>
+          </li>
+        ))}
+      </ol>
+      <div class="menu__foot">
+        <a class="btn btn--signal" href="#contact" data-menu-link>
+          <span>{hero.cta}</span>
+          <span class="btn__arrow"><Arrow /></span>
+        </a>
+        <a class="link-u" href={contacts.telegramUrl} target="_blank" rel="noopener">Telegram {contacts.telegram}</a>
+        <a class="link-u" href={contacts.phoneHref}>{contacts.phone}</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Мобильный CTA: всегда под рукой, прячется у формы -->
+<div class="dock" data-dock>
+  <a class="btn btn--signal dock__btn" href="#contact">
+    <span>{hero.cta}</span>
+    <span class="btn__arrow"><Arrow /></span>
+  </a>
+  <a class="dock__tg" href={contacts.telegramUrl} target="_blank" rel="noopener" aria-label="Написать в Telegram">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.4 4.3 2.9 11.4c-1.3.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.8-1.4-1.5Zm-3.3 3.3-8.7 7.9-.4 3.6-1.3-4.3 10.3-7.5c.5-.3.6.1.1.3Z"/></svg>
+  </a>
+</div>
+
+<style>
+  .hdr {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .hdr.is-hidden:not(.is-open) {
+    transform: translateY(-110%);
+  }
+
+  .hdr::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(245 243 239 / 0.86);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid transparent;
+    opacity: 0;
+    transition: opacity var(--t) var(--ease), border-color var(--t);
+  }
+
+  .hdr.is-scrolled::before,
+  .hdr.is-open::before {
+    opacity: 1;
+    border-color: var(--line);
+  }
+
+  .hdr__bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: var(--header-h);
+  }
+
+  .hdr__brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-right: auto;
+    text-decoration: none;
+    flex: none;
+  }
+
+  .hdr__brand img {
+    height: 34px;
+    width: auto;
+  }
+
+  .hdr__divider {
+    width: 1px;
+    height: 26px;
+    background: var(--line-strong);
+  }
+
+  .hdr__product {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .hdr__nav ul {
+    display: flex;
+    gap: 4px;
+  }
+
+  .hdr__nav a {
+    position: relative;
+    display: block;
+    padding: 8px 10px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ink);
+    border-radius: 4px;
+    transition: color var(--t-fast);
+  }
+
+  .hdr__nav a::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 4px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--t) var(--ease);
+  }
+
+  .hdr__nav a:hover::after,
+  .hdr__nav a.is-current::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .hdr__nav a.is-current {
+    color: var(--signal);
+  }
+
+  .hdr__cta {
+    min-height: 46px;
+    padding: 5px 5px 5px 16px;
+    font-size: 0.9rem;
+  }
+
+  .hdr__cta .btn__arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hdr__burger {
+    display: none;
+    width: 48px;
+    height: 48px;
+    margin-right: -8px;
+    border: 0;
+    background: none;
+  }
+
+  .hdr__burger-lines {
+    position: relative;
+    display: block;
+    width: 26px;
+    height: 10px;
+    margin-inline: auto;
+  }
+
+  .hdr__burger-lines i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ink);
+    transition: transform var(--t) var(--ease), top var(--t) var(--ease);
+  }
+
+  .hdr__burger-lines i:first-child {
+    top: 0;
+  }
+
+  .hdr__burger-lines i:last-child {
+    top: 8px;
+  }
+
+  .hdr.is-open .hdr__burger-lines i:first-child {
+    top: 4px;
+    transform: rotate(45deg);
+  }
+
+  .hdr.is-open .hdr__burger-lines i:last-child {
+    top: 4px;
+    transform: rotate(-45deg);
+  }
+
+  .menu {
+    position: fixed;
+    inset: var(--header-h) 0 0;
+    background: var(--paper);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .menu__nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    padding-block: 24px 32px;
+  }
+
+  .menu__nav ol a {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(1.9rem, 8vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    text-decoration: none;
+  }
+
+  .menu__nav ol .label {
+    color: var(--signal);
+  }
+
+  .menu.is-in li {
+    animation: menu-in 0.6s var(--ease) both;
+  }
+
+  .menu.is-in li:nth-child(2) { animation-delay: 0.04s; }
+  .menu.is-in li:nth-child(3) { animation-delay: 0.08s; }
+  .menu.is-in li:nth-child(4) { animation-delay: 0.12s; }
+  .menu.is-in li:nth-child(5) { animation-delay: 0.16s; }
+  .menu.is-in li:nth-child(6) { animation-delay: 0.2s; }
+  .menu.is-in li:nth-child(7) { animation-delay: 0.24s; }
+  .menu.is-in li:nth-child(8) { animation-delay: 0.28s; }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+
+  .menu__foot {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-top: 32px;
+  }
+
+  .dock {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 90;
+    display: none;
+    gap: 8px;
+    transform: translateY(140%);
+    transition: transform 0.6s var(--ease);
+  }
+
+  .dock.is-visible {
+    transform: none;
+  }
+
+  .dock__btn {
+    flex: 1;
+    min-width: 0;
+    padding-left: 16px;
+    font-size: 0.92rem;
+    white-space: nowrap;
+    justify-content: space-between;
+    box-shadow: 0 12px 32px -12px rgb(46 75 255 / 0.6);
+  }
+
+  .dock__tg {
+    display: grid;
+    place-items: center;
+    flex: 0 0 56px;
+    border-radius: var(--r-s);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .dock__tg svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (max-width: 1239px) {
+    .hdr__nav {
+      display: none;
+    }
+
+    .hdr__burger {
+      display: block;
+    }
+  }
+
+  @media (max-width: 767px) {
+    :global(:root) {
+      --header-h: 64px;
+    }
+
+    .hdr__cta {
+      display: none;
+    }
+
+    .hdr__brand img {
+      height: 28px;
+    }
+
+    .hdr__brand {
+      gap: 10px;
+    }
+
+    .hdr__divider {
+      height: 22px;
+    }
+
+    .hdr__product {
+      font-size: 0.62rem;
+    }
+
+    .dock {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 1240px) {
+    .menu {
+      display: none;
+    }
+  }
+
+  @media (max-width: 359px) {
+    .hdr__product,
+    .hdr__divider {
+      display: none;
+    }
+  }
+</style>
