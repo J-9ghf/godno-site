@@ -90,14 +90,25 @@ import { ai } from '../data/assistants';
   }
 
   .ai__title > span {
-    max-width: 15ch;
+    max-width: min(100%, 15ch);
   }
 
+  /* Курсив выходит за правый край слова, а маски слов (.w) обрезают overflow —
+     даём маскам запас справа. Контурная обводка у этого шрифта рисует внутренние линии,
+     поэтому строка набрана сплошным приглушённым цветом. */
   .ai__quote {
-    color: transparent;
-    -webkit-text-stroke: 1.2px var(--d-muted);
+    max-width: min(100%, 18ch) !important;
+    font-size: clamp(1.6rem, 0.9rem + 3vw, 4rem);
+    line-height: 1.05;
+    color: var(--d-muted);
     font-style: italic;
     font-weight: 500;
+    overflow-wrap: break-word;
+  }
+
+  .ai__quote :global(.w) {
+    padding-right: 0.16em;
+    margin-right: -0.16em;
   }
 
   /* ——— Схема ——— */

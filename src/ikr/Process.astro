@@ -136,7 +136,7 @@ import { steps } from '../data/assistants';
     align-items: flex-start;
     gap: 12px;
     margin-top: 20px;
-    opacity: 0.45;
+    opacity: 0.55;
     transform: translateY(10px);
     transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
   }
@@ -185,57 +185,57 @@ import { steps } from '../data/assistants';
     -webkit-text-stroke-color: var(--accent-light);
   }
 
-  /* Горизонтальный режим (desktop + анимации): включается из JS классом .is-horizontal */
-  :global(.process.is-horizontal) {
-    padding-block: 0;
-  }
+  /* Desktop ≥1200: все пять шагов в одну строку, без закрепления секции —
+     ничего не уходит за край экрана; линия и шаги активируются по мере скролла. */
+  @media (min-width: 1200px) {
+    .tl__track {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      column-gap: clamp(20px, 2vw, 40px);
+    }
 
-  :global(.process.is-horizontal) .process__pin {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 100vh;
-    padding-block: calc(var(--header-h) + 24px) 48px;
-  }
+    .tl__rail {
+      left: var(--gutter);
+      right: var(--gutter);
+      top: 7px;
+      bottom: auto;
+      width: auto;
+      height: 2px;
+    }
 
-  :global(.process.is-horizontal) .tl {
-    overflow: visible;
-  }
+    .tl__rail i {
+      transform: scaleX(var(--p, 0));
+      transform-origin: left;
+    }
 
-  :global(.process.is-horizontal) .tl__track {
-    display: flex;
-    width: max-content;
-    max-width: none;
-    padding-right: 30vw;
-  }
+    .step {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 24px;
+      padding-bottom: 0;
+    }
 
-  :global(.process.is-horizontal) .tl__rail {
-    left: var(--gutter);
-    right: 0;
-    top: 7px;
-    bottom: auto;
-    width: auto;
-    height: 2px;
-  }
+    .step__n,
+    .step__body {
+      grid-column: 1;
+    }
 
-  :global(.process.is-horizontal) .tl__rail i {
-    transform: scaleX(var(--p, 0));
-    transform-origin: left;
-  }
+    .step__dot {
+      margin-top: 0;
+    }
 
-  :global(.process.is-horizontal) .step {
-    width: clamp(340px, 34vw, 520px);
-    grid-template-columns: 1fr;
-    row-gap: 28px;
-    padding: 0 48px 0 0;
-  }
+    .step__n {
+      font-size: clamp(4rem, 2rem + 3.6vw, 7rem);
+    }
 
-  :global(.process.is-horizontal) .step__n,
-  :global(.process.is-horizontal) .step__body {
-    grid-column: 1;
-  }
+    .step__body {
+      margin-top: 0;
+    }
 
-  :global(.process.is-horizontal) .step__dot {
-    margin-top: 0;
+    .step__body h3 {
+      font-size: clamp(1.3rem, 0.9rem + 0.9vw, 1.9rem);
+    }
+
+    .step__body p {
+      font-size: 0.98rem;
+    }
   }
 </style>

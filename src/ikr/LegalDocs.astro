@@ -1,0 +1,286 @@
+---
+/**
+ * Юридические документы в модальных окнах (<dialog>). Открываются ссылками с data-doc-open="privacy|consent",
+ * а также по прямой ссылке: /#privacy, /#consent. Тексты — src/data/legal.ts (дословно из документов заказчика).
+ */
+import { legalDocs } from '../data/legal';
+
+/** **жирный** и ⟦заглушка⟧ → сегменты для разметки */
+const rich = (s: string) =>
+  s.split(/(\*\*[^*]+\*\*|⟦[^⟧]+⟧)/).filter(Boolean).map((part) => {
+    if (part.startsWith('**')) return { k: 'b', v: part.slice(2, -2) };
+    if (part.startsWith('⟦')) return { k: 'todo', v: part.slice(1, -1) };
+    return { k: 't', v: part };
+  });
+---
+
+{legalDocs.map((doc) => (
+  <dialog class="doc" id={`doc-${doc.id}`} aria-labelledby={`doc-${doc.id}-title`} data-doc={doc.id}>
+    <div class="doc__panel">
+      <header class="doc__head">
+        <div>
+          <p class="label doc__kind">Документ</p>
+          <h2 class="doc__title" id={`doc-${doc.id}-title`}>{doc.name}</h2>
+        </div>
+        <button class="doc__close" type="button" data-doc-close aria-label="Закрыть документ">
+          <i></i><i></i>
+        </button>
+      </header>
+
+      <div class="doc__body" tabindex="0">
+        {doc.title && <p class="doc__doctitle">{doc.title}</p>}
+        {doc.blocks.map((b) => {
+          if (b.t === 'h') return <h3>{b.text}</h3>;
+          if (b.t === 'p')
+            return (
+              <p>
+                {b.lines
+                  ? b.lines.map((ln, i) => (
+                      <Fragment>
+                        {rich(ln).map((s) => (s.k === 'b' ? <strong>{s.v}</strong> : s.k === 'todo' ? <mark class="todo" title="Требует уточнения">{s.v}</mark> : s.v))}
+                        {i < b.lines!.length - 1 && <br />}
+                      </Fragment>
+                    ))
+                  : rich(b.text ?? '').map((s) => (s.k === 'b' ? <strong>{s.v}</strong> : s.k === 'todo' ? <mark class="todo" title="Требует уточнения">{s.v}</mark> : s.v))}
+              </p>
+            );
+          if (b.t === 'ul' || b.t === 'ol') {
+            const items = b.items.map((it) => (
+              <li>{rich(it).map((s) => (s.k === 'b' ? <strong>{s.v}</strong> : s.k === 'todo' ? <mark class="todo" title="Требует уточнения">{s.v}</mark> : s.v))}</li>
+            ));
+            // в политике списки оформлены тире, в согласии — маркерами, как в исходниках
+            return b.t === 'ol' ? <ol>{items}</ol> : <ul class:list={[doc.id === 'privacy' && 'dash']}>{items}</ul>;
+          }
+          if (b.t !== 'table') return null;
+          return (
+            <div class="doc__table" role="table">
+              {b.rows.map(([k, vals], i) => (
+                <div class="doc__row" role="row">
+                  <div class="doc__cell doc__cell--k" role="rowheader">{k}</div>
+                  <div class="doc__cell" role="cell">
+                    {/* первая строка таблицы в исходнике — текст, остальные — маркированные списки */}
+                    {i === 0 ? vals[0] : <ul>{vals.map((v) => <li>{v}</li>)}</ul>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </dialog>
+))}
+
+<style>
+  .doc {
+    width: min(860px, calc(100vw - 32px));
+    max-width: none;
+    height: min(88vh, 960px);
+    max-height: none;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-l);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 40px 120px -40px rgb(var(--shadow-rgb) / 0.5);
+    overflow: hidden;
+  }
+
+  .doc::backdrop {
+    background: rgb(28 30 31 / 0.55);
+  }
+
+  .doc[open] {
+    animation: doc-in 0.55s var(--ease);
+  }
+
+  .doc[open]::backdrop {
+    animation: doc-fade 0.4s ease;
+  }
+
+  @keyframes doc-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.985);
+    }
+  }
+
+  @keyframes doc-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .doc__panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .doc__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: clamp(20px, 3vw, 36px) clamp(20px, 3.4vw, 44px) 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .doc__kind {
+    color: var(--accent-ink);
+    margin-bottom: 8px;
+  }
+
+  .doc__title {
+    font-size: clamp(1.35rem, 1rem + 1.3vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .doc__close {
+    position: relative;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: none;
+    transition: background 0.3s, border-color 0.3s, transform 0.5s var(--ease);
+  }
+
+  .doc__close i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 18px;
+    height: 1.8px;
+    margin: -0.9px 0 0 -9px;
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+
+  .doc__close i:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .doc__close:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: rotate(90deg);
+  }
+
+  .doc__body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 24px clamp(20px, 3.4vw, 44px) 48px;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    outline: none;
+  }
+
+  .doc__body > * + * {
+    margin-top: 0.8em;
+  }
+
+  .doc__doctitle {
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .doc__body h3 {
+    margin-top: 1.8em;
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .doc__body strong {
+    font-weight: 650;
+    color: var(--ink);
+  }
+
+  .doc__body ul,
+  .doc__body ol {
+    display: grid;
+    gap: 0.4em;
+    padding-left: 1.4em;
+  }
+
+  .doc__body ul {
+    list-style: disc;
+  }
+
+  .doc__body ul.dash {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .doc__body ul.dash li::before {
+    content: '— ';
+  }
+
+  .doc__body ol {
+    list-style: decimal;
+  }
+
+  .doc__body li::marker {
+    color: var(--accent-ink);
+  }
+
+  .doc__table {
+    border-top: 1px solid var(--line);
+  }
+
+  .doc__row {
+    display: grid;
+    gap: 6px 24px;
+    padding-block: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .doc__cell--k {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .doc__cell ul {
+    margin: 0;
+  }
+
+  .todo {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: rgb(var(--accent-rgb) / 0.18);
+    color: var(--ink);
+    text-decoration: underline dashed var(--accent-ink);
+    text-underline-offset: 3px;
+  }
+
+  .todo::after {
+    content: ' · требует уточнения';
+    font-family: var(--f-mono);
+    font-size: 0.72em;
+    letter-spacing: 0.02em;
+    color: var(--accent-ink);
+  }
+
+  @media (min-width: 640px) {
+    .doc__row {
+      grid-template-columns: 220px 1fr;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .doc {
+      width: 100vw;
+      height: 100dvh;
+      border-radius: 0;
+      margin: 0;
+    }
+  }
+</style>

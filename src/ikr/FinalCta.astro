@@ -37,10 +37,16 @@ import { finalCta, contacts } from '../data/assistants';
             <span>{finalCta.fields.message}</span>
           </label>
           <label class="consent">
-            <input type="checkbox" name="consent" required />
+            <input type="checkbox" name="consent" id="consent-check" required aria-describedby="consent-err" />
             <span class="consent__box" aria-hidden="true"></span>
-            <span>Согласен(на) на обработку персональных данных и с <a href={contacts.privacyUrl} target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+            <span>
+              Я даю <a href="#consent" data-doc-open="consent">согласие на обработку персональных данных</a> и принимаю{' '}
+              <a href="#privacy" data-doc-open="privacy">политику конфиденциальности</a>
+            </span>
           </label>
+          <p class="consent__err" id="consent-err" role="alert">
+            Отметьте согласие на обработку персональных данных — без него заявку отправить нельзя.
+          </p>
           <button class="btn btn--accent form__submit" type="submit" data-magnetic>
             <span>{finalCta.button}</span>
             <span class="btn__arrow"><Arrow /></span>
@@ -276,6 +282,28 @@ import { finalCta, contacts } from '../data/assistants';
 
   .consent a {
     color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: rgb(var(--accent-rgb) / 0.8);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: color 0.3s, text-decoration-color 0.3s;
+  }
+
+  .consent a:hover {
+    color: var(--accent-ink);
+    text-decoration-color: var(--accent-ink);
+  }
+
+  .consent__err {
+    display: none;
+    margin: -6px 0 0 34px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--error);
+  }
+
+  :global(.consent.is-invalid) + .consent__err {
+    display: block;
   }
 
   .form__submit {

@@ -192,6 +192,52 @@ function initForm() {
   });
 }
 
+/** Юридические документы: модальные окна <dialog>. Ссылки с data-doc-open, прямые ссылки /#privacy и /#consent. */
+function initDocs() {
+  const dialogs = new Map($$<HTMLDialogElement>('dialog[data-doc]').map((d) => [d.dataset.doc!, d]));
+  if (!dialogs.size) return;
+  let opener: HTMLElement | null = null;
+
+  const open = (id: string, from?: HTMLElement | null) => {
+    const d = dialogs.get(id);
+    if (!d) return;
+    if (d.open) return;
+    dialogs.forEach((other) => other.open && other.close());
+    opener = from ?? null;
+    d.showModal();
+    root.style.overflow = 'hidden';
+    const body = $('.doc__body', d);
+    if (body) body.scrollTop = 0;
+  };
+
+  dialogs.forEach((d) => {
+    d.addEventListener('close', () => {
+      root.style.overflow = '';
+      if (location.hash === `#${d.dataset.doc}`) history.replaceState(null, '', location.pathname + location.search);
+      opener?.focus();
+    });
+    // клик по затемнению (вне панели) закрывает окно
+    d.addEventListener('click', (e) => {
+      if (e.target === d) d.close();
+    });
+    $('[data-doc-close]', d)?.addEventListener('click', () => d.close());
+  });
+
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest<HTMLElement>('[data-doc-open]');
+    if (!link) return;
+    e.preventDefault();
+    open(link.dataset.docOpen!, link);
+  });
+
+  const fromHash = () => {
+    const id = location.hash.slice(1);
+    if (dialogs.has(id)) open(id);
+  };
+  fromHash();
+  addEventListener('hashchange', fromHash);
+}
+
 /* ——————————————————— Анимации ——————————————————— */
 
 const wordsOf = (el: Element) => $$('.w > span', el);
@@ -394,32 +440,21 @@ function initProcess() {
 
   const mm = gsap.matchMedia();
 
-  mm.add('(min-width: 1024px)', () => {
-    section.classList.add('is-horizontal');
-    const dist = () => Math.max(0, track.scrollWidth - window.innerWidth);
-    gsap.to(track, {
-      x: () => -dist(),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        pin: true,
-        start: 'top top',
-        end: () => `+=${dist() + window.innerHeight * 0.3}`,
-        scrub: 0.8,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          fill.style.setProperty('--p', String(self.progress));
-          activate(Math.min(steps.length - 1, Math.floor(self.progress * steps.length * 0.999 + 0.25)));
-        },
+  // ≥1200: пять колонок в строку — линия заполняется и шаги загораются по мере скролла через блок
+  mm.add('(min-width: 1200px)', () => {
+    ScrollTrigger.create({
+      trigger: track,
+      start: 'top 80%',
+      end: 'bottom 40%',
+      scrub: 0.6,
+      onUpdate: (self) => {
+        fill.style.setProperty('--p', String(self.progress));
+        activate(Math.min(steps.length - 1, Math.floor(self.progress * steps.length)));
       },
     });
-    return () => {
-      section.classList.remove('is-horizontal');
-      gsap.set(track, { clearProps: 'transform' });
-    };
   });
 
-  mm.add('(max-width: 1023px)', () => {
+  mm.add('(max-width: 1199px)', () => {
     ScrollTrigger.create({
       trigger: track,
       start: 'top 70%',
@@ -546,6 +581,7 @@ initDock();
 initFaq();
 initShots();
 initForm();
+initDocs();
 
 if (reduced) {
   $('[data-hl]')?.classList.add('is-on');

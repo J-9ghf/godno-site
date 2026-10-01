@@ -14,8 +14,6 @@ export const contacts = {
   phoneHref: 'tel:+79807023633',
   site: 'yakovlevagency.ru',
   siteUrl: 'https://yakovlevagency.ru',
-  /** Политика конфиденциальности компании (документ на основном сайте). */
-  privacyUrl: 'https://yakovlevagency.ru/personal',
 };
 
 export const nav = [
