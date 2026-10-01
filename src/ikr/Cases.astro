@@ -2,7 +2,7 @@
 import SecTag from './SecTag.astro';
 import Words from './Words.astro';
 import Arrow from './Arrow.astro';
-import { cases, reviews } from '../data/assistants';
+import { cases, reviews, reviewShots } from '../data/assistants';
 ---
 
 <section class="section cases" id="cases" aria-labelledby="cases-title">
@@ -55,6 +55,7 @@ import { cases, reviews } from '../data/assistants';
         ))}
       </ul>
 
+      {reviewShots.length > 0 && (
       <div class="shots" data-reveal>
         <div class="shots__bar">
           <p class="label">Скриншоты переписок</p>
@@ -64,17 +65,14 @@ import { cases, reviews } from '../data/assistants';
           </div>
         </div>
         <ul class="shots__track" data-shots tabindex="0" aria-label="Скриншоты переписок с клиентами">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {reviewShots.map((src, i) => (
             <li class="shot">
-              <!-- Заменить на <img src="/media/reviews/0N.jpg" alt="Отзыв клиента, имя скрыто" /> -->
-              <div class="ph shot__ph">
-                <span>Скриншот {String(i + 1).padStart(2, '0')}</span>
-                <span>имя и личные данные скрыты</span>
-              </div>
+              <img class="shot__img" src={src} alt={`Отзыв клиента ${i + 1}, имя скрыто`} loading="lazy" />
             </li>
           ))}
         </ul>
       </div>
+      )}
     </div>
   </div>
 </section>
@@ -181,7 +179,7 @@ import { cases, reviews } from '../data/assistants';
     padding: clamp(22px, 2.4vw, 36px);
     border-radius: calc(var(--r-l) - 8px);
     background: var(--accent-strong);
-    color: var(--paper);
+    color: var(--on-accent);
     overflow: hidden;
   }
 
@@ -348,6 +346,14 @@ import { cases, reviews } from '../data/assistants';
 
   .shot {
     scroll-snap-align: start;
+  }
+
+  .shot__img {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 1px solid var(--line);
   }
 
   .shot__ph {

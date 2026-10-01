@@ -54,7 +54,7 @@ import { steps } from '../data/assistants';
   }
 
   .process__muted {
-    color: rgb(244 241 234 / 0.45);
+    color: rgb(247 246 242 / 0.45);
   }
 
   .process__count {
@@ -125,7 +125,7 @@ import { steps } from '../data/assistants';
     letter-spacing: -0.07em;
     line-height: 0.8;
     color: transparent;
-    -webkit-text-stroke: 1.2px rgb(244 241 234 / 0.35);
+    -webkit-text-stroke: 1.2px rgb(247 246 242 / 0.35);
     transition: color 0.7s var(--ease), -webkit-text-stroke-color 0.7s;
   }
 
@@ -149,7 +149,7 @@ import { steps } from '../data/assistants';
   .step__mark {
     padding: 6px 10px;
     border-radius: 4px;
-    background: rgb(244 241 234 / 0.1);
+    background: rgb(247 246 242 / 0.1);
     color: var(--paper);
     transition: background 0.5s;
   }
@@ -178,6 +178,7 @@ import { steps } from '../data/assistants';
 
   :global(.step.is-active) .step__mark {
     background: var(--accent);
+    color: var(--on-accent);
   }
 
   .step:hover .step__n {

@@ -1,37 +1,38 @@
-/* ИКР.Ассистенты — дизайн-система (вариант 1, тёплая палитра).
-   Тёплый ivory-фон, глубокий графит и приглушённый шалфейно-оливковый акцент.
-   Акцент — точечно: метки, активные состояния, CTA, ключевые цифры; не заливка всего подряд. */
+/* ИКР.Ассистенты — дизайн-система (вариант 1, финальная палитра).
+   Основной акцент #32A8A8; молочный фон; графитовый текст; очень светлые нейтральные подложки.
+   На заливках акцентом — графитовый текст (белый на #32A8A8 не проходит по контрасту). */
 
 :root {
   /* фон */
-  --paper: #f4f1ea;
-  --paper-2: #e8e9de; /* вторичный фон — очень светлый оттенок акцента */
-  --paper-3: #e2ddd2; /* тёплый нейтральный — плейсхолдеры, подложки */
+  --paper: #f7f6f2;
+  --paper-2: #edf2f0; /* второстепенные подложки — очень светлый нейтральный с оттенком акцента */
+  --paper-3: #e6e4de;
   /* текст */
-  --ink: #23241f;
-  --ink-deep: #1e1f1b;
-  --ink-2: #3a3b35;
-  --muted: #6b6860;
-  /* тёмное поле процесса — глубокий оливковый графит */
-  --deep: #2f3429;
+  --ink: #1f2223;
+  --ink-deep: #1c1e1f;
+  --ink-2: #353a3b;
+  --muted: #686a68;
+  /* тёмное поле процесса — графит с оттенком акцента */
+  --deep: #1e2626;
   /* акцент */
-  --accent: #6e7a58; /* графика, крупные цифры и слова */
-  --accent-strong: #5f6b48; /* заливки с текстом (кнопки, плашки) */
-  --accent-hover: #536140; /* hover — чуть насыщеннее */
-  --accent-ink: #525c3f; /* мелкий текст акцентом на светлом */
-  --accent-light: #b9c2a1; /* акцент на тёмных полях */
-  --accent-soft: #e3e6d7;
-  --accent-rgb: 110 122 88;
-  --accent-light-rgb: 185 194 161;
-  --shadow-rgb: 52 48 38;
+  --accent: #32a8a8; /* основной: кнопки, графика, иконки, крупные цифры */
+  --accent-strong: #32a8a8; /* заливки (кнопки, плашки) */
+  --accent-hover: #2b9494; /* hover — та же гамма, на тон глубже */
+  --accent-ink: #1c6e6e; /* мелкий текст акцентом на светлом фоне (контраст 5.5:1) */
+  --accent-light: #32a8a8; /* акцент на тёмных полях */
+  --accent-soft: #e3f1f0; /* выделения, мягкие подложки */
+  --on-accent: #1f2223; /* текст и иконки на заливке акцентом */
+  --accent-rgb: 50 168 168;
+  --accent-light-rgb: 50 168 168;
+  --shadow-rgb: 31 40 40;
   --error: #9a5b3f;
-  /* линии — мягкий серо-бежевый */
-  --line: rgb(70 62 48 / 0.14);
-  --line-strong: rgb(70 62 48 / 0.3);
+  /* линии */
+  --line: rgb(31 34 35 / 0.13);
+  --line-strong: rgb(31 34 35 / 0.28);
 
-  --d-text: #f4f1ea;
-  --d-muted: rgb(244 241 234 / 0.64);
-  --d-line: rgb(244 241 234 / 0.13);
+  --d-text: #f7f6f2;
+  --d-muted: rgb(247 246 242 / 0.64);
+  --d-line: rgb(247 246 242 / 0.13);
 
   --f-sans: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
@@ -351,7 +352,7 @@ button {
   height: 40px;
   border-radius: 4px;
   background: var(--accent-strong);
-  color: var(--paper);
+  color: var(--on-accent);
   overflow: hidden;
   transition: background var(--t) var(--ease);
 }
@@ -395,7 +396,7 @@ button {
 
 .btn--accent {
   --bg: var(--accent-strong);
-  --fg: var(--paper);
+  --fg: var(--on-accent);
 }
 
 /* hover — мягко: чуть более насыщенный акцент вместо резкой смены на чёрный */
@@ -404,11 +405,15 @@ button {
 }
 
 .btn--accent .btn__arrow {
-  background: rgb(244 241 234 / 0.14);
+  background: rgb(31 34 35 / 0.1);
 }
 
 .btn--accent:hover .btn__arrow {
-  background: rgb(244 241 234 / 0.2);
+  background: rgb(31 34 35 / 0.14);
+}
+
+.btn:not(.btn--accent):hover {
+  color: var(--on-accent);
 }
 
 .btn--light {
@@ -472,7 +477,7 @@ button {
   text-transform: uppercase;
   text-align: center;
   background:
-    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(70 62 48 / 0.035) 10px 11px);
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(31 34 35 / 0.035) 10px 11px);
 }
 
 .section--dark .ph,
@@ -480,7 +485,7 @@ button {
   border-color: var(--d-line);
   color: var(--d-muted);
   background:
-    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(244 241 234 / 0.04) 10px 11px);
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(247 246 242 / 0.04) 10px 11px);
 }
 
 /* ——— Анимации: исходные состояния только при включённом JS и без reduced motion ——— */

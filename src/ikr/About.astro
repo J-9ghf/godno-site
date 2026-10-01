@@ -11,11 +11,15 @@ import { about } from '../data/assistants';
     <div class="about__grid">
       <figure class="portrait" data-reveal>
         <div class="portrait__frame" data-parallax-img>
-          <!-- Заменить на фото: <img src="/media/ekaterina.jpg" alt="Екатерина Яковлева" /> -->
-          <div class="ph portrait__ph">
-            <span>Фото Екатерины Яковлевой</span>
-            <span>вертикальное, от 1200 × 1500</span>
-          </div>
+          {about.photo ? (
+            <img src={about.photo} alt={about.name} loading="lazy" />
+          ) : (
+            <div class="portrait__mono" aria-hidden="true">
+              <span class="portrait__initials">ЕЯ</span>
+              <span class="portrait__line"></span>
+              <span class="label">ИКР.Ассистенты</span>
+            </div>
+          )}
         </div>
         <figcaption class="portrait__cap">
           <span class="t-s">{about.name}</span>
@@ -28,13 +32,17 @@ import { about } from '../data/assistants';
           <span class="about__q" aria-hidden="true">«</span><Words text={about.quote} /><span class="about__q" aria-hidden="true">»</span>
         </h2>
 
-        <div class="ph about__ph" data-reveal>{about.storyPlaceholder}</div>
+        {about.story.length > 0 && (
+          <div class="about__text" data-reveal>
+            {about.story.map((p) => <p class="t-lead">{p}</p>)}
+          </div>
+        )}
 
         <dl class="facts-list" data-stagger>
           {about.facts.map((f, i) => (
             <div class="facts-list__row">
               <dt><span class="label accent">{String(i + 1).padStart(2, '0')}</span>{f.label}</dt>
-              <dd class="ph">{f.placeholder}</dd>
+              {f.value && <dd>{f.value}</dd>}
             </div>
           ))}
         </dl>
@@ -61,12 +69,36 @@ import { about } from '../data/assistants';
     background: var(--paper-3);
   }
 
-  .portrait__ph {
+  /* Пока нет фото — монограмма в цветах системы */
+  .portrait__mono {
     position: absolute;
     inset: -8% 0;
-    border: 0;
-    border-radius: 0;
-    align-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    background:
+      radial-gradient(80% 60% at 30% 25%, rgb(var(--accent-rgb) / 0.16), transparent 70%),
+      var(--paper-3);
+  }
+
+  .portrait__initials {
+    font-size: clamp(6rem, 3rem + 10vw, 13rem);
+    font-weight: 600;
+    letter-spacing: -0.07em;
+    line-height: 0.8;
+    color: var(--ink);
+  }
+
+  .portrait__line {
+    width: 56px;
+    height: 3px;
+    background: var(--accent);
+  }
+
+  .portrait__mono .label {
+    color: var(--muted);
   }
 
   .portrait__frame :global(img) {
@@ -95,9 +127,15 @@ import { about } from '../data/assistants';
     color: var(--accent);
   }
 
-  .about__ph {
-    min-height: 220px;
+  .about__text {
+    display: grid;
+    gap: 1em;
+    max-width: 46ch;
     margin-bottom: clamp(40px, 5vw, 72px);
+  }
+
+  .about__quote + .facts-list {
+    margin-top: clamp(8px, 2vw, 24px);
   }
 
   .facts-list__row {
@@ -139,7 +177,7 @@ import { about } from '../data/assistants';
       top: calc(var(--header-h) + 24px);
     }
 
-    .facts-list__row {
+    .facts-list__row:has(dd) {
       grid-template-columns: 1fr 1fr;
       align-items: center;
     }

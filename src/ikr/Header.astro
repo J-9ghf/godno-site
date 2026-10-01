@@ -6,7 +6,7 @@ import { nav, contacts, hero } from '../data/assistants';
 <header class="hdr" data-header>
   <div class="hdr__bar wrap">
     <a class="hdr__brand" href="#top" aria-label="ИКР.Ассистенты — Институт кадровых решений, в начало страницы">
-      <img src="/brand/ikr-logo-sage.png" width="242" height="56" alt="ИКР — Институт кадровых решений" />
+      <img src="/brand/ikr-logo-accent.png" width="242" height="56" alt="ИКР — Институт кадровых решений" />
       <span class="hdr__divider" aria-hidden="true"></span>
       <span class="hdr__product">ИКР.Ассистенты</span>
     </a>
@@ -68,6 +68,7 @@ import { nav, contacts, hero } from '../data/assistants';
     position: fixed;
     inset: 0 0 auto;
     z-index: 100;
+    padding-top: env(safe-area-inset-top, 0px);
     transition: transform 0.6s var(--ease);
   }
 
@@ -79,7 +80,7 @@ import { nav, contacts, hero } from '../data/assistants';
     content: '';
     position: absolute;
     inset: 0;
-    background: rgb(244 241 234 / 0.86);
+    background: rgb(247 246 242 / 0.86);
     backdrop-filter: blur(14px) saturate(1.4);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     border-bottom: 1px solid transparent;

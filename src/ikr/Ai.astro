@@ -39,27 +39,28 @@ import { ai } from '../data/assistants';
       ))}
     </ol>
 
-    <div class="ai__outro">
+    <div class:list={['ai__outro', !ai.story.text && 'ai__outro--solo']}>
       <p class="ai__conclusion t-m" data-reveal>
         <strong>{ai.conclusionLead}</strong>
         <span class="t-muted"> {ai.conclusion} </span>
         <span class="accent">{ai.conclusionTail}</span>
       </p>
 
+      {ai.story.text && (
       <figure class="story" data-reveal data-tilt>
         <span class="story__mark" aria-hidden="true">“</span>
         <p class="label story__label">{ai.story.label}</p>
         <blockquote class="story__body">
-          <div class="ph story__ph">{ai.story.placeholder}</div>
+          <p class="story__text t-lead">{ai.story.text}</p>
         </blockquote>
         <figcaption class="story__by">
-          <span class="story__avatar ph" aria-hidden="true">фото</span>
-          <span>
+                    <span>
             <b>{ai.story.author}</b>
             <span class="t-muted">{ai.story.role}</span>
           </span>
         </figcaption>
       </figure>
+      )}
     </div>
   </div>
 </section>
@@ -133,7 +134,7 @@ import { ai } from '../data/assistants';
     height: 10px;
     margin: -5px 0 0 -5px;
     border-radius: 50%;
-    background: #faf8f3;
+    background: #fff;
     box-shadow: 0 0 0 6px rgb(var(--accent-rgb) / 0.35), 0 0 24px 6px rgb(var(--accent-rgb) / 0.6);
     opacity: 0;
     transition: opacity 0.4s;
@@ -210,7 +211,7 @@ import { ai } from '../data/assistants';
   :global(.node.is-active) .node__icon {
     background: var(--accent);
     border-color: var(--accent);
-    color: var(--paper);
+    color: var(--on-accent);
   }
 
   :global(.node.is-active) .node__label {
@@ -229,7 +230,7 @@ import { ai } from '../data/assistants';
   :global(html.reduced) .node__icon,
   :global(html:not(.js)) .node__icon {
     background: var(--accent);
-    color: var(--paper);
+    color: var(--on-accent);
   }
 
   :global(html.reduced) .node__label,
@@ -289,7 +290,7 @@ import { ai } from '../data/assistants';
     min-height: 180px;
     border-color: var(--line-strong);
     color: var(--muted);
-    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(70 62 48 / 0.035) 10px 11px);
+    background: repeating-linear-gradient(-45deg, transparent 0 10px, rgb(31 34 35 / 0.035) 10px 11px);
   }
 
   .story__avatar {
@@ -364,7 +365,7 @@ import { ai } from '../data/assistants';
       height: 64px;
     }
 
-    .ai__outro {
+    .ai__outro:not(.ai__outro--solo) {
       grid-template-columns: 1.2fr 1fr;
       align-items: start;
     }
