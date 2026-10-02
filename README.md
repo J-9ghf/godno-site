@@ -115,3 +115,7 @@ public/media/              hero.webm / hero.mp4 (без звука), hero-poster
 ### Концепция v4 (одна, по конструкции референсов)
 
 `concepts/v4/` — 1-hero.png, 2-page.png, 3-ui.png (1440 px). Исходник и рендер — `concepts/v4/src/` (`node render.js c7`).
+
+## Лендинг «Домашний персонал»
+
+`landing/ikt-landing.html` — исходник опубликованной страницы (без обёртки html/head), `landing/index.html` — тот же сайт отдельным файлом для открытия в браузере.
