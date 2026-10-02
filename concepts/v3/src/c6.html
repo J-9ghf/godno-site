@@ -1,0 +1,325 @@
+<title>06 Слои</title>
+<style>/*FONTS:local5*/ /*FONTS:local4*/</style>
+<style>
+/* 06 Слои — страница как стопка мягких листов: каждая секция — большая скруглённая панель, которая наползает на предыдущую;
+   внутри панелей карточки слипаются без зазоров, кнопка «вырезана» в фото (вогнутые скругления) */
+:root{
+  --bg:#EFE5DA; --powder:#E3B9AA; --latte:#C99A73; --nut:#8A5A3C; --cocoa:#4A2321; --ink:#2E1A17; --paper:#F8F1E9;
+  --R:28px; --P:56px;
+  --d:'Unbounded',system-ui,sans-serif; --t:'Wix Madefor Text',system-ui,sans-serif; --s:'Marck Script',cursive;
+  --ph-l:#EED6C3; --ph-m:#C59A80; --ph-d:#7A5040; --ph-dd:#462A22; --ph-w:#FFEBD9; --ph-s:#DDAA92; --sat:1; --grain:.65; --blur:6px;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--t);font-size:17px;line-height:1.5}
+.board{background:var(--bg)}
+.caps{font-family:var(--d);text-transform:uppercase;letter-spacing:-.02em}
+.h2{font:250 50px/1.05 var(--d);text-transform:uppercase;letter-spacing:-.03em}
+.par{font-weight:200;opacity:.9;margin:0 .12em}
+.lbl{font:600 12px/1 var(--t);letter-spacing:.12em;text-transform:uppercase}
+.mz{display:grid;gap:0}
+.tl{border-radius:var(--R);position:relative;overflow:hidden;min-width:0}
+.tl .ph{position:absolute;inset:0}
+.pad{padding:26px 28px}
+.fl{position:absolute;width:var(--R);height:var(--R);pointer-events:none;z-index:3}
+.fl.o-tl{background:radial-gradient(circle at 0 0,transparent calc(var(--R) - .5px),var(--c) var(--R))}
+.fl.o-tr{background:radial-gradient(circle at 100% 0,transparent calc(var(--R) - .5px),var(--c) var(--R))}
+
+/* листы-секции */
+.sheet{position:relative;border-radius:var(--P) var(--P) 0 0;margin:-56px 0 0;padding:110px 72px 126px}
+.s-bg{background:var(--bg)} .s-pow{background:var(--powder)} .s-nut{background:var(--nut);color:var(--paper)} .s-coc{background:var(--cocoa);color:var(--paper)} .s-lat{background:var(--latte)}
+.cen{text-align:center}
+.sub{font:500 14px/1.4 var(--t);color:var(--nut)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;border-radius:999px;background:var(--cocoa);color:var(--paper);font:500 16px/1 var(--t);padding:20px 40px}
+.btn.lt{background:var(--paper);color:var(--cocoa)}
+.btn.pw{background:var(--powder);color:var(--cocoa)}
+.btn.hv{background:var(--nut)}
+.btn.off{background:#E2D5C8;color:#a99282}
+.tab{display:inline-flex;border-radius:14px;padding:13px 26px;font:500 15px/1 var(--t);box-shadow:inset 0 0 0 1.2px rgba(46,26,23,.35)}
+.tab.on{background:var(--nut);color:var(--paper);box-shadow:none}
+
+/* hero */
+.hero{padding:16px 16px 0;position:relative}
+.hph{position:relative;height:868px;border-radius:40px;overflow:hidden}
+.hph>.ph{position:absolute;inset:0}
+.hph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,20,15,.35),rgba(40,20,15,0) 30%,rgba(40,20,15,.15) 60%,rgba(40,20,15,.5));z-index:1}
+.hnav{position:absolute;left:36px;right:36px;top:28px;z-index:4;display:flex;align-items:center;gap:8px;color:var(--paper)}
+.hnav .logo{font:400 17px/1 var(--d);letter-spacing:.08em;margin-right:auto}
+.hnav .logo small{font:400 12px/1.2 var(--t);letter-spacing:0;opacity:.85;margin-left:12px}
+.hnav .np{border-radius:999px;padding:11px 18px;background:rgba(248,241,233,.18);backdrop-filter:blur(6px);font:500 13.5px/1 var(--t)}
+.hnav .cta{margin-left:18px;border-radius:999px;padding:12px 20px;background:var(--paper);color:var(--cocoa);font:500 13.5px/1 var(--t)}
+.htitle{position:absolute;left:0;right:0;top:170px;z-index:4;text-align:center;color:var(--paper)}
+.htitle h1{font:200 80px/1 var(--d);text-transform:uppercase;letter-spacing:-.045em}
+.htitle .scr{display:block;font:400 112px/.8 var(--s);color:#FBE3D6;margin-top:-6px;letter-spacing:0;text-transform:none;transform:rotate(-3deg)}
+.hlead{position:absolute;left:0;right:0;bottom:122px;z-index:4;text-align:center;color:var(--paper);font-size:17px;line-height:1.45}
+.notch{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:440px;height:96px;background:var(--bg);border-radius:var(--R) var(--R) 0 0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px}
+.notch .fl{bottom:0}
+
+/* ситуации */
+.float{position:absolute;border-radius:16px;overflow:hidden}
+.float .ph{position:absolute;inset:0}
+.cards{grid-template-columns:repeat(4,1fr);margin-top:56px}
+.cards .tl{height:300px;padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between}
+.cards .n{font:300 15px/1 var(--d)}
+.cards h3{font:300 22px/1.12 var(--d);text-transform:uppercase;letter-spacing:-.02em}
+.cards p{font-size:15px;margin-top:10px}
+
+/* табы + панель */
+.tabs{display:flex;gap:10px;justify-content:center;margin:34px 0 26px}
+.tpanel{background:var(--nut);color:var(--paper);border-radius:36px;padding:40px;display:grid;grid-template-columns:1fr 520px;gap:40px;align-items:center}
+.tpanel .ph{height:320px;border-radius:24px}
+
+/* больше чем поиск */
+.four{grid-template-columns:repeat(4,1fr);margin-top:48px}
+.four .tl{height:340px;padding:24px;display:flex;flex-direction:column;justify-content:space-between}
+.four h3{font:300 22px/1.12 var(--d);text-transform:uppercase}
+.four p{font-size:15px;margin-top:10px}
+
+/* сервис бенто */
+.bento{grid-template-columns:1.3fr 1fr 1fr;grid-template-rows:230px 230px;margin-top:44px}
+.bento .big{grid-row:1/3}
+.bento .big .ov{position:absolute;left:28px;right:28px;top:26px;z-index:2;color:var(--paper)}
+.bento .t{display:flex;flex-direction:column;justify-content:space-between}
+.bento h3{font:300 26px/1.05 var(--d);text-transform:uppercase}
+
+/* шаги: слипшаяся пилюля */
+.pbar{display:grid;grid-template-columns:repeat(5,1fr);margin-top:48px}
+.pbar span{height:74px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);display:flex;align-items:center;justify-content:center;gap:12px;font:300 16px/1 var(--d);text-transform:uppercase;margin-left:-1.5px}
+.pbar span b{font:400 13px/1 var(--t);width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 1.2px currentColor;display:grid;place-items:center}
+.pbar span.on{background:var(--cocoa);color:var(--paper);box-shadow:none}
+.ptext{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin-top:22px;padding:0 18px}
+.ptext p{font-size:15px;color:#5a3d33}
+
+/* разбор */
+.dgrid{grid-template-columns:1fr 1fr 1fr;grid-template-rows:240px 240px;margin-top:44px}
+.dgrid .t{background:var(--paper);display:flex;flex-direction:column;justify-content:space-between}
+.dgrid h3{font:300 22px/1.1 var(--d);text-transform:uppercase}
+.dgrid ul{margin:10px 0 0;padding:0;list-style:none;font-size:15px}
+.dgrid li::before{content:"✦ ";color:var(--nut);font-size:12px}
+
+/* кейсы */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:44px}
+.case{grid-template-columns:1fr 1fr;grid-template-rows:360px 196px}
+.case .ph-t{grid-column:1/3}
+.case .ph-t .ov{position:absolute;left:26px;right:26px;top:24px;z-index:2;color:var(--paper)}
+.case .ph-t h3{font:300 26px/1.08 var(--d);text-transform:uppercase}
+.case .ph-t .w{position:absolute;left:24px;bottom:22px;z-index:2;background:var(--paper);color:var(--cocoa);border-radius:999px;padding:12px 20px;font:500 14px/1 var(--t)}
+.case dl{margin:0;display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:14px}
+.case dt{font:600 11px/1.6 var(--t);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.case dd{margin:0}
+.case .st{display:flex;flex-direction:column;justify-content:space-between}
+.case .st b{font:300 24px/1.05 var(--d);text-transform:uppercase}
+
+/* отзыв */
+.rq{max-width:900px;margin:0 auto;font:400 36px/1.3 var(--t);letter-spacing:-.02em;color:var(--nut)}
+.qbtn{width:76px;height:76px;border-radius:50%;margin:30px auto 0;box-shadow:0 0 0 1.5px var(--nut),inset 0 0 0 7px var(--bg);background:var(--nut);color:var(--paper);display:grid;place-items:center;font:300 34px/1 var(--d)}
+
+/* форма */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;align-items:start}
+.in{background:var(--paper);border-radius:999px;padding:19px 24px;font-size:16px;color:#ac9584}
+.in.fill{color:var(--ink)} .in.focus{box-shadow:0 0 0 2.5px var(--powder);color:var(--ink)} .in.err{box-shadow:0 0 0 2px #B0452E;color:var(--ink)}
+.in.area{border-radius:26px;height:110px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border-radius:999px;padding:11px 18px;font:500 14px/1 var(--t);box-shadow:inset 0 0 0 1.2px rgba(248,241,233,.6)}
+.chip.on{background:var(--paper);color:var(--cocoa);box-shadow:none}
+
+.ftr{border-radius:var(--P) var(--P) 0 0;margin-top:-56px;background:var(--cocoa);color:var(--paper);padding:100px 72px 40px;position:relative}
+.ftr .big{font:200 64px/1.02 var(--d);text-transform:uppercase;letter-spacing:-.04em}
+.ftr .r{display:flex;justify-content:space-between;margin-top:56px;font-size:14.5px;color:#E3C7BC}
+
+/* UI */
+.ui{padding:56px 56px 72px;display:flex;flex-direction:column;gap:46px}
+.pal{grid-template-columns:repeat(6,1fr)}
+.pal .tl{height:210px;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;font:500 13px/1.4 var(--t)}
+.pal b{font:300 15px/1.15 var(--d);text-transform:uppercase;margin-bottom:6px}
+.trow{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:24px;align-items:start}
+.pnl{background:var(--paper);border-radius:36px;padding:32px;display:flex;flex-direction:column;gap:18px}
+.spec{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:baseline}
+.spec small{font:600 11.5px/1.4 var(--t);letter-spacing:.08em;text-transform:uppercase;color:#8a6a5a}
+</style>
+<body>
+
+<div class="board" id="landing">
+  <!-- 1. HERO -->
+  <section class="hero">
+    <div class="hph">
+      <div class="ph s-window" style="--ph-l:#E9CDB6;--ph-m:#B88A6C;--ph-d:#6C4535;--ph-w:#FFE6CC"><div class="cap" style="left:36px;bottom:120px;right:auto;max-width:300px;z-index:4"><em>Плейсхолдер</em><span>Кадр: гостиная частного дома на закате, мягкий свет из окна, силуэт помощницы в глубине</span></div></div>
+      <div class="hnav"><span class="logo">ИКТ<small>Институт кадровых решений</small></span><span class="np">Кого подбираем</span><span class="np">Как работаем</span><span class="np">Кейсы</span><span class="np">Отзывы</span><span class="cta">Связаться</span></div>
+      <div class="htitle"><h1 class="h1t"><span class="par">(</span>Домашний персонал,<br>который остаётся<span class="par">)</span></h1><span class="scr">в вашей семье</span></div>
+      <p class="hlead">Подбираем людей в дом, которым можно доверить детей, быт<br>и личное пространство. Приходим с проверенными кандидатами<br>и честным разбором по каждому.</p>
+      <div class="notch nt"><span class="fl o-tl" style="--c:var(--bg);left:calc(var(--R) * -1)"></span><span class="fl o-tr" style="--c:var(--bg);right:calc(var(--R) * -1)"></span><span class="btn" style="width:400px">Рассказать, кого вы ищете</span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".h1t" data-pos="tl" data-dy="-54"><b>1</b><i>↑</i>Скобки раздвигаются, строки проявляются; рукописная фраза «пишется» слева направо</span>
+  <span class="an" data-at=".nt" data-pos="tr" data-dx="380" data-dy="-40"><b>2</b><i>⌣</i>Вырез с кнопкой «вырастает» из нижнего края фото</span>
+
+  <!-- 2. Пробовали -->
+  <section style="position:relative;padding:120px 72px 186px">
+    <div class="float" style="left:150px;top:100px;width:120px;height:150px"><div class="ph s-hall"></div></div>
+    <div class="float" style="right:150px;top:150px;width:160px;height:120px"><div class="ph s-keys"></div></div>
+    <div class="cen"><span class="sub">Знакомая ситуация</span><h2 class="h2" style="color:var(--nut);margin-top:16px">К нам приходят,<br>когда уже пробовали</h2><p style="max-width:52ch;margin:20px auto 0;color:#5a3d33">Через знакомых, объявления, другие агентства. Мы выясняем, почему прошлые варианты не сложились, и только потом ищем.</p></div>
+    <div class="mz cards cd">
+      <div class="tl" style="background:var(--cocoa);color:var(--paper)"><span class="n">(1)</span><div><h3>Не сошлись характерами</h3><p>На собеседовании всё было гладко, а в доме стало неуютно.</p></div></div>
+      <div class="tl" style="background:var(--latte)"><span class="n">(2)</span><div><h3>Не выдержала нагрузку</h3><p>Режим семьи оказался интенсивнее, чем человек готов тянуть.</p></div></div>
+      <div class="tl" style="color:var(--paper)"><div class="ph s-care"></div><span class="n" style="position:relative;z-index:2">(3)</span><div style="position:relative;z-index:2"><h3>Ушла внезапно</h3><p>Без предупреждения, и всё пришлось начинать заново.</p></div></div>
+      <div class="tl" style="background:var(--powder)"><span class="n">( ? )</span><div><h3>Знакомо?</h3><p>Начнём с разговора о том, что не сложилось.</p></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".cd" data-pos="tl" data-dy="-50"><b>3</b><i>⇆</i>Карточки листаются свайпом; на стыках остаются «слипшиеся» углы</span>
+
+  <!-- 3. Почему не приживается -->
+  <section class="sheet s-pow">
+    <div class="cen"><span class="sub" style="color:var(--cocoa)">Диагноз</span><h2 class="h2" style="margin-top:16px"><span class="par">(</span>Почему человек<br>не приживается<span class="par">)</span></h2></div>
+    <div class="tabs"><span class="tab on">Размытый портрет</span><span class="tab">Поверхностный отбор</span><span class="tab">Неясная роль</span></div>
+    <div class="tpanel tp">
+      <div><span class="lbl" style="color:var(--powder)">Размытый портрет</span><p style="font:300 30px/1.25 var(--d);text-transform:uppercase;letter-spacing:-.02em;margin-top:18px">Ищут «хорошую помощницу», не описав ритм дома и правила семьи</p><p style="margin-top:20px;color:#F1DCCF">Поверхностный отбор и неясная роль — в соседних вкладках. Прежде чем искать, мы разбираемся, что ломалось раньше.</p></div>
+      <div class="ph s-table"><div class="cap"><em>Плейсхолдер</em><span>Расписание семьи на холодильнике, детские рисунки</span></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".tp" data-pos="tr" data-dy="-48"><b>4</b><i>⇄</i>Вкладки: панель перетекает в новый цвет, фото сменяется растворением</span>
+
+  <!-- 4. Больше, чем поиск по базе -->
+  <section class="sheet s-bg">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="h2" style="color:var(--nut)">Больше, чем<br>поиск по базе</h2><p style="max-width:38ch;color:#5a3d33">Разбираемся не только в людях, но и в том, как устроена работа в доме.</p></div>
+    <div class="mz four">
+      <div class="tl" style="background:var(--nut);color:var(--paper)"><span class="lbl">(1)</span><div><h3>Видим человека насквозь</h3><p>Мотивация, устойчивость, риски и реальный срок работы.</p></div></div>
+      <div class="tl" style="background:var(--powder)"><span class="lbl">(2)</span><div><h3>Ищем причину, а не симптом</h3><p>Что не сработало: портрет, условия или организация работы.</p></div></div>
+      <div class="tl" style="color:var(--paper)"><div class="ph s-blinds"></div><span class="lbl" style="position:relative;z-index:2">(3)</span><div style="position:relative;z-index:2"><h3>Настраиваем систему</h3><p>Если дело в устройстве роли, сначала наводим порядок.</p></div></div>
+      <div class="tl" style="background:var(--latte)"><span class="lbl">(4)</span><div><h3>Остаёмся рядом</h3><p>Помогаем влиться в дом и подключаемся при сложностях.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 5. Подбор, внедрение, сопровождение -->
+  <section class="sheet s-nut">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="h2">Подбор, внедрение,<br>сопровождение</h2><p style="max-width:36ch;color:#F1DCCF">Весь путь от первого разговора до уверенной работы человека в вашем доме.</p></div>
+    <div class="mz bento bn">
+      <div class="tl big"><div class="ph s-hands"></div><div class="ov"><span class="lbl">До выхода</span><h3 style="margin-top:14px">Подбор</h3><p style="margin-top:10px;max-width:34ch">Профиль позиции, поиск по рекомендациям и хантингу, собеседования и проверка.</p></div><div class="cap"><em>Плейсхолдер</em><span>Руки: помощница и хозяйка вместе готовят</span></div></div>
+      <div class="tl t pad" style="background:var(--paper);color:var(--ink)"><span class="lbl" style="color:var(--nut)">Первые дни</span><div><h3>Внедрение</h3><p style="font-size:15px;margin-top:8px">Обязанности, уклад семьи, порядок задач.</p></div></div>
+      <div class="tl"><div class="ph s-hall"></div></div>
+      <div class="tl"><div class="ph s-care"></div></div>
+      <div class="tl t pad" style="background:var(--powder);color:var(--ink)"><span class="lbl" style="color:var(--cocoa)">После выхода</span><div><h3>Сопровождение</h3><p style="font-size:15px;margin-top:8px">На связи, донастраиваем правила в доме.</p></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".bn" data-pos="tr" data-dy="-48"><b>5</b><i>⤢</i>Hover: плитка растёт, соседние уступают место — форма остаётся цельной</span>
+
+  <!-- 6. Как мы работаем -->
+  <section class="sheet s-bg">
+    <div class="cen"><span class="sub">Пять шагов</span><h2 class="h2" style="color:var(--nut);margin-top:16px"><span class="par">(</span>Как мы работаем<span class="par">)</span></h2></div>
+    <div class="pbar pb"><span><b>1</b>Разговор</span><span class="on"><b>2</b>Что чинить</span><span><b>3</b>Подборка</span><span><b>4</b>Выход</span><span><b>5</b>Дальше</span></div>
+    <div class="ptext"><p>Рассказываете, кого ищете и что уже пробовали. Делаем вывод, почему не получалось.</p><p style="color:var(--ink)">Если причина в подборе — ищем. Если в устройстве роли — сначала наводим порядок.</p><p>Приносим проверенных кандидатов с разбором по каждому.</p><p>Помогаем адаптироваться и спокойно пройти первые недели.</p><p>Остаёмся на связи, подключаемся при сложностях.</p></div>
+  </section>
+  <span class="an" data-at=".pb" data-pos="tl" data-dy="-50"><b>6</b><i>→</i>Заливка «перетекает» по сегментам пилюли при прокрутке</span>
+
+  <!-- 7. Разбор -->
+  <section class="sheet s-pow">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="h2">По каждому кандидату —<br>разбор, а не резюме</h2><p style="max-width:34ch">Решение остаётся за вами. Мы помогаем принять его с полной картиной.</p></div>
+    <div class="mz dgrid">
+      <div class="tl t pad"><h3>Кто это</h3><ul><li>Опыт и уровень задач</li><li>Что человек действительно вёл</li></ul></div>
+      <div class="tl" style="grid-row:1/3"><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em><span>Спокойный портрет кандидата в интерьере, взгляд в сторону</span></div></div></div>
+      <div class="tl t pad" style="background:var(--cocoa);color:var(--paper)"><h3>Что им движет</h3><ul><li>Мотивация</li><li>На чём она держится</li></ul></div>
+      <div class="tl t pad" style="background:var(--latte)"><h3>Где риски</h3><ul><li>Что может пойти не так</li><li>И в какой момент</li></ul></div>
+      <div class="tl t pad"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div><h3>Горизонт</h3><ul><li>Как долго готов работать</li></ul></div><div><h3>Наше мнение</h3><ul><li>Итог проверки и оценка</li></ul></div></div><span class="btn" style="align-self:flex-start;padding:14px 24px;font-size:14px">Как мы проверяем</span></div>
+    </div>
+  </section>
+
+  <!-- 8. Кейсы -->
+  <section class="sheet s-coc">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="h2">Кейсы</h2><p style="max-width:36ch;color:#E3C7BC">Две истории — разные задачи, один подход.</p></div>
+    <div class="cgrid">
+      <div class="mz case cs">
+        <div class="tl ph-t"><div class="ph s-table"></div><div class="ov"><span class="lbl">Позиция · преподаватели начальных классов</span><h3 style="margin-top:12px">Преподаватели начальных классов для семьи в Дубае</h3></div><span class="w">Плейсхолдер: комната для занятий, тетради, светлый интерьер</span></div>
+        <div class="tl pad" style="background:var(--paper);color:var(--ink);grid-column:1/2;padding:18px 20px"><dl><dt>Запрос</dt><dd>Обучение детей на дому вместо школы</dd><dt>Сделали</dt><dd>Профиль, отбор и проверка, помощь с выходом</dd><dt>Результат</dt><dd>Занятия заменили детям школу</dd></dl></div>
+        <div class="mz" style="grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr"><div class="tl st pad" style="background:var(--powder);color:var(--ink);grid-column:1/3;padding:14px 20px"><b>Дубай</b></div><div class="tl pad" style="background:var(--latte);color:var(--ink);padding:14px 18px;font-size:14.5px">три месяца</div><div class="tl pad" style="background:var(--nut);padding:14px 18px;font-size:14.5px">заменили школу</div></div>
+      </div>
+      <div class="mz case">
+        <div class="tl ph-t"><div class="ph s-portrait"></div><div class="ov"><span class="lbl">Позиция · няня для младенца</span><h3 style="margin-top:12px">Няня для грудного ребёнка</h3></div><span class="w">Плейсхолдер: няня держит младенца у окна, лицо не в фокусе</span></div>
+        <div class="tl pad" style="background:var(--paper);color:var(--ink);padding:18px 20px"><dl><dt>Запрос</dt><dd>Спокойный опытный человек с первых месяцев</dd><dt>Сделали</dt><dd>Разобрали режим семьи, проверили, сопровождали</dd><dt>Результат</dt><dd>Няня работает в семье</dd></dl></div>
+        <div class="mz" style="grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr"><div class="tl pad" style="background:var(--powder);color:var(--ink);grid-column:1/3;padding:14px 20px"><b style="font:300 20px/1.05 var(--d);text-transform:uppercase">Закрыто за 2–3 недели</b></div><div class="tl pad" style="background:var(--latte);color:var(--ink);padding:14px 18px;font-size:14.5px">с первого кандидата</div><div class="tl pad" style="background:var(--nut);padding:14px 18px;font-size:14.5px">работает больше года</div></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".cs" data-pos="tr" data-dy="-48"><b>7</b><i>↥</i>Плашки-итоги «вырастают» снизу и слипаются с карточкой</span>
+
+  <!-- 9. Отзыв -->
+  <section class="sheet s-bg" style="padding-bottom:150px">
+    <div class="float" style="left:120px;top:150px;width:140px;height:170px"><div class="ph s-care"></div></div>
+    <div class="float" style="right:120px;top:330px;width:180px;height:130px"><div class="ph s-window"></div></div>
+    <div class="cen"><span class="sub">Отзывы</span>
+      <p class="rq rv" style="margin-top:22px">«Она мне очень нравится. И психологически, и по навыкам — то, что я искала. Мне очень комфортно с ней».</p>
+      <div class="qbtn">→</div>
+      <p style="margin-top:28px;font:400 34px/1 var(--s);color:var(--nut)">отзыв клиентки</p>
+    </div>
+  </section>
+  <span class="an" data-at=".rv" data-pos="bl" data-dy="90" data-dx="-80"><b>8</b><i>→</i>Кнопка листает отзывы; фото по краям медленно плывут (parallax)</span>
+
+  <!-- 10. Форма -->
+  <section class="sheet s-nut fm" style="padding-bottom:150px">
+    <h2 class="h2"><span class="par">(</span>Расскажите, кого вы ищете<br>и что уже пробовали<span class="par">)</span></h2>
+    <div class="fgrid">
+      <div><p style="font-size:18px;max-width:40ch;color:#F1DCCF">За 20 минут станет понятно, что действительно нужно сделать и чем мы можем помочь.</p><p style="margin-top:22px">Или напишите в Telegram: <b>@kateriniya</b></p></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="chips"><span class="chip on">Няня</span><span class="chip">Гувернантка</span><span class="chip">Домработница</span><span class="chip">Повар</span><span class="chip">Водитель</span><span class="chip">Сиделка</span><span class="chip">Управляющий</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="in fill">Анна</div><div class="in focus">Телефон или @telegram</div></div>
+        <div class="in area">Что уже пробовали</div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:#F1DCCF">Нажимая, вы соглашаетесь с политикой конфиденциальности</span><span class="btn lt">Отправить заявку</span></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".fm" data-pos="bl" data-dy="-30"><b>9</b><i>●</i>Фокус: поле получает пудровое кольцо; каждый лист наезжает на предыдущий при прокрутке</span>
+  <footer class="ftr">
+    <p class="big">Находим людей,<br>которые остаются</p>
+    <div class="r"><span>ИКТ · Институт кадровых решений</span><span>Telegram @kateriniya</span><span>Политика конфиденциальности</span></div>
+  </footer>
+</div>
+
+<!-- UI -->
+<div class="board ui" id="ui">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end">
+    <div><span class="lbl" style="color:var(--nut)">Концепция B · UI-система</span><h1 style="font:200 92px/.95 var(--d);text-transform:uppercase;letter-spacing:-.045em;margin-top:16px;color:var(--nut)">( Слои )</h1></div>
+    <p style="font-size:18px;color:#5a3d33">Страница как стопка мягких листов: каждая секция — большая скруглённая панель, которая наползает на предыдущую. Внутри листов карточки слипаются без зазоров, кнопка вырезана в фото. Пудровая роза и орех, очень лёгкие широкие капители со скобками и одна рукописная фраза.</p>
+  </div>
+  <div class="mz pal">
+    <div class="tl" style="background:var(--bg);box-shadow:inset 0 0 0 1.5px #DCCBBB"><b>Сливочный беж</b>#EFE5DA · фон</div>
+    <div class="tl" style="background:var(--paper);box-shadow:inset 0 0 0 1.5px #DCCBBB"><b>Топлёное молоко</b>#F8F1E9 · карточки</div>
+    <div class="tl" style="background:var(--powder)"><b>Пудровая роза</b>#E3B9AA · листы</div>
+    <div class="tl" style="background:var(--latte)"><b>Карамель-латте</b>#C99A73 · карточки</div>
+    <div class="tl" style="background:var(--nut);color:var(--paper)"><b>Орех</b>#8A5A3C · заголовки, листы</div>
+    <div class="tl" style="background:var(--cocoa);color:var(--paper)"><b>Какао-бордо</b>#4A2321 · кнопки, футер</div>
+  </div>
+  <div class="trow">
+    <div class="pnl">
+      <span class="lbl" style="color:var(--nut)">Шрифты</span>
+      <div class="spec"><small>Unbounded 200–300<br>caps, скобки</small><span style="font:200 36px/1 var(--d);text-transform:uppercase;letter-spacing:-.04em;color:var(--nut);white-space:nowrap">( Остаётся )</span></div>
+      <div class="spec"><small>Wix Madefor Text<br>400 · 17/25</small><span>Подбираем людей в дом, которым можно доверить детей, быт и личное пространство.</span></div>
+      <div class="spec"><small>Marck Script<br>одна фраза-акцент</small><span style="font:400 42px/1 var(--s);color:var(--nut)">в вашей семье</span></div>
+    </div>
+    <div class="pnl">
+      <span class="lbl" style="color:var(--nut)">Кнопки и вкладки</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="btn">Основная</span><span class="btn hv">Hover</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="btn pw">Пудровая</span><span class="btn off">Неактивна</span></div>
+      <div style="display:flex;gap:8px"><span class="tab on">Активна</span><span class="tab">Вкладка</span></div>
+      <span class="lbl" style="color:var(--nut);margin-top:6px">Вырез под кнопку</span>
+      <div style="position:relative;height:150px;border-radius:24px;overflow:hidden;--R:22px"><div class="ph s-window" style="position:absolute;inset:0"></div><div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:220px;height:62px;background:var(--paper);border-radius:22px 22px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px"><span class="fl o-tl" style="--c:var(--paper);left:-22px;bottom:0"></span><span class="fl o-tr" style="--c:var(--paper);right:-22px;bottom:0"></span><span class="btn" style="padding:13px 30px;font-size:14px">Кнопка</span></div></div>
+    </div>
+    <div class="pnl" style="background:var(--nut);color:var(--paper)">
+      <span class="lbl">Поля формы</span>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">По умолчанию</span><div class="in">Имя</div>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">Фокус</span><div class="in focus">Анна</div>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">Ошибка</span><div class="in err">+7 999</div><span style="font-size:13.5px;color:#FFD9CC">Проверьте номер: не хватает цифр</span>
+      <div class="chips"><span class="chip on">Выбрано</span><span class="chip">Вариант</span></div>
+    </div>
+  </div>
+  <div class="trow" style="grid-template-columns:1fr 1fr">
+    <div class="mz" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="tl pad" style="background:var(--cocoa);color:var(--paper);height:220px;display:flex;flex-direction:column;justify-content:space-between"><span class="lbl">(1)</span><span style="font:300 18px/1.1 var(--d);text-transform:uppercase">Карточка</span></div>
+      <div class="tl pad" style="background:var(--latte);height:220px;display:flex;flex-direction:column;justify-content:space-between"><span class="lbl">(2)</span><span style="font:300 18px/1.1 var(--d);text-transform:uppercase">Без зазора</span></div>
+      <div class="tl" style="height:220px"><div class="ph s-hands"></div></div>
+    </div>
+    <div style="position:relative;height:220px;border-radius:36px;overflow:hidden">
+      <div style="position:absolute;inset:0;background:var(--powder);border-radius:36px 36px 0 0"></div>
+      <div style="position:absolute;left:0;right:0;top:70px;bottom:0;background:var(--bg);border-radius:36px 36px 0 0;box-shadow:inset 0 0 0 1.5px #DCCBBB"></div>
+      <div style="position:absolute;left:0;right:0;top:140px;bottom:0;background:var(--nut);border-radius:36px 36px 0 0;color:var(--paper);padding:24px 30px" class="lbl">Листы-секции наползают друг на друга · радиус 56 px</div>
+    </div>
+  </div>
+</div>
+</body></html>

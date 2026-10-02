@@ -1,0 +1,354 @@
+<title>05 Мозаика</title>
+<style>/*FONTS:local5*/</style>
+<style>
+/* 05 Мозаика — секции из скруглённых плиток без зазоров: углы плиток образуют «звёздочки»-просветы,
+   плитки разной высоты слипаются в одну форму; вогнутые скругления (fillet) там, где форма вырастает из формы */
+:root{
+  --milk:#F3E6D3; --beige:#E6D0B3; --caramel:#D6955A; --terra:#C2552E; --oxblood:#5B1E15; --ink:#2A1510;
+  --R:34px;
+  --d:'Roboto Flex',system-ui,sans-serif; --t:'Inter Tight',system-ui,sans-serif; --s:'Bad Script',cursive;
+  --ph-l:#EBCDAA; --ph-m:#C08F67; --ph-d:#73472F; --ph-dd:#40241A; --ph-w:#FFE7C4; --ph-s:#D7A27F; --sat:1.05; --grain:.7; --blur:6px;
+}
+body{background:var(--milk);color:var(--ink);font-family:var(--t);font-size:17px;line-height:1.45}
+.board{background:var(--milk)}
+.pg{padding:0 24px;position:relative}
+.cap-x{font-family:var(--d);font-stretch:151%;text-transform:uppercase;letter-spacing:-.02em}
+.h2{font:560 46px/1.02 var(--d);font-stretch:151%;text-transform:uppercase;letter-spacing:-.025em}
+.lbl{font:600 12px/1 var(--t);letter-spacing:.12em;text-transform:uppercase}
+.mz{display:grid;gap:0}
+.tl{border-radius:var(--R);position:relative;overflow:hidden;min-width:0}
+.tl .ph{position:absolute;inset:0}
+.pad{padding:28px 30px}
+.milk{background:var(--milk)} .beige{background:var(--beige)} .car{background:var(--caramel)} .ter{background:var(--terra);color:var(--milk)} .ox{background:var(--oxblood);color:var(--milk)}
+/* вогнутые скругления: заливка вне круга с центром в указанном углу квадрата */
+.fl{position:absolute;width:var(--R);height:var(--R);pointer-events:none;z-index:2}
+.fl.o-tl{background:radial-gradient(circle at 0 0,transparent calc(var(--R) - .5px),var(--c) var(--R))}
+.fl.o-tr{background:radial-gradient(circle at 100% 0,transparent calc(var(--R) - .5px),var(--c) var(--R))}
+.fl.o-bl{background:radial-gradient(circle at 0 100%,transparent calc(var(--R) - .5px),var(--c) var(--R))}
+.fl.o-br{background:radial-gradient(circle at 100% 100%,transparent calc(var(--R) - .5px),var(--c) var(--R))}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;gap:14px;background:var(--oxblood);color:var(--milk);border-radius:999px;padding:6px 6px 6px 24px;font:550 15px/1 var(--t)}
+.btn .ar{width:40px;height:40px;border-radius:50%;background:var(--milk);color:var(--oxblood);display:grid;place-items:center;font-size:17px}
+.btn.lt{background:var(--milk);color:var(--ink)} .btn.lt .ar{background:var(--terra);color:var(--milk)}
+.btn.ter{background:var(--terra)}
+.btn.hv{background:var(--terra)} .btn.hv .ar{transform:rotate(45deg)}
+.btn.off{background:var(--beige);color:#a88b74} .btn.off .ar{background:#f2e6d6;color:#c9b29c}
+.obtn{display:inline-flex;align-items:center}
+.obtn .p{border:1.5px solid var(--ink);border-radius:999px;padding:24px 44px;font:560 17px/1 var(--d);font-stretch:140%;text-transform:uppercase}
+.obtn .c{width:72px;height:72px;border:1.5px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:30px;margin-left:-2px}
+.ic{width:42px;height:42px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center}
+.ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;font:550 14px/1 var(--t);background:var(--milk);color:var(--ink)}
+.chip.o{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor;color:inherit}
+
+/* header: контурная пилюля, слипшаяся с кругами */
+.hdr{display:flex;align-items:center;gap:24px;height:88px;padding:0 24px}
+.logo{display:flex;align-items:center;gap:0}
+.logo .m{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font:700 13px/1 var(--d);font-stretch:140%}
+.logo .n{height:52px;border:1.5px solid var(--ink);border-radius:999px;display:flex;align-items:center;padding:0 22px;margin-left:-2px;font:500 13px/1.15 var(--t)}
+.nav{display:flex;margin-left:auto;margin-right:auto}
+.nav span{height:52px;border:1.5px solid var(--ink);border-radius:999px;display:flex;align-items:center;padding:0 20px;font:500 14.5px/1 var(--t);margin-left:-2px}
+
+/* hero */
+.hero-top{display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:end;padding:22px 24px 26px}
+.hero-top h1{font:570 62px/.98 var(--d);font-stretch:151%;text-transform:uppercase;letter-spacing:-.03em}
+.hero-top p{font-size:16.5px;color:#4a2f25}
+.hero-col{display:flex;flex-direction:column;gap:18px;padding-bottom:6px}
+.collage{grid-template-columns:420px 300px 1fr 300px;grid-template-rows:184px 184px;margin:0 24px}
+.collage .a{grid-row:1/3}
+.collage .d{grid-column:3/5}
+.roles{display:flex;flex-wrap:wrap;gap:6px}
+.roles span{font:550 12px/1 var(--t);padding:7px 10px;border-radius:999px;box-shadow:inset 0 0 0 1.2px rgba(243,230,211,.7)}
+
+/* секции */
+.sec{padding:120px 24px 0;position:relative}
+.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:34px;padding:0 6px}
+.sh p{max-width:38ch;color:#5a3b2e;font-size:16px}
+
+.sit{grid-template-columns:2fr 1fr 1fr;grid-template-rows:230px 230px}
+.sit .big{grid-row:1/3;display:flex;flex-direction:column;justify-content:space-between}
+.sit .big p{font-size:18px;max-width:38ch;color:#4a2f25}
+.sit .t{display:flex;flex-direction:column;justify-content:space-between}
+.sit h3{font:560 21px/1.08 var(--d);font-stretch:140%;text-transform:uppercase;letter-spacing:-.015em}
+.sit p.s{font-size:15px}
+
+.lead{text-align:center;font:500 40px/1.28 var(--t);letter-spacing:-.025em;max-width:1100px;margin:0 auto}
+.ring{display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--terra);color:var(--terra);border-radius:999px;padding:0 20px 2px 14px;line-height:1.2}
+.ring i{width:30px;height:30px;border-radius:50%;background:var(--terra);display:inline-block}
+.trio{grid-template-columns:repeat(3,1fr);margin-top:46px}
+.trio .tl{height:210px;display:flex;flex-direction:column;justify-content:space-between}
+
+.dark{background:var(--oxblood);color:var(--milk);border-radius:48px 0 48px 48px;margin-top:60px;padding:56px 40px 40px;position:relative}
+.dark .h2{color:var(--milk)}
+.four{grid-template-columns:repeat(4,1fr);margin-top:36px}
+.four .tl{height:300px;display:flex;flex-direction:column;justify-content:space-between}
+.four h3{font:560 19px/1.1 var(--d);font-stretch:140%;text-transform:uppercase}
+
+.svc{grid-template-columns:repeat(3,1fr)}
+.svc .col{display:grid;grid-template-rows:200px 320px}
+.svc .hd{display:flex;flex-direction:column;justify-content:space-between}
+.svc h3{font:570 28px/1 var(--d);font-stretch:151%;text-transform:uppercase}
+
+.steps{border-top:1.5px solid rgba(42,21,16,.15)}
+.row{display:grid;grid-template-columns:70px 1fr 340px 360px;gap:24px;align-items:center;padding:22px 6px;border-bottom:1.5px solid rgba(42,21,16,.15);color:#b39a86}
+.row .n{width:46px;height:30px;border-radius:999px;border:1.5px solid currentColor;display:grid;place-items:center;font:600 13px/1 var(--t)}
+.row h3{font:520 26px/1.1 var(--t);letter-spacing:-.02em}
+.row p{font-size:15px}
+.row.on{color:var(--ink)}
+.row.on .n{background:var(--ink);color:var(--milk);border-color:var(--ink)}
+.row .ph{height:150px;border-radius:26px}
+
+.folder{position:relative;margin-top:70px}
+.folder .tab{position:absolute;left:0;top:-64px;height:64px;width:420px;background:var(--beige);border-radius:var(--R) var(--R) 0 0;display:flex;align-items:center;padding:0 30px;gap:14px}
+.folder .body{background:var(--beige);border-radius:0 48px 48px 48px;padding:40px}
+.dos{grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:200px 200px}
+.dos .t{display:flex;flex-direction:column;justify-content:space-between}
+.dos .ph-t{grid-row:1/3}
+.dos h3{font:560 20px/1.1 var(--d);font-stretch:140%;text-transform:uppercase}
+
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.case{grid-template-columns:1fr;grid-template-rows:300px auto}
+.case .txt{display:flex;flex-direction:column;gap:18px}
+.case h3{font:570 26px/1.05 var(--d);font-stretch:151%;text-transform:uppercase;letter-spacing:-.02em}
+.case dl{margin:0;display:grid;grid-template-columns:150px 1fr;gap:10px 18px;font-size:15.5px}
+.case dt{font:600 12px/1.6 var(--t);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.case dd{margin:0}
+.plates{display:flex;gap:0;flex-wrap:wrap}
+.plates span{border-radius:999px;padding:14px 20px;font:600 14px/1 var(--t);background:var(--milk);color:var(--ink)}
+.plates span+span{margin-left:-6px}
+.plates span:nth-child(2){background:var(--caramel)} .plates span:nth-child(3){background:var(--oxblood);color:var(--milk)}
+
+.rev{text-align:center;max-width:1160px;margin:0 auto}
+.rev q{display:block;font:500 40px/1.25 var(--t);letter-spacing:-.025em;quotes:"«" "»"}
+.rev .sig{font:400 30px/1 var(--s);color:var(--terra);margin-top:24px;display:block}
+.rev2{display:inline-flex;gap:16px;align-items:center;margin-top:40px;background:var(--beige);border-radius:999px;padding:10px 26px 10px 10px;text-align:left}
+.rev2 .ph{width:64px;height:64px;border-radius:50%;flex:none}
+
+.formwrap{position:relative;background:var(--terra);border-radius:48px;padding:56px 48px 48px;display:grid;grid-template-columns:1fr 560px;gap:40px;color:var(--milk)}
+.formcard{background:var(--milk);color:var(--ink);border-radius:36px;padding:34px;display:flex;flex-direction:column;gap:14px}
+.in{background:#FBF4EA;border-radius:999px;padding:18px 22px;font:500 16px/1 var(--t);color:#a88b74;box-shadow:inset 0 0 0 1.5px #EAD8C2}
+.in.fill{color:var(--ink)} .in.focus{box-shadow:inset 0 0 0 2px var(--terra);color:var(--ink)} .in.err{box-shadow:inset 0 0 0 2px #8E2A14;color:var(--ink)}
+.in.area{border-radius:24px;height:96px}
+.err{font-size:13.5px;color:#8E2A14}
+
+.ftr{background:var(--oxblood);color:var(--milk);border-radius:48px 48px 0 0;margin-top:-48px;padding:110px 48px 40px;position:relative;z-index:0}
+.ftr .big{font:570 58px/1 var(--d);font-stretch:151%;text-transform:uppercase;letter-spacing:-.03em}
+.ftr .r{display:flex;justify-content:space-between;margin-top:56px;font-size:14.5px;color:#E6C8B4}
+
+/* UI */
+.ui{padding:56px 48px 72px;display:flex;flex-direction:column;gap:46px}
+.pal{grid-template-columns:repeat(6,1fr)}
+.pal .tl{height:200px;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;font:500 13px/1.4 var(--t)}
+.pal b{font:570 15px/1.1 var(--d);font-stretch:140%;text-transform:uppercase;margin-bottom:6px}
+.trow{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:24px;align-items:start}
+.pnl{background:var(--beige);border-radius:36px;padding:32px;display:flex;flex-direction:column;gap:18px}
+.spec{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:baseline}
+.spec small{font:600 11.5px/1.4 var(--t);letter-spacing:.08em;text-transform:uppercase;color:#7b5a49}
+</style>
+<body>
+
+<div class="board" id="landing">
+  <header class="hdr">
+    <div class="logo"><span class="m">ИКТ</span><span class="n">Институт<br>кадровых решений</span></div>
+    <div class="nav"><span>Кого подбираем</span><span>Как работаем</span><span>Кейсы</span><span>Отзывы</span></div>
+    <span class="btn">Рассказать, кого вы ищете <span class="ar">↗</span></span>
+  </header>
+
+  <section>
+    <div class="hero-top">
+      <h1 class="h1t">Домашний персонал, который остаётся в&nbsp;вашей семье</h1>
+      <div class="hero-col">
+        <p>Подбираем людей в дом, которым можно доверить детей, быт и личное пространство. Приходим с проверенными кандидатами и честным разбором по каждому.</p>
+        <span class="btn bt1" style="align-self:flex-start">Рассказать, кого вы ищете <span class="ar">↗</span></span>
+      </div>
+    </div>
+    <div class="mz collage cl">
+      <div class="tl a"><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em><span>Кадр: няня читает ребёнку у окна, тёплый вечерний свет</span></div></div></div>
+      <div class="tl ter pad" style="display:flex;flex-direction:column;justify-content:space-between"><span class="lbl">Кого подбираем</span><div class="roles"><span>Няни</span><span>Гувернантки</span><span>Домработницы</span><span>Повара</span><span>Водители</span><span>Сиделки</span><span>Управляющие</span></div></div>
+      <div class="tl d"><div class="ph s-table"><div class="cap"><em>Плейсхолдер</em><span>Кадр: накрытый к завтраку стол, руки ставят чашку</span></div></div></div>
+      <div class="tl car pad" style="display:flex;flex-direction:column;justify-content:space-between"><span class="lbl">Проверка</span><span style="font:560 19px/1.1 var(--d);font-stretch:140%;text-transform:uppercase">На нашей стороне</span></div>
+      <div class="tl ox pad" style="display:flex;flex-direction:column;justify-content:space-between"><span class="lbl" style="color:#E6C8B4">После выхода</span><span style="font:560 19px/1.1 var(--d);font-stretch:140%;text-transform:uppercase">Остаёмся рядом</span></div>
+      <div class="tl"><div class="ph s-keys"><div class="cap"><em>Плейсхолдер</em><span>Ключи от дома в ладони</span></div></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".h1t" data-pos="tl" data-dy="-50" data-dx="-16"><b>1</b><i>↑</i>Строки заголовка поднимаются по одной</span>
+  <span class="an" data-at=".cl" data-pos="bl" data-dx="440" data-dy="46"><b>2</b><i>✦</i>Плитки «слипаются»: появляются из центра и сходятся без зазоров</span>
+  <span class="an" data-at=".bt1" data-pos="bl" data-dy="52" data-dx="-120"><b>3</b><i>↗</i>Hover: кнопка терракотовая, стрелка поворачивается</span>
+
+  <!-- 2. Ситуации -->
+  <section class="sec">
+    <div class="mz sit">
+      <div class="tl beige pad big"><div><span class="lbl" style="color:var(--terra)">Знакомо?</span><h2 class="h2" style="margin-top:18px">К нам приходят, когда уже пробовали</h2></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px"><p>Через знакомых, объявления, другие агентства. Мы выясняем, почему прошлые варианты не сложились, и только потом ищем.</p><span style="font-size:34px">→</span></div></div>
+      <div class="tl ter pad t"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c1-3 3-4 5-4s4 1 5 4M11 19c1-3 3-4 5-4s4 1 5 4"/></svg></span><div><h3>Не сошлись характерами</h3><p class="s" style="margin-top:8px">На собеседовании всё было гладко, а в доме стало неуютно.</p></div></div>
+      <div class="tl car pad t"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v4M5 8l2 2M19 8l-2 2"/><path d="M4 18h16M7 18a5 5 0 0 1 10 0"/></svg></span><div><h3>Не выдержала нагрузку</h3><p class="s" style="margin-top:8px">Режим семьи оказался интенсивнее, чем человек готов тянуть.</p></div></div>
+      <div class="tl"><div class="ph s-hall"><div class="cap"><em>Плейсхолдер</em><span>Пустая прихожая, утро</span></div></div></div>
+      <div class="tl ox pad t"><span class="ic"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/></svg></span><div><h3>Ушла внезапно</h3><p class="s" style="margin-top:8px">Без предупреждения, и всё пришлось начинать заново.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. Почему не приживается -->
+  <section class="sec">
+    <p class="lead ld">Человек в доме не приживается, когда у&nbsp;него <span class="ring"><i></i>размытый портрет,</span> <span class="ring"><i style="background:var(--caramel)"></i>поверхностный отбор</span> или <span class="ring"><i style="background:var(--oxblood)"></i>неясная роль</span></p>
+    <div class="mz trio">
+      <div class="tl beige pad"><span class="lbl" style="color:var(--terra)">Размытый портрет</span><p style="font-size:17px">Ищут «хорошую помощницу», не описав ритм дома и правила семьи.</p></div>
+      <div class="tl beige pad" style="background:#EBD8BF"><span class="lbl" style="color:var(--terra)">Поверхностный отбор</span><p style="font-size:17px">Резюме, рекомендации и один разговор. Мотивация остаётся за кадром.</p></div>
+      <div class="tl beige pad"><span class="lbl" style="color:var(--terra)">Неясная роль</span><p style="font-size:17px">Не зафиксировано, что входит в обязанности и кто ставит задачи.</p></div>
+    </div>
+  </section>
+  <span class="an" data-at=".ld" data-pos="tl" data-dy="-50"><b>4</b><i>◯</i>Контурные «кольца» рисуются вокруг слов по очереди</span>
+
+  <!-- 4. Больше, чем поиск по базе -->
+  <section class="sec">
+    <div class="dark dk"><div style="position:absolute;right:0;top:-60px;height:60px;width:380px;background:var(--oxblood);border-radius:34px 34px 0 0;display:flex;align-items:center;justify-content:center;gap:12px"><span class="lbl" style="color:#E6C8B4">Наш подход</span><span style="font:560 14px/1 var(--d);font-stretch:140%;text-transform:uppercase">лично, а не по базе</span></div><span class="fl o-tl" style="--c:var(--oxblood);right:380px;top:-34px"></span>
+      <div class="sh" style="padding:0"><h2 class="h2">Больше, чем поиск<br>по базе</h2><p style="color:#E6C8B4">Мы разбираемся не только в людях, но и в том, как устроена работа в доме.</p></div>
+      <div class="mz four">
+        <div class="tl ter pad"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/></svg></span><div><h3>Видим человека насквозь</h3><p style="font-size:15px;margin-top:8px">Мотивация, устойчивость, риски и реальный срок работы.</p></div></div>
+        <div class="tl car pad" style="color:var(--ink)"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span><div><h3>Ищем причину, а не симптом</h3><p style="font-size:15px;margin-top:8px">Что не сработало: портрет, условия или организация работы.</p></div></div>
+        <div class="tl"><div class="ph s-blinds"><div class="cap"><em>Плейсхолдер</em><span>Порядок в доме, свет через жалюзи</span></div></div></div>
+        <div class="tl milk pad" style="color:var(--ink)"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span><div><h3>Настраиваем систему</h3><p style="font-size:15px;margin-top:8px">Если дело в устройстве роли, сначала наводим порядок.</p></div></div>
+      </div>
+      <div class="mz" style="grid-template-columns:1fr 2fr">
+        <div class="tl beige pad" style="color:var(--ink);height:170px;display:flex;flex-direction:column;justify-content:space-between"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/></svg></span><h3 style="font:560 19px/1.1 var(--d);font-stretch:140%;text-transform:uppercase">Остаёмся рядом</h3></div>
+        <div class="tl pad" style="background:#7A2B1C;height:170px;display:flex;align-items:flex-end"><p style="font-size:19px;max-width:44ch">Найти человека — половина работы. Помогаем влиться в дом и подключаемся при сложностях.</p></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".dk" data-pos="tr" data-dy="-48"><b>5</b><i>⇲</i>Hover: плитка «набухает» на 6 px, соседи сдвигаются, швы остаются слипшимися</span>
+
+  <!-- 5. Подбор, внедрение, сопровождение -->
+  <section class="sec">
+    <div class="sh"><h2 class="h2">Подбор, внедрение,<br>сопровождение</h2><p>Весь путь от первого разговора до уверенной работы человека в доме.</p></div>
+    <div class="mz svc">
+      <div class="col"><div class="tl ter pad hd"><span class="lbl">До выхода</span><div><h3>Подбор</h3><p style="font-size:15px;margin-top:10px">Профиль позиции, поиск по рекомендациям и хантингу, собеседования и проверка.</p></div></div><div class="tl"><div class="ph s-table"><div class="cap"><em>Плейсхолдер</em><span>Разговор с кандидатом за столом, через плечо</span></div></div></div></div>
+      <div class="col"><div class="tl car pad hd"><span class="lbl">Первые дни</span><div><h3>Внедрение</h3><p style="font-size:15px;margin-top:10px">Первые дни рядом: обязанности, уклад семьи, порядок задач.</p></div></div><div class="tl"><div class="ph s-hands"><div class="cap"><em>Плейсхолдер</em><span>Руки: помощница и хозяйка вместе готовят</span></div></div></div></div>
+      <div class="col"><div class="tl beige pad hd"><span class="lbl" style="color:var(--terra)">После выхода</span><div><h3>Сопровождение</h3><p style="font-size:15px;margin-top:10px">На связи после выхода, донастраиваем правила в доме.</p></div></div><div class="tl"><div class="ph s-care"><div class="cap"><em>Плейсхолдер</em><span>Спокойный вечер семьи, со спины</span></div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 6. Как мы работаем -->
+  <section class="sec">
+    <div class="sh"><h2 class="h2">Как мы работаем</h2><p>Пять шагов. На каждом вы знаете, что происходит.</p></div>
+    <div class="steps">
+      <div class="row"><span class="n">01</span><h3>Разговор и диагностика</h3><p>Рассказываете, кого ищете и что уже пробовали.</p><span></span></div>
+      <div class="row on rw2"><span class="n">02</span><h3>Определяем, что чинить</h3><p>Если причина в подборе — ищем. Если в устройстве роли — сначала наводим порядок.</p><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em></div></div></div>
+      <div class="row"><span class="n">03</span><h3>Подборка</h3><p>Приносим проверенных кандидатов с разбором.</p><span></span></div>
+      <div class="row"><span class="n">04</span><h3>Выход</h3><p>Помогаем спокойно пройти первые недели.</p><span></span></div>
+      <div class="row"><span class="n">05</span><h3>Дальше</h3><p>На связи, подключаемся при сложностях.</p><span></span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".rw2" data-pos="tr" data-dy="-30" data-dx="-380"><b>6</b><i>↕</i>Активный шаг темнеет при прокрутке, рядом выезжает кадр</span>
+
+  <!-- 7. Разбор -->
+  <section class="sec">
+    <div class="folder fd">
+      <div class="tab"><span class="lbl" style="color:var(--terra)">Документ</span><span style="font:560 15px/1 var(--d);font-stretch:140%;text-transform:uppercase">Разбор кандидата</span></div>
+      <span class="fl o-tr" style="--c:var(--beige);left:420px;top:-34px"></span>
+      <div class="body">
+        <div class="sh" style="padding:0"><h2 class="h2">По каждому кандидату — разбор, а не резюме</h2><p>Решение остаётся за вами. Мы даём полную картину.</p></div>
+        <div class="mz dos">
+          <div class="tl ph-t"><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em><span>Спокойный портрет кандидата в интерьере, взгляд в сторону</span></div></div></div>
+          <div class="tl milk pad t"><span class="lbl" style="color:var(--terra)">01</span><div><h3>Кто это</h3><p style="font-size:15px;margin-top:6px">Опыт и уровень задач, которые человек действительно вёл.</p></div></div>
+          <div class="tl ter pad t"><span class="lbl">02</span><div><h3>Что им движет</h3><p style="font-size:15px;margin-top:6px">Мотивация и на чём она держится.</p></div></div>
+          <div class="tl car pad t"><span class="lbl">03</span><div><h3>Где риски</h3><p style="font-size:15px;margin-top:6px">Что может пойти не так и когда.</p></div></div>
+          <div class="tl ox pad t" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:space-between"><div><span class="lbl" style="color:#E6C8B4">04</span><h3 style="margin-top:46px">Реальный горизонт</h3><p style="font-size:14px;margin-top:6px">Сколько готов работать.</p></div><div><span class="lbl" style="color:#E6C8B4">05</span><h3 style="margin-top:46px">Наше мнение</h3><p style="font-size:14px;margin-top:6px">Итог проверки и оценка.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".fd" data-pos="tr" data-dy="-58"><b>7</b><i>▭</i>Вкладка «вырастает» из листа, поля разбора открываются по одному</span>
+
+  <!-- 8. Кейсы -->
+  <section class="sec">
+    <div class="sh"><h2 class="h2">Кейсы</h2><p>Две истории — разные задачи, один подход.</p></div>
+    <div class="cases">
+      <div class="mz case"><div class="tl"><div class="ph s-table"><div class="cap"><em>Плейсхолдер</em><span>Детская комната для занятий, тетради, светлый интерьер в Дубае</span></div></div></div>
+        <div class="tl ter pad txt"><h3>Преподаватели начальных классов для семьи в Дубае</h3>
+          <dl><dt>Позиция</dt><dd>Преподаватели начальных классов</dd><dt>Запрос</dt><dd>Обучение детей на дому вместо школы</dd><dt>Что сделали</dt><dd>Составили профиль, отобрали и проверили кандидатов, помогли с выходом</dd><dt>Результат</dt><dd>Занятия с преподавателями заменили детям школу</dd></dl>
+          <div class="plates"><span>Дубай</span><span>три месяца</span><span>заменили школу</span></div></div></div>
+      <div class="mz case"><div class="tl"><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em><span>Няня держит младенца у окна, мягкий свет, лицо не в фокусе</span></div></div></div>
+        <div class="tl beige pad txt"><h3>Няня для грудного ребёнка</h3>
+          <dl><dt>Позиция</dt><dd>Няня для младенца</dd><dt>Запрос</dt><dd>Спокойный опытный человек с первых месяцев</dd><dt>Что сделали</dt><dd>Разобрали режим семьи, проверили кандидатов, сопровождали первые недели</dd><dt>Результат</dt><dd>Няня работает в семье</dd></dl>
+          <div class="plates"><span style="background:var(--terra);color:var(--milk)">Закрыто за 2–3 недели</span><span>с первого кандидата</span><span>работает больше года</span></div></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".cases" data-pos="tl" data-dy="-50" data-dx="420"><b>8</b><i>⇢</i>Плашки-итоги «подкатываются» и слипаются в одну строку</span>
+
+  <!-- 9. Отзывы -->
+  <section class="sec">
+    <div class="rev">
+      <span class="lbl" style="color:var(--terra)">Отзывы</span>
+      <q style="margin-top:22px">Она мне очень нравится. И психологически, и по навыкам — то, что я искала. Мне очень комфортно с ней.</q>
+      <span class="sig">отзыв клиентки</span>
+      <div class="rev2"><span class="ph s-care"></span><span style="font-size:16.5px;max-width:52ch">«Вы так классно уделяете внимание таким мелочам. Не ожидала такой вовлеченности».</span></div>
+    </div>
+  </section>
+
+  <!-- 10. Форма -->
+  <section class="sec" style="padding-bottom:0;position:relative;z-index:1">
+    <div class="formwrap fw">
+      <div style="display:flex;flex-direction:column;justify-content:space-between">
+        <div><span class="lbl">Заявка</span><h2 class="h2" style="margin-top:18px">Расскажите, кого вы ищете и что уже пробовали</h2><p style="margin-top:20px;font-size:17px;max-width:40ch;color:#F7E1D2">За 20 минут станет понятно, что действительно нужно сделать и чем мы можем помочь.</p></div>
+        <div class="obtn" style="color:var(--milk)"><span class="p" style="border-color:var(--milk)">Telegram @kateriniya</span><span class="c" style="border-color:var(--milk)">↗</span></div>
+      </div>
+      <div class="formcard">
+        <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip" style="background:var(--oxblood);color:var(--milk)">Няня</span><span class="chip o" style="color:var(--ink)">Гувернантка</span><span class="chip o" style="color:var(--ink)">Домработница</span><span class="chip o" style="color:var(--ink)">Повар</span><span class="chip o" style="color:var(--ink)">Водитель</span><span class="chip o" style="color:var(--ink)">Сиделка</span></div>
+        <div class="in fill">Анна</div>
+        <div class="in focus">Телефон или @telegram</div>
+        <div class="in area">Что уже пробовали</div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:#7b5a49;max-width:26ch">Нажимая, вы соглашаетесь с политикой конфиденциальности</span><span class="btn">Отправить <span class="ar">↗</span></span></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".fw" data-pos="tr" data-dy="-48"><b>9</b><i>●</i>Фокус: поле получает терракотовую обводку; футер «подтягивается» под форму</span>
+  <footer class="ftr">
+    <p class="big">Находим людей,<br>которые остаются</p>
+    <div class="r"><span>ИКТ · Институт кадровых решений</span><span>Telegram @kateriniya</span><span>Политика конфиденциальности</span></div>
+  </footer>
+</div>
+
+<!-- UI -->
+<div class="board ui" id="ui">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end">
+    <div><span class="lbl" style="color:var(--terra)">Концепция A · UI-система</span><h1 class="cap-x" style="font-weight:570;font-size:84px;line-height:.95;margin-top:16px">Мозаика</h1></div>
+    <p style="font-size:18px;color:#4a2f25">Секции собраны из плотных скруглённых плиток без зазоров: на стыках углов появляются «звёздочки», плитки разной высоты слипаются в одну форму. Тёплый контраст терракоты и красно-коричневого на топлёном молоке, широкие капители, кнопки-пилюли со стрелкой в круге.</p>
+  </div>
+  <div class="mz pal">
+    <div class="tl milk" style="box-shadow:inset 0 0 0 1.5px #E2CDB2"><b>Топлёное молоко</b>#F3E6D3 · фон</div>
+    <div class="tl beige"><b>Тёплый беж</b>#E6D0B3 · плитки</div>
+    <div class="tl car"><b>Карамель</b>#D6955A · плитки</div>
+    <div class="tl ter"><b>Терракота</b>#C2552E · акцент</div>
+    <div class="tl ox"><b>Красно-коричневый</b>#5B1E15 · кнопки, блоки</div>
+    <div class="tl" style="background:#2A1510;color:var(--milk)"><b>Тёмная глина</b>#2A1510 · текст</div>
+  </div>
+  <div class="trow">
+    <div class="pnl">
+      <span class="lbl" style="color:var(--terra)">Шрифты</span>
+      <div class="spec"><small>Roboto Flex<br>wdth 151 · 570 · caps</small><span class="cap-x" style="font-weight:570;font-size:40px;line-height:1">Остаётся в семье</span></div>
+      <div class="spec"><small>Inter Tight 500<br>крупный текст</small><span style="font:500 26px/1.25 var(--t);letter-spacing:-.02em">Мы выясняем, почему прошлые варианты не сложились</span></div>
+      <div class="spec"><small>Inter Tight 400<br>текст 17/25</small><span>Подбираем людей в дом, которым можно доверить детей, быт и личное пространство.</span></div>
+      <div class="spec"><small>Bad Script<br>рукописный акцент</small><span style="font:400 30px/1.1 var(--s);color:var(--terra)">отзыв клиентки</span></div>
+    </div>
+    <div class="pnl" style="background:var(--milk);box-shadow:inset 0 0 0 1.5px #E2CDB2">
+      <span class="lbl" style="color:var(--terra)">Кнопки</span>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><span class="btn">Основная <span class="ar">↗</span></span><span class="btn hv">Hover <span class="ar">↗</span></span></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><span class="btn lt" style="box-shadow:inset 0 0 0 1.5px #E2CDB2">Светлая <span class="ar">↗</span></span><span class="btn off">Неактивна <span class="ar">↗</span></span></div>
+      <div class="obtn"><span class="p" style="padding:18px 30px;font-size:14px">Контурная</span><span class="c" style="width:56px;height:56px;font-size:22px">↗</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="background:var(--oxblood);color:var(--milk)">Чип выбран</span><span class="chip o">Чип</span></div>
+      <span class="lbl" style="color:var(--terra);margin-top:6px">Слипшиеся плитки</span>
+      <div class="mz" style="grid-template-columns:1fr 1fr 1fr;grid-template-rows:80px 80px;--R:24px">
+        <div class="tl ter" style="grid-row:1/3"></div><div class="tl car"></div><div class="tl"><div class="ph s-hands"></div></div><div class="tl ox" style="grid-column:2/4"></div>
+      </div>
+      <span style="font-size:13.5px;color:#7b5a49">Зазор 0, радиус 34 px: на стыках углов — просветы-«звёздочки»</span>
+    </div>
+    <div class="pnl" style="background:var(--terra);color:var(--milk)">
+      <span class="lbl">Поля формы</span>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">По умолчанию</span><div class="in">Имя</div>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">Фокус</span><div class="in focus" style="box-shadow:inset 0 0 0 2px var(--oxblood)">Анна</div>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">Ошибка</span><div class="in err">+7 999</div><span style="font-size:13.5px;color:#FFE1D3">Проверьте номер: не хватает цифр</span>
+      <span class="lbl" style="font-size:10.5px;opacity:.8">Карточка</span>
+      <div class="mz" style="grid-template-rows:110px auto;--R:26px"><div class="tl"><div class="ph s-care"></div></div><div class="tl milk pad" style="color:var(--ink);padding:18px 20px"><span style="font:560 16px/1.1 var(--d);font-stretch:140%;text-transform:uppercase">Сиделка</span><p style="font-size:14px;margin-top:4px">Бережный уход за близкими</p></div></div>
+    </div>
+  </div>
+</div>
+</body></html>
