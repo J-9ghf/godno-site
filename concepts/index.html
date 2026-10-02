@@ -1,0 +1,1859 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Домашний персонал: три концепции</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600&family=Noto+Serif+Display:ital,wght@0,300;0,400;1,300;1,400&family=Golos+Text:wght@400;500;600&family=Alegreya:ital,wght@0,500;0,600;1,500&family=Alegreya+Sans:wght@400;500;700&family=Unbounded:wght@200;300;400&family=Onest:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Обёртка-презентация: нейтральная, не принадлежит ни одной концепции.
+   Каждая концепция живёт в своём классе .A / .B / .C со своими токенами.
+   Мокап намеренно однотемный (брендовые цвета показываются как есть). */
+:root{
+  --deck-bg:#E6E5E1; --deck-ink:#161615; --deck-mute:#6B6A65; --deck-line:#CFCDC7; --deck-card:#F5F5F2;
+  --mo-bg:#161615; --mo-fg:#FFFFFF;
+  --deck-font:'Commissioner',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--deck-bg);color:var(--deck-ink);font-family:var(--deck-font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:clamp(16px,4vw,56px)}
+
+/* ---------- Навигация по презентации ---------- */
+.deck-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(230,229,225,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--deck-line)}
+.deck-nav .wrap{display:flex;align-items:center;gap:6px 22px;flex-wrap:wrap;padding-block:10px;font-size:13px}
+.deck-nav b{font-weight:600;margin-right:auto}
+.deck-nav a{text-decoration:none;color:var(--deck-mute)}
+.deck-nav a:hover{color:var(--deck-ink)}
+.mo-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--deck-line);background:var(--deck-card);border-radius:99px;padding:5px 12px;font:inherit;font-size:12px;color:var(--deck-ink);cursor:pointer}
+.mo-toggle i{width:8px;height:8px;border-radius:50%;background:var(--deck-ink)}
+body.no-mo .mo-toggle i{background:transparent;box-shadow:inset 0 0 0 1px var(--deck-ink)}
+
+/* ---------- Обзор ---------- */
+.ov{padding-block:clamp(48px,7vw,96px) 40px}
+.ov-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--deck-mute)}
+.ov h1{font-size:clamp(34px,5vw,64px);line-height:1.04;letter-spacing:-.03em;font-weight:500;margin:14px 0 18px;max-width:16ch;text-wrap:balance}
+.ov-lead{max-width:62ch;color:#3c3b38;font-size:17px}
+.ov-notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:28px}
+.ov-note{background:var(--deck-card);border:1px solid var(--deck-line);border-radius:10px;padding:14px 16px;font-size:13.5px;color:#3c3b38}
+.ov-note b{display:block;color:var(--deck-ink);font-weight:600;margin-bottom:2px}
+.ov-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:44px}
+@media (max-width:980px){.ov-cards{grid-template-columns:1fr}}
+.ov-card{display:flex;flex-direction:column;text-decoration:none;border-radius:12px;overflow:hidden;border:1px solid var(--deck-line);background:var(--deck-card);transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+.ov-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -24px rgba(0,0,0,.35)}
+.ov-prev{height:230px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.ov-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.ov-body h3{margin:0;font-size:19px;font-weight:600}
+.ov-body p{margin:0;font-size:14px;color:#46453f}
+.ov-sw{display:flex;gap:0;height:12px;border-radius:3px;overflow:hidden;margin-top:auto}
+.ov-sw i{flex:1}
+.ov-go{font-size:13px;font-weight:500}
+.cmp{margin-top:56px;overflow-x:auto;border:1px solid var(--deck-line);border-radius:12px;background:var(--deck-card)}
+.cmp table{border-collapse:collapse;width:100%;min-width:860px;font-size:14px}
+.cmp th,.cmp td{text-align:left;vertical-align:top;padding:14px 16px;border-bottom:1px solid var(--deck-line)}
+.cmp tr:last-child td{border-bottom:0}
+.cmp thead th{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--deck-mute);font-weight:500}
+.cmp tbody th{font-weight:600;width:160px}
+
+/* Разделитель между концепциями */
+.divider{padding-block:56px 28px}
+.divider .wrap{display:flex;align-items:baseline;gap:18px;border-top:1px solid var(--deck-ink);padding-top:14px;flex-wrap:wrap}
+.divider b{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.divider span{color:var(--deck-mute);font-size:13px}
+.frame-label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--deck-mute);padding-block:24px 10px}
+
+/* ---------- Пометки анимаций (слой разметки) ---------- */
+.mo{position:absolute;z-index:6;display:inline-flex;align-items:center;gap:6px;background:var(--mo-bg);color:var(--mo-fg);font:500 11px/1.2 var(--deck-font);letter-spacing:.02em;padding:5px 9px 5px 6px;border-radius:99px;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px -6px rgba(0,0,0,.5)}
+.mo::before{content:attr(data-k);display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:99px;background:var(--mo-fg);color:var(--mo-bg);font-size:10px;font-weight:600}
+.mo.static{position:static;margin-bottom:8px}
+body.no-mo .mo{display:none}
+@media (max-width:700px){.mo{white-space:normal;max-width:min(300px,78vw);left:0!important;right:auto!important}}
+.rel{position:relative}
+
+/* ---------- Тонированные кадры вместо фото ---------- */
+/* Сцены собраны из градиентов + размытие + зерно. Это фото-бриф, не финальные изображения. */
+.ph{position:relative;overflow:hidden;isolation:isolate;background:var(--ph-m);max-width:100%}
+.ph::before{content:"";position:absolute;inset:-8%;background:var(--scene);filter:blur(var(--blur,7px)) saturate(var(--sat,1));z-index:-2;transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.ph::after{content:"";position:absolute;inset:0;z-index:-1;opacity:var(--grain,.55);mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.s-window{--scene:
+  radial-gradient(ellipse 22% 40% at 72% 34%, var(--ph-w) 0 35%, transparent 75%),
+  linear-gradient(90deg, transparent 58%, color-mix(in srgb,var(--ph-w) 70%,transparent) 61% 83%, transparent 86%),
+  radial-gradient(ellipse 55% 28% at 64% 86%, color-mix(in srgb,var(--ph-w) 60%,transparent) 0, transparent 70%),
+  radial-gradient(ellipse 18% 26% at 30% 66%, var(--ph-d) 0 40%, transparent 80%),
+  linear-gradient(180deg, var(--ph-l) 0, var(--ph-m) 66%, var(--ph-d) 66.5%, var(--ph-dd) 100%)}
+.s-portrait{--scene:
+  radial-gradient(ellipse 11% 15% at 44% 34%, var(--ph-d) 0 50%, transparent 100%),
+  radial-gradient(ellipse 28% 34% at 46% 82%, var(--ph-d) 0 55%, transparent 100%),
+  radial-gradient(ellipse 7% 9% at 64% 62%, var(--ph-d) 0 45%, transparent 100%),
+  radial-gradient(ellipse 14% 18% at 66% 88%, var(--ph-d) 0 50%, transparent 100%),
+  radial-gradient(ellipse 45% 70% at 88% 18%, var(--ph-w) 0, transparent 70%),
+  linear-gradient(160deg, var(--ph-l), var(--ph-m) 70%, var(--ph-d))}
+.s-table{--scene:
+  radial-gradient(ellipse 6% 9% at 28% 58%, var(--ph-d) 0 50%, transparent 100%),
+  radial-gradient(ellipse 20% 6% at 60% 64%, var(--ph-w) 0 60%, transparent 100%),
+  radial-gradient(ellipse 12% 4% at 78% 70%, var(--ph-d) 0 40%, transparent 100%),
+  radial-gradient(ellipse 60% 50% at 10% 0%, color-mix(in srgb,var(--ph-w) 80%,transparent) 0, transparent 70%),
+  linear-gradient(180deg, var(--ph-l) 0 50%, var(--ph-m) 50.5% 100%)}
+.s-hall{--scene:
+  radial-gradient(ellipse 14% 30% at 50% 46%, var(--ph-w) 0 40%, transparent 90%),
+  linear-gradient(90deg, var(--ph-dd) 0 14%, var(--ph-d) 14% 34%, var(--ph-m) 34% 42%, var(--ph-l) 42% 58%, var(--ph-m) 58% 66%, var(--ph-d) 66% 86%, var(--ph-dd) 86%),
+  var(--ph-m)}
+.s-blinds{--scene:
+  repeating-linear-gradient(118deg, transparent 0 34px, color-mix(in srgb,var(--ph-dd) 22%,transparent) 34px 58px),
+  radial-gradient(ellipse 18% 12% at 40% 60%, var(--ph-d) 0 50%, transparent 100%),
+  radial-gradient(ellipse 60% 60% at 70% 30%, var(--ph-w) 0, transparent 70%),
+  linear-gradient(200deg, var(--ph-l), var(--ph-m))}
+.s-hands{--scene:
+  radial-gradient(ellipse 16% 10% at 38% 56%, var(--ph-s) 0 55%, transparent 100%),
+  radial-gradient(ellipse 14% 9% at 58% 60%, var(--ph-s) 0 55%, transparent 100%),
+  radial-gradient(ellipse 34% 12% at 50% 66%, var(--ph-w) 0 50%, transparent 100%),
+  radial-gradient(ellipse 70% 50% at 50% 0%, color-mix(in srgb,var(--ph-w) 60%,transparent) 0, transparent 70%),
+  linear-gradient(180deg, var(--ph-m), var(--ph-d))}
+.s-car{--scene:
+  radial-gradient(ellipse 40% 14% at 50% 70%, var(--ph-dd) 0 55%, transparent 100%),
+  radial-gradient(ellipse 8% 22% at 76% 52%, var(--ph-d) 0 50%, transparent 100%),
+  linear-gradient(180deg, var(--ph-l) 0 45%, var(--ph-m) 45% 72%, var(--ph-d) 72%)}
+.s-garden{--scene:
+  radial-gradient(ellipse 30% 26% at 24% 40%, var(--ph-d) 0 40%, transparent 100%),
+  radial-gradient(ellipse 26% 30% at 78% 46%, var(--ph-d) 0 40%, transparent 100%),
+  radial-gradient(ellipse 70% 40% at 50% 0%, var(--ph-w) 0, transparent 70%),
+  linear-gradient(180deg, var(--ph-l) 0 52%, var(--ph-m) 52%)}
+.ph .cap{position:absolute;left:12px;right:12px;bottom:12px;font:500 11px/1.35 var(--deck-font);color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.45);letter-spacing:.01em}
+.ph .cap b{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;font-weight:600;margin-bottom:2px}
+
+/* Пометка «уточнить у заказчика» */
+.todo{background:repeating-linear-gradient(90deg,currentColor 0 4px,transparent 4px 7px) bottom/100% 1px no-repeat;padding-bottom:1px;opacity:.75}
+.todo-tag{display:inline-block;font:600 9.5px/1 var(--deck-font);letter-spacing:.12em;text-transform:uppercase;padding:4px 6px;border:1px dashed currentColor;border-radius:4px;opacity:.7;vertical-align:middle}
+
+/* Общие анимации */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+/* Появление при прокрутке — только сдвиг: текст читаем в любом состоянии (превью, печать, без прокрутки) */
+@keyframes lift{from{transform:translateY(28px)}to{transform:none}}
+@keyframes settle{from{transform:scale(1.08)}to{transform:scale(1)}}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.load{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.load.d1{animation-delay:.12s}.load.d2{animation-delay:.24s}.load.d3{animation-delay:.36s}.load.d4{animation-delay:.5s}
+@supports (animation-timeline:view()){
+  .rv{animation:lift linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
+  .rv-img::before{animation:settle linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+  .rv-line{transform-origin:left;animation:draw linear both;animation-timeline:view();animation-range:entry 10% entry 60%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head><body>
+
+<nav class="deck-nav" aria-label="Концепции">
+  <div class="wrap">
+    <b>ИКТ · домашний персонал — концепции</b>
+    <a href="#overview">Обзор</a>
+    <a href="#concept-a">01 Quiet Editorial</a>
+    <a href="#concept-b">02 Close Circle</a>
+    <a href="#concept-c">03 Private Line</a>
+    <button class="mo-toggle" id="mo-toggle" type="button" aria-pressed="true"><i></i>Пометки анимаций</button>
+  </div>
+</nav>
+
+<header class="ov" id="overview">
+  <div class="wrap">
+    <div class="ov-kicker">Этап 1 · дизайн-концепции · не production</div>
+    <h1>Три ответа на один вопрос</h1>
+    <p class="ov-lead">Как может выглядеть современный премиальный сервис по подбору домашнего персонала? Ниже три самостоятельных направления. У каждого своя палитра, свой шрифт, своя композиция и своя подача фото. Все показаны на одних и тех же текстах из вашего документа, поэтому сравнивается только визуальный язык.</p>
+    <div class="ov-notes">
+      <div class="ov-note"><b>Тексты</b>Взяты из документа «Лендинг: подбор домашнего персонала»: заголовки, блоки, отзывы (дословно). Места, где данных пока нет (гарантии, реальные кейсы), помечены <span class="todo-tag">уточнить</span>.</div>
+      <div class="ov-note"><b>Изображения</b>На месте фото стоят тонированные кадры с описанием сцены. Это фото-бриф: какой кадр, какой свет, какая цветокоррекция. На этапе разработки их заменят реальной съёмкой или отобранными фото.</div>
+      <div class="ov-note"><b>Анимации</b>Чёрные метки с номером показывают, где и какая анимация появится. Часть эффектов уже работает: появление hero, hover, плавное появление при прокрутке. Метки можно скрыть кнопкой вверху.</div>
+    </div>
+
+    <div class="ov-cards">
+      <a class="ov-card" href="#concept-a">
+        <div class="ov-prev" style="background:#EFEEE9;color:#1C1C1A">
+          <span style="font:500 11px/1 'Golos Text',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#7E7C74">01 · Quiet Editorial</span>
+          <span style="font:300 44px/1 'Noto Serif Display',Georgia,serif;letter-spacing:-.02em">Тихий <i>дом</i></span>
+        </div>
+        <div class="ov-body">
+          <h3>01 — Quiet Editorial</h3>
+          <p>Журнальный разворот о жизни дома: светлая антиква, воздух, интерьеры в естественном свете. Почти без цвета, весь цвет даёт фотография.</p>
+          <div class="ov-sw"><i style="background:#EFEEE9"></i><i style="background:#E3E1DA"></i><i style="background:#CBC8BF"></i><i style="background:#7E7C74"></i><i style="background:#1C1C1A"></i></div>
+          <span class="ov-go">Смотреть концепцию →</span>
+        </div>
+      </a>
+      <a class="ov-card" href="#concept-b">
+        <div class="ov-prev" style="background:#F6F0E6;color:#3B2A20">
+          <span style="font:500 12px/1 'Alegreya Sans',sans-serif;letter-spacing:.06em;color:#8C9075">02 · Close Circle</span>
+          <span style="font:500 44px/1 'Alegreya',Georgia,serif">Близкий <i>круг</i></span>
+        </div>
+        <div class="ov-body">
+          <h3>02 — Close Circle</h3>
+          <p>Сервис с лицом и голосом: молочные и ореховые тона, мягкая гуманистическая типографика, люди и руки в кадре, отзывы как живая переписка.</p>
+          <div class="ov-sw"><i style="background:#F6F0E6"></i><i style="background:#EADFCD"></i><i style="background:#D9C7AD"></i><i style="background:#8C9075"></i><i style="background:#3B2A20"></i></div>
+          <span class="ov-go">Смотреть концепцию →</span>
+        </div>
+      </a>
+      <a class="ov-card" href="#concept-c">
+        <div class="ov-prev" style="background:#4A1D22;color:#F3F1EE">
+          <span style="font:400 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:#D9C2BE">03 / PRIVATE LINE</span>
+          <span style="font:200 38px/1.05 'Unbounded',sans-serif;letter-spacing:-.02em">Частная линия</span>
+        </div>
+        <div class="ov-body">
+          <h3>03 — Private Line</h3>
+          <p>Частный сервис в духе консьержа: цвет бычьей крови и фарфор, широкий светлый гротеск, моноширинные пометки. Главный образ — досье кандидата.</p>
+          <div class="ov-sw"><i style="background:#F3F1EE"></i><i style="background:#E8E4DF"></i><i style="background:#9C958E"></i><i style="background:#4A1D22"></i><i style="background:#141313"></i></div>
+          <span class="ov-go">Смотреть концепцию →</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="cmp" role="region" aria-label="Сравнение концепций" tabindex="0">
+      <table>
+        <thead><tr><th></th><th>01 Quiet Editorial</th><th>02 Close Circle</th><th>03 Private Line</th></tr></thead>
+        <tbody>
+          <tr><th>Эмоция</th><td>Спокойствие и вкус. «Эти люди понимают, как устроен хороший дом».</td><td>Тепло и участие. «Со мной поговорят как с человеком, а не как с заказом».</td><td>Приватность и контроль. «О моей семье будет знать один человек, и он точен».</td></tr>
+          <tr><th>Цвет</th><td>Холодноватый камень, графит, лён. Почти монохром.</td><td>Молоко, овёс, какао, приглушённый шалфей.</td><td>Бычья кровь, фарфор, тёплый серый. Два цвета и линии.</td></tr>
+          <tr><th>Типографика</th><td>Noto Serif Display (светлая антиква, курсив) + Golos Text</td><td>Alegreya + Alegreya Sans (гуманистическая суперсемья)</td><td>Unbounded (широкий светлый гротеск) + Onest + IBM Plex Mono</td></tr>
+          <tr><th>Композиция</th><td>Асимметричные развороты, большие поля, подписи к кадрам, оглавление вместо карточек.</td><td>Мягкие формы, наложение фото и записок, вертикальный путь, чипы.</td><td>Видимая сетка 12 колонок, волосяные линии, таблицы, досье.</td></tr>
+          <tr><th>Фотография</th><td>Широкие интерьеры, естественный свет, человек маленький или со спины.</td><td>Люди и руки крупно, тёплый вечерний свет, фактуры льна и дерева.</td><td>Детали и тень, обесцвеченная холодная коррекция, кадрирование по сетке.</td></tr>
+          <tr><th>Интерфейс</th><td>Прямые кнопки, подчёркнутые поля, текстовые ссылки.</td><td>Кнопки-пилюли, скругления 18–28 px, мягкие тени, бумажная фактура.</td><td>Тонкие рамки, инверсия на hover, моноширинные метки, без скруглений.</td></tr>
+          <tr><th>Подача</th><td>Как журнальный материал: тезис → разворот → цитата.</td><td>Как разговор: сначала ситуация клиента, потом решение.</td><td>Как брифинг: сначала что вы получите (досье), потом процесс.</td></tr>
+          <tr><th>Анимация</th><td>Медленное проявление текста и кадров, оглавление с превью на hover.</td><td>Мягкий подъём карточек, «дышащие» фото, сообщения появляются по одному.</td><td>Прорисовка линий, инверсия строк, бегущая строка позиций, счётчик отзывов.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</header>
+
+<style>
+/* 01 Quiet Editorial — журнальный разворот: асимметрия, поля, подписи к кадрам */
+.A{
+  --paper:#EFEEE9; --paper2:#E3E1DA; --linen:#DCD6CA; --rule:#CBC8BF; --stone:#7E7C74; --ink:#1C1C1A;
+  --disp:'Noto Serif Display',Georgia,'Times New Roman',serif;
+  --text:'Golos Text',system-ui,sans-serif;
+  --ph-l:#E2DDD2; --ph-m:#BDB5A6; --ph-d:#7A7266; --ph-dd:#4C473F; --ph-w:#FBF6EC; --ph-s:#C8A88E;
+  --sat:.85;
+  background:var(--paper);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.6
+}
+.A .wrap{max-width:1360px}
+.A h2,.A h3{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.A em,.A i{font-style:italic}
+.A .kick{font:500 11.5px/1.3 var(--text);letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+.A .sec{padding-block:clamp(72px,10vw,150px);border-top:1px solid var(--rule)}
+.A .sec-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:end;margin-bottom:clamp(40px,6vw,80px)}
+.A .sec-head .kick{grid-column:1/4;align-self:start;padding-top:14px}
+.A .sec-head h2{grid-column:4/11;font-size:clamp(38px,5.4vw,76px);line-height:1.02}
+@media (max-width:860px){.A .sec-head{grid-template-columns:1fr}.A .sec-head .kick,.A .sec-head h2{grid-column:auto}}
+
+/* spec */
+.A .spec{padding-block:clamp(56px,7vw,96px)}
+.A .spec-top{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .spec-top h2{grid-column:1/8;font-size:clamp(52px,8vw,128px);line-height:.92}
+.A .spec-top p{grid-column:8/13;align-self:end;margin:0;max-width:44ch}
+@media (max-width:860px){.A .spec-top{grid-template-columns:1fr}.A .spec-top h2,.A .spec-top p{grid-column:auto}}
+.A .spec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:56px;border-top:1px solid var(--ink)}
+.A .spec-grid>div{padding:20px 24px 24px 0;min-width:0}
+.A .spec-grid>div+div{padding-left:24px;border-left:1px solid var(--rule)}
+@media (max-width:860px){.A .spec-grid{grid-template-columns:1fr}.A .spec-grid>div+div{border-left:0;padding-left:0;border-top:1px solid var(--rule)}}
+.A .chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.A .chip{aspect-ratio:1/1.1;padding:8px;font-size:11px;line-height:1.25;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid var(--rule)}
+.A .chip b{font-weight:500}
+.A .type-a{font:300 64px/1 var(--disp);letter-spacing:-.02em;margin-top:12px}
+.A .type-a i{font-weight:300}
+.A .type-meta{font-size:13px;color:var(--stone);margin-top:10px}
+
+/* header */
+.A .hdr{position:sticky;top:calc(env(safe-area-inset-top,0px) + 45px);z-index:20;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.A .hdr .wrap{display:flex;align-items:center;gap:28px;padding-block:16px;font-size:14px}
+.A .logo{display:flex;align-items:baseline;gap:12px;text-decoration:none;margin-right:auto}
+.A .logo b{font:400 24px/1 var(--disp);letter-spacing:.04em}
+.A .logo span{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
+.A .hdr nav{display:flex;gap:26px}
+.A .hdr nav a{text-decoration:none;color:var(--stone)}
+.A .hdr nav a:hover{color:var(--ink)}
+.A .tlink{text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/100% 1px no-repeat;padding-bottom:3px;transition:background-size .5s cubic-bezier(.2,.7,.2,1)}
+.A .tlink:hover{background-size:0 1px;background-position:100% 100%}
+@media (max-width:980px){.A .hdr nav{display:none}}
+
+/* hero */
+.A .hero{padding-block:clamp(36px,5vw,64px) clamp(56px,7vw,104px)}
+.A .hero-run{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--rule);margin-bottom:clamp(32px,5vw,64px)}
+.A .hero-run span{font-size:12.5px;color:var(--stone)}
+.A .hero-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .hero-txt{grid-column:1/8;display:flex;flex-direction:column;min-width:0}
+.A .hero h1{font:300 clamp(48px,7.6vw,118px)/.96 var(--disp);letter-spacing:-.03em;margin:0;text-wrap:balance}
+.A .hero h1 i{font-weight:300;color:#3a3833}
+.A .hero-lead{font-size:clamp(17px,1.4vw,20px);max-width:44ch;margin:clamp(28px,3vw,44px) 0 0 auto;color:#33322e}
+.A .hero-cta{display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin:32px 0 0 auto;max-width:44ch;width:100%}
+.A .hero-media{grid-column:8/13;display:flex;flex-direction:column;gap:12px;min-width:0}
+.A .hero-media .ph{aspect-ratio:4/5.2}
+.A figcaption{font-size:12.5px;line-height:1.45;color:var(--stone);display:grid;grid-template-columns:auto 1fr;gap:12px}
+.A figcaption b{font-weight:500;color:var(--ink)}
+.A .trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(48px,6vw,88px);border-top:1px solid var(--ink)}
+.A .trust div{padding:16px 20px 0 0;font-size:14px;line-height:1.45;min-width:0}
+.A .trust div+div{padding-left:20px;border-left:1px solid var(--rule)}
+.A .trust b{display:block;font:400 22px/1.15 var(--disp);margin-bottom:6px}
+@media (max-width:860px){.A .hero-grid{grid-template-columns:1fr}.A .hero-txt,.A .hero-media{grid-column:auto}.A .hero-lead,.A .hero-cta{margin-left:0}.A .trust{grid-template-columns:1fr}.A .trust div+div{border-left:0;padding-left:0;border-top:1px solid var(--rule);margin-top:14px}}
+
+/* buttons */
+.A .btn{display:inline-flex;align-items:center;gap:14px;background:var(--ink);color:var(--paper);text-decoration:none;font:500 15px/1 var(--text);padding:19px 26px;border:1px solid var(--ink);cursor:pointer;transition:background .4s,color .4s}
+.A .btn .ar{display:inline-block;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.A .btn:hover,.A .btn.is-hover{background:transparent;color:var(--ink)}
+.A .btn:hover .ar,.A .btn.is-hover .ar{transform:translateX(5px)}
+.A .btn.ghost{background:transparent;color:var(--ink)}
+.A .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+/* staff index */
+.A .idx{border-top:1px solid var(--ink);position:relative}
+.A .idx-row{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,5fr) 40px;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--rule);text-decoration:none;position:relative;transition:padding .5s cubic-bezier(.2,.7,.2,1)}
+.A .idx-row h3{font-size:clamp(30px,3.6vw,52px);line-height:1}
+.A .idx-row p{margin:0;color:var(--stone);font-size:15px}
+.A .idx-row .ar{justify-self:end;transition:transform .5s}
+.A .idx-row:hover{padding-left:18px}
+.A .idx-row:hover .ar{transform:translateX(6px)}
+.A .idx-row:hover h3{font-style:italic}
+.A .peek{position:absolute;left:30%;top:50%;width:150px;aspect-ratio:4/5;transform:translateY(-50%) scale(.96);opacity:0;pointer-events:none;transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1);z-index:3}
+.A .idx-row:hover .peek,.A .idx-row.is-hover .peek{opacity:1;transform:translateY(-50%) scale(1)}
+@media (max-width:860px){.A .idx-row{grid-template-columns:1fr 30px}.A .idx-row p{grid-column:1}.A .peek{display:none}}
+
+/* intro essay */
+.A .essay{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .essay .big{grid-column:1/8;font:300 clamp(34px,4.4vw,64px)/1.06 var(--disp);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.A .essay .side{grid-column:9/13;margin:0;align-self:end}
+.A .tri{grid-column:1/13;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:clamp(40px,6vw,80px)}
+.A .tri div{border-top:1px solid var(--ink);padding-top:16px;min-width:0}
+.A .tri h3{font-size:28px;font-style:italic;margin-bottom:10px}
+.A .tri p{margin:0;font-size:15.5px;color:#3d3c37}
+.A .four{grid-column:1/13;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;margin-top:clamp(56px,7vw,110px)}
+.A .four>div{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:24px;padding:26px 0;border-top:1px solid var(--rule);min-width:0}
+.A .four h3{font-size:26px;line-height:1.1}
+.A .four p{margin:0;font-size:15.5px;color:#3d3c37}
+@media (max-width:860px){.A .essay{grid-template-columns:1fr}.A .essay>*{grid-column:auto!important}.A .tri,.A .four{grid-template-columns:1fr}.A .four>div{grid-template-columns:1fr;gap:8px}}
+
+/* process */
+.A .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;position:relative}
+.A .steps .line{position:absolute;left:0;right:0;top:0;height:1px;background:var(--ink)}
+.A .step{padding-top:22px;min-width:0}
+.A .step .n{font:300 clamp(56px,6vw,96px)/1 var(--disp);letter-spacing:-.04em;color:var(--stone);display:block;margin-bottom:22px}
+.A .step h3{font-size:24px;line-height:1.12;margin-bottom:10px}
+.A .step p{margin:0;font-size:15px;color:#3d3c37}
+@media (max-width:980px){.A .steps{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.A .steps{grid-template-columns:1fr}}
+
+/* check spread */
+.A .spread{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.A .spread-media{grid-column:1/6;position:sticky;top:140px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.A .spread-media .ph{aspect-ratio:4/5}
+.A .spread-txt{grid-column:7/13;min-width:0}
+.A .spread-txt h2{font-size:clamp(38px,4.8vw,70px);line-height:1.02;margin:14px 0 40px}
+.A dl{margin:0;border-top:1px solid var(--ink)}
+.A dl>div{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.A dt{font:300 italic 26px/1.15 var(--disp)}
+.A dd{margin:0;font-size:15.5px;color:#3d3c37}
+.A .note{margin-top:28px;font:300 22px/1.35 var(--disp);max-width:30ch}
+@media (max-width:860px){.A .spread{grid-template-columns:1fr}.A .spread-media,.A .spread-txt{grid-column:auto;position:static}.A dl>div{grid-template-columns:1fr;gap:6px}}
+
+/* service */
+.A .linen{background:var(--linen)}
+.A .svc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.A .svc article{display:flex;flex-direction:column;gap:16px;min-width:0}
+.A .svc article:nth-child(2){margin-top:72px}
+.A .svc article:nth-child(3){margin-top:144px}
+.A .svc .ph{aspect-ratio:3/4}
+.A .svc h3{font-size:36px;line-height:1}
+.A .svc p{margin:0;font-size:15.5px;color:#3d3c37}
+@media (max-width:860px){.A .svc{grid-template-columns:1fr}.A .svc article:nth-child(n){margin-top:0}}
+
+/* story */
+.A .story{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .story-main{grid-column:3/9;min-width:0}
+.A .story-main h2{font-size:clamp(38px,4.8vw,70px);line-height:1.02;margin:14px 0 36px}
+.A .story-main p{margin:0 0 20px}
+.A .story-main .drop::first-letter{font:300 92px/.8 var(--disp);float:left;margin:8px 12px 0 0}
+.A .story-main h3{font-size:26px;font-style:italic;margin:34px 0 8px}
+.A .pull{grid-column:10/13;align-self:center;border-top:1px solid var(--ink);padding-top:18px;font:300 italic 26px/1.3 var(--disp);margin:0}
+@media (max-width:860px){.A .story{grid-template-columns:1fr}.A .story-main,.A .pull{grid-column:auto}}
+
+/* reviews */
+.A .rev{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .rev blockquote{margin:0}
+.A .rev-big{grid-column:1/8;font:300 clamp(30px,3.6vw,52px)/1.12 var(--disp);letter-spacing:-.015em;white-space:pre-line}
+.A .rev-big::before{content:"«";display:block;font-size:1.6em;line-height:.6;color:var(--stone)}
+.A .rev-small{grid-column:9/13;align-self:end;font-size:16px;white-space:pre-line;color:#33322e;border-top:1px solid var(--rule);padding-top:18px}
+.A .rev cite{display:block;font-style:normal;margin-top:22px;font:500 11.5px/1.3 var(--text);letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+.A .rev-nav{grid-column:1/13;display:flex;gap:28px;align-items:center;margin-top:40px;font-size:14px;color:var(--stone)}
+.A .rev-nav b{color:var(--ink);font-weight:500}
+@media (max-width:860px){.A .rev{grid-template-columns:1fr}.A .rev>*{grid-column:auto!important}}
+
+/* guarantees */
+.A .gar{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .gar ul{grid-column:4/13;list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.A .gar li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.A .gar li b{font:300 26px/1.15 var(--disp)}
+.A .gar li span{font-size:15.5px;color:#3d3c37}
+@media (max-width:860px){.A .gar ul{grid-column:1/13}.A .gar li{grid-template-columns:1fr;gap:6px}}
+
+/* faq */
+.A .faq{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .faq .list{grid-column:4/13;border-top:1px solid var(--ink)}
+.A details{border-bottom:1px solid var(--rule)}
+.A summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr 24px;gap:24px;align-items:baseline;padding:24px 0;font:300 clamp(22px,2.2vw,30px)/1.2 var(--disp)}
+.A summary::-webkit-details-marker{display:none}
+.A summary::after{content:"+";font:300 26px/1 var(--text);transition:transform .4s;justify-self:end}
+.A details[open] summary::after{transform:rotate(45deg)}
+.A details p{margin:0 0 26px;max-width:60ch;color:#3d3c37}
+@media (max-width:860px){.A .faq .list{grid-column:1/13}}
+
+/* form */
+.A .final{background:var(--paper2)}
+.A .final-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.A .final h2{grid-column:1/7;font-size:clamp(40px,5.2vw,80px);line-height:1}
+.A .final-side{grid-column:1/6;margin-top:28px;color:#3d3c37}
+.A form{grid-column:7/13;grid-row:1/3;display:flex;flex-direction:column;gap:26px}
+.A .fld{display:flex;flex-direction:column;gap:8px}
+.A .fld label,.A .fld .lb{font:500 11.5px/1.3 var(--text);letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+.A .fld input,.A .fld textarea{border:0;border-bottom:1px solid var(--ink);background:transparent;font:400 22px/1.3 var(--disp);padding:8px 0 12px;color:var(--ink);border-radius:0;outline:none;transition:border-color .3s}
+.A .fld textarea{min-height:90px;resize:vertical}
+.A .fld input:focus,.A .fld textarea:focus,.A .fld.is-focus input{border-bottom-width:2px;padding-bottom:11px}
+.A .fld.is-error input{border-bottom-color:#8B3A2E}
+.A .fld .err{font-size:13px;color:#8B3A2E}
+.A .opts{display:flex;flex-wrap:wrap;gap:8px}
+.A .opt{font:400 14px/1 var(--text);padding:10px 14px;border:1px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;transition:border-color .3s,background .3s}
+.A .opt:hover{border-color:var(--ink)}
+.A .opt[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.A .form-foot{display:flex;flex-wrap:wrap;gap:24px;align-items:center}
+.A .form-msg{font-size:13.5px;color:var(--stone)}
+@media (max-width:860px){.A .final-grid{grid-template-columns:1fr}.A .final-grid>*{grid-column:auto!important;grid-row:auto!important}}
+
+/* footer */
+.A .ftr{background:var(--ink);color:var(--paper);padding-block:clamp(56px,7vw,96px) 36px}
+.A .ftr .big{font:300 italic clamp(40px,6vw,96px)/1 var(--disp);letter-spacing:-.02em;margin:0 0 56px;max-width:14ch}
+.A .ftr-row{display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;border-top:1px solid rgba(239,238,233,.25);padding-top:20px;font-size:13.5px;color:#B5B2A9}
+
+/* ui kit */
+.A .kit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.A .kit>div{border-top:1px solid var(--ink);padding-top:18px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.A .kit .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.A .card{background:var(--paper);display:flex;flex-direction:column}
+.A .card .ph{aspect-ratio:3/2}
+.A .card div{padding:16px 0}
+.A .card h3{font-size:26px}
+.A .card p{margin:6px 0 0;font-size:14.5px;color:var(--stone)}
+.A .motion{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.A .motion li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;padding:18px 0;border-top:1px solid var(--rule);font-size:15px}
+.A .motion li b{font-weight:500}
+.A .motion .k{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:99px;background:var(--mo-bg);color:var(--mo-fg);font-size:11px;font-weight:600}
+@media (max-width:860px){.A .kit,.A .motion{grid-template-columns:1fr}}
+</style>
+
+<div class="divider" id="concept-a"><div class="wrap"><b>Концепция 01</b><span>Quiet Editorial · «Тихий дом»</span></div></div>
+
+<section class="A">
+  <!-- Паспорт концепции -->
+  <div class="spec wrap">
+    <div class="spec-top">
+      <h2>01 —<br>Quiet <i>Editorial</i></h2>
+      <p>Лендинг как спокойный журнальный разворот о жизни дома. Крупная светлая антиква, много воздуха, интерьеры в естественном свете и подписи к кадрам, как в журнале. Доверие строится через вкус и сдержанность: сервис не уговаривает, а показывает, что понимает, как устроен хороший дом. Палитра почти монохромная, цвет даёт только фотография.</p>
+    </div>
+    <div class="spec-grid">
+      <div>
+        <div class="kick">Палитра · камень и графит</div>
+        <div class="chips">
+          <div class="chip" style="background:#EFEEE9"><b>Бумага</b>#EFEEE9</div>
+          <div class="chip" style="background:#E3E1DA"><b>Известняк</b>#E3E1DA</div>
+          <div class="chip" style="background:#DCD6CA"><b>Лён</b>#DCD6CA</div>
+          <div class="chip" style="background:#CBC8BF"><b>Линия</b>#CBC8BF</div>
+          <div class="chip" style="background:#7E7C74;color:#EFEEE9"><b>Камень</b>#7E7C74</div>
+          <div class="chip" style="background:#1C1C1A;color:#EFEEE9"><b>Графит</b>#1C1C1A</div>
+        </div>
+      </div>
+      <div>
+        <div class="kick">Типографика</div>
+        <div class="type-a">Аа <i>Дом</i></div>
+        <div class="type-meta">Noto Serif Display 300 + курсив — заголовки, цитаты, номера. Высокий контраст, журнальный ритм.</div>
+        <div style="font:500 22px/1.3 var(--text);margin-top:18px">Аа Golos Text</div>
+        <div class="type-meta">Golos Text 400/500 — основной текст, подписи, интерфейс. Спокойный русский гротеск, хорошо держит мелкий кегль.</div>
+      </div>
+      <div>
+        <div class="kick">Фото-направление</div>
+        <p style="margin:12px 0 0;font-size:15px">Широкие кадры интерьеров с естественным светом. Человек в кадре маленький, часто со спины или в движении. Детали: стопка выглаженного белья, накрытый стол, прихожая с детской обувью. Цвет натуральный, слегка приглушённый, без вспышки и без взгляда в камеру.</p>
+        <div class="type-meta">Подпись к каждому кадру: номер + короткое описание, как в журнале.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap frame-label">Макет лендинга · desktop 1440</div>
+
+  <!-- Header -->
+  <header class="hdr">
+    <div class="wrap">
+      <a class="logo" href="#concept-a"><b>ИКТ</b><span>Институт кадровых решений</span></a>
+      <nav><a href="#a-staff">Кого подбираем</a><a href="#a-process">Как работаем</a><a href="#a-check">Проверка</a><a href="#a-reviews">Отзывы</a><a href="#a-faq">Вопросы</a></nav>
+      <a class="tlink" href="#a-form">Рассказать, кого вы ищете</a>
+    </div>
+  </header>
+
+  <!-- 1. Hero -->
+  <div class="hero wrap rel">
+    <div class="hero-run load">
+      <span>Подбор домашнего персонала</span>
+      <span>Няни · домработницы · повара · водители · управляющие домом · гувернантки · сиделки · садовники</span>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-txt rel">
+        <span class="mo" data-k="A1" style="top:-30px;left:0">Строки проявляются по одной, 0.9 s, сдвиг 18 px</span>
+        <h1 class="load d1">Домашний персонал, который остаётся <i>в вашей семье</i></h1>
+        <p class="hero-lead load d2">Подбираем людей в дом, которым можно доверить детей, быт и личное пространство. Не присылаем стопку резюме — приходим с проверенными кандидатами и честным разбором по каждому.</p>
+        <div class="hero-cta load d3">
+          <a class="btn" href="#a-form">Рассказать, кого вы ищете <span class="ar">→</span></a>
+          <a class="tlink" href="#a-check">Как мы проверяем кандидатов</a>
+        </div>
+      </div>
+      <figure class="hero-media load d2 rel" style="margin:0">
+        <span class="mo" data-k="A2" style="top:12px;left:12px">Кадр медленно «оседает»: scale 1.08 → 1, 1.6 s</span>
+        <div class="ph s-window rv-img"></div>
+        <figcaption><b>Кадр 01</b><span>Утро в гостиной. Свет из окна, помощница со спины поправляет плед на диване. Тёплый натуральный свет, без лиц.</span></figcaption>
+      </figure>
+    </div>
+    <div class="trust load d4">
+      <div><b>Проверка на нашей стороне</b>Собеседования, рекомендации и разбор мотивации до того, как вы увидите кандидата.</div>
+      <div><b>Разбор, а не резюме</b>По каждому кандидату: опыт, мотивация, риски и наше честное мнение.</div>
+      <div><b>Остаёмся рядом</b>Помогаем пройти первые недели и подключаемся, если что-то идёт не так.</div>
+    </div>
+  </div>
+
+  <!-- 2. Виды персонала -->
+  <section class="sec" id="a-staff">
+    <div class="wrap">
+      <div class="sec-head"><span class="kick">Кого мы подбираем</span><h2 class="rv">Люди, которым доверяют <i>дом</i></h2></div>
+      <div class="idx rel">
+        <span class="mo" data-k="A3" style="top:-14px;right:0">Hover: строка сдвигается, заголовок в курсив, всплывает кадр</span>
+        <a class="idx-row is-hover" href="#a-form"><h3>Няня</h3><p>Режим, прогулки, занятия и спокойствие ребёнка, пока вас нет дома.</p><span class="ar">→</span><span class="peek ph s-portrait"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Гувернантка</h3><p>Обучение, языки, подготовка к школе и воспитание.</p><span class="ar">→</span><span class="peek ph s-table"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Домработница</h3><p>Порядок в доме, уход за вещами и гардеробом.</p><span class="ar">→</span><span class="peek ph s-blinds"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Повар</h3><p>Ежедневное меню семьи, особые диеты, приёмы гостей.</p><span class="ar">→</span><span class="peek ph s-hands"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Водитель</h3><p>Поездки семьи, дорога детей в школу и на занятия.</p><span class="ar">→</span><span class="peek ph s-car"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Управляющий домом</h3><p>Персонал, хозяйство и подрядчики в одних руках.</p><span class="ar">→</span><span class="peek ph s-hall"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Сиделка</h3><p>Бережный уход за пожилыми и близкими после болезни.</p><span class="ar">→</span><span class="peek ph s-window"></span></a>
+        <a class="idx-row" href="#a-form"><h3>Садовник</h3><p>Сад, участок и сезонные работы.</p><span class="ar">→</span><span class="peek ph s-garden"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Почему нам доверяют -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="essay">
+        <div style="grid-column:1/13;margin-bottom:28px" class="kick">Почему нам доверяют</div>
+        <p class="big rv">К нам приходят, когда уже пробовали: через знакомых, объявления, другие агентства.</p>
+        <p class="side rv">Чаще всего это не первый человек в доме. Мы выясняем, почему прошлые варианты не сложились, и только потом начинаем поиск.</p>
+        <div class="tri">
+          <div class="rv"><h3>Не сошлись характерами</h3><p>На собеседовании всё было гладко, а в доме стало неуютно.</p></div>
+          <div class="rv"><h3>Не выдержала нагрузку</h3><p>Режим семьи оказался интенсивнее, чем человек готов тянуть.</p></div>
+          <div class="rv"><h3>Ушла внезапно</h3><p>Без предупреждения, и всё пришлось начинать заново.</p></div>
+        </div>
+        <div class="four">
+          <div style="grid-column:1/-1;border:0;padding-bottom:8px;display:block"><span class="kick">Больше, чем поиск по базе</span></div>
+          <div class="rv"><h3>Видим человека насквозь</h3><p>Разбираем кандидата по мотивации, устойчивости, рискам и тому, как долго он реально готов работать в вашей семье.</p></div>
+          <div class="rv"><h3>Ищем причину, а не симптом</h3><p>Выясняем, что не сработало: портрет, условия или сама организация работы в доме.</p></div>
+          <div class="rv"><h3>Настраиваем систему</h3><p>Если дело в устройстве роли, скажем об этом и предложим сначала навести порядок. Нанимать в сломанную структуру — терять и время, и людей.</p></div>
+          <div class="rv"><h3>Остаёмся рядом</h3><p>Найти человека — половина работы. Помогаем влиться в дом и подключаемся, когда что-то идёт не так.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Как проходит подбор -->
+  <section class="sec" id="a-process">
+    <div class="wrap">
+      <div class="sec-head"><span class="kick">Как проходит подбор</span><h2 class="rv">Пять шагов от разговора до <i>спокойной</i> работы</h2></div>
+      <div class="steps rel">
+        <span class="mo" data-k="A4" style="top:-34px;left:0">Линия прорисовывается слева направо при прокрутке</span>
+        <span class="line rv-line"></span>
+        <div class="step rv"><span class="n">1</span><h3>Разговор и диагностика</h3><p>Вы рассказываете, кого ищете и что уже пробовали. Мы делаем вывод, почему до сих пор не получалось.</p></div>
+        <div class="step rv"><span class="n">2</span><h3>Определяем, что чинить</h3><p>Если причина в подборе — идём искать. Если в устройстве роли — сначала наводим порядок в обязанностях и договорённостях.</p></div>
+        <div class="step rv"><span class="n">3</span><h3>Подборка</h3><p>Приносим первых кандидатов, прошедших проверку и собеседования, с разбором по каждому.</p></div>
+        <div class="step rv"><span class="n">4</span><h3>Выход</h3><p>Помогаем адаптироваться и спокойно пройти первые недели.</p></div>
+        <div class="step rv"><span class="n">5</span><h3>Дальше</h3><p>Остаёмся на связи и подключаемся, если появляются сложности.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Как проверяем -->
+  <section class="sec" id="a-check">
+    <div class="wrap spread">
+      <figure class="spread-media rel" style="margin:0">
+        <span class="mo" data-k="A5" style="top:12px;left:12px">Кадр закреплён, текст прокручивается рядом (sticky)</span>
+        <div class="ph s-table rv-img"></div>
+        <figcaption><b>Кадр 02</b><span>Кухонный стол, папка с разбором кандидата, рядом чашка. Вечерний свет, руки в кадре, без лиц.</span></figcaption>
+      </figure>
+      <div class="spread-txt">
+        <span class="kick">Как мы проверяем кандидатов</span>
+        <h2 class="rv">По каждому кандидату — <i>разбор,</i> а не резюме</h2>
+        <dl>
+          <div class="rv"><dt>Кто это</dt><dd>Опыт и уровень задач, которые человек действительно вёл.</dd></div>
+          <div class="rv"><dt>Что им движет</dt><dd>Мотивация и на чём она держится.</dd></div>
+          <div class="rv"><dt>Где риски</dt><dd>Что может пойти не так и в какой момент.</dd></div>
+          <div class="rv"><dt>Реальный горизонт</dt><dd>Как долго человек готов работать на этой позиции.</dd></div>
+          <div class="rv"><dt>Наше мнение</dt><dd>Результаты проверки и честная оценка.</dd></div>
+        </dl>
+        <p class="note rv">Решение остаётся за вами. Мы помогаем принять его с полной картиной перед глазами.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Особенности сервиса -->
+  <section class="sec linen">
+    <div class="wrap">
+      <div class="sec-head"><span class="kick">Подбор, внедрение, сопровождение</span><h2 class="rv">Весь путь до уверенной работы человека в доме мы берём на себя</h2></div>
+      <div class="svc rel">
+        <span class="mo" data-k="A6" style="top:-34px;right:0">Колонки смещены и движутся с разной скоростью (лёгкий parallax)</span>
+        <article class="rv"><div class="ph s-hands rv-img"></div><h3>Подбор</h3><p>Разбор задачи и причин прошлых неудач, профиль позиции, поиск по рекомендациям, холодным базам и хантингу, собеседования и проверка на нашей стороне.</p></article>
+        <article class="rv"><div class="ph s-hall rv-img"></div><h3>Внедрение</h3><p>Первые дни рядом: помогаем человеку войти в обязанности, познакомиться с укладом семьи и договориться о порядке постановки задач.</p></article>
+        <article class="rv"><div class="ph s-portrait rv-img"></div><h3>Сопровождение</h3><p>Остаёмся на связи после выхода. Разбираем сложности, вплоть до донастройки правил и процессов в доме.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Истории -->
+  <section class="sec">
+    <div class="wrap story">
+      <article class="story-main">
+        <span class="kick">Истории · разбор</span> <span class="todo-tag">реальные кейсы — после согласования</span>
+        <h2 class="rv">Почему человек в дом <i>не приживается</i></h2>
+        <p class="drop">Прежде чем искать, мы разбираемся, что ломалось раньше. Чаще всего причина не в конкретном человеке, а в одной из трёх вещей.</p>
+        <h3>Размытый портрет</h3>
+        <p>Ищут «хорошую помощницу», не описав ритм дома, правила семьи, возраст детей и степень самостоятельности, которая нужна.</p>
+        <h3>Поверхностный отбор</h3>
+        <p>Резюме, рекомендации и один разговор. Мотивация, устойчивость и реальные планы человека остаются за кадром.</p>
+        <h3>Неясная роль</h3>
+        <p>Не зафиксировано, что входит в обязанности, что нет, кто ставит задачи и как решаются спорные моменты. В такую роль не приживается никто.</p>
+      </article>
+      <p class="pull rv">Прежде чем искать, мы разбираемся, что ломалось раньше, и говорим об этом прямо.</p>
+    </div>
+  </section>
+
+  <!-- 8. Отзывы -->
+  <section class="sec" id="a-reviews">
+    <div class="wrap">
+      <div class="sec-head"><span class="kick">Что говорят клиенты</span><h2 class="rv">Отзывы без правок</h2></div>
+      <div class="rev rel">
+        <span class="mo" data-k="A7" style="top:-34px;left:0">Смена цитат: растворение 0.6 s, без каруселей и стрелок</span>
+        <blockquote class="rev-big rv">Привет! Она мне очень нравится
+Я сказала ей что беру
+И психологически и по навыкам
+То что я искала
+
+Мне очень комфортно с ней<cite>Отзыв клиентки · без правок</cite></blockquote>
+        <blockquote class="rev-small rv">Я не ожидала, что я к вам обращусь, и вы будете так всё вести. Я очень довольна вашей работой, что и мне советы даете, и её немного направляете
+В будущем это действительно принесет намного больше пользы, чем мы потратим ещё неделю-две, погружаясь в процессы<cite>Отзыв клиентки · фрагмент</cite></blockquote>
+        <div class="rev-nav"><b>1 / 4</b><span>Следующий отзыв</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Гарантии -->
+  <section class="sec">
+    <div class="wrap gar">
+      <div style="grid-column:1/4" class="kick">Гарантии</div>
+      <ul>
+        <li class="rv"><b>Решение за вами</b><span>Мы приносим кандидатов с разбором и честной оценкой. Выбираете вы.</span></li>
+        <li class="rv"><b>Первые недели — вместе</b><span>Помогаем человеку войти в обязанности и спокойно пройти адаптацию.</span></li>
+        <li class="rv"><b>На связи после выхода</b><span>Подключаемся, если появляются сложности, вплоть до донастройки правил в доме.</span></li>
+        <li class="rv"><b class="todo">Замена кандидата</b><span><span class="todo">Срок и условия — уточнить</span> <span class="todo-tag">уточнить</span></span></li>
+        <li class="rv"><b class="todo">Конфиденциальность</b><span><span class="todo">Формулировку и документы — уточнить</span> <span class="todo-tag">уточнить</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 10. FAQ -->
+  <section class="sec" id="a-faq">
+    <div class="wrap faq">
+      <div style="grid-column:1/4" class="kick">Вопросы</div>
+      <div class="list">
+        <details open><summary>У нас уже было несколько неудачных помощниц. С чего вы начнёте?</summary><p>С разговора о том, что не сложилось раньше. Мы выясняем, почему прошлые варианты не сработали, и только потом начинаем поиск.</p></details>
+        <details><summary>Где вы ищете кандидатов?</summary><p>По рекомендациям, в холодных базах и через хантинг. Собеседования и проверку проводим на нашей стороне.</p></details>
+        <details><summary>Что я получу, кроме резюме?</summary><p>Разбор по каждому кандидату: опыт, мотивация, риски, реальный горизонт работы и наше мнение по итогам проверки.</p></details>
+        <details><summary>Кто принимает решение?</summary><p>Вы. Мы помогаем принять его с полной картиной перед глазами.</p></details>
+        <details><summary>Что происходит после выхода человека?</summary><p>Первые дни мы рядом: помогаем войти в обязанности и познакомиться с укладом семьи. Потом остаёмся на связи и подключаемся, если появляются сложности.</p></details>
+        <details><summary>А если дело не в человеке, а в том, как устроена работа в доме?</summary><p>Тогда скажем об этом прямо и предложим сначала навести порядок в обязанностях и договорённостях.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Заявка -->
+  <section class="sec final" id="a-form">
+    <div class="wrap final-grid">
+      <h2 class="rv">Расскажите, кого вы ищете и <i>что уже пробовали</i></h2>
+      <p class="final-side">За 20 минут станет понятно, что действительно нужно сделать и чем мы можем помочь.</p>
+      <form class="mock-form" novalidate>
+        <div class="fld"><label for="a-name">Как к вам обращаться</label><input id="a-name" type="text" placeholder="Имя"></div>
+        <div class="fld"><label for="a-contact">Телефон или Telegram</label><input id="a-contact" type="text" placeholder="+7 или @username"></div>
+        <div class="fld"><span class="lb">Кого ищете</span>
+          <div class="opts"><button type="button" class="opt" aria-pressed="true">Няня</button><button type="button" class="opt" aria-pressed="false">Гувернантка</button><button type="button" class="opt" aria-pressed="false">Домработница</button><button type="button" class="opt" aria-pressed="false">Повар</button><button type="button" class="opt" aria-pressed="false">Водитель</button><button type="button" class="opt" aria-pressed="false">Другое</button></div>
+        </div>
+        <div class="fld"><label for="a-tried">Что уже пробовали</label><textarea id="a-tried" placeholder="Коротко, в свободной форме"></textarea></div>
+        <div class="form-foot"><button class="btn" type="submit">Отправить <span class="ar">→</span></button><a class="tlink" href="#a-form">Написать в Telegram (@kateriniya)</a></div>
+        <p class="form-msg" aria-live="polite">Макет: форма никуда не отправляет данные.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 12. Footer -->
+  <footer class="ftr">
+    <div class="wrap">
+      <p class="big">Находим людей, которые остаются.</p>
+      <div class="ftr-row"><span>ИКТ · Институт кадровых решений</span><span>Telegram: @kateriniya</span><span class="todo">Телефон, сайт — уточнить</span><span>Политика конфиденциальности</span></div>
+    </div>
+  </footer>
+
+  <!-- UI-система -->
+  <div class="spec wrap">
+    <div class="sec-head" style="margin-bottom:40px"><span class="kick">UI-система</span><h2>Кнопки, карточки, <i>формы</i></h2></div>
+    <div class="kit">
+      <div>
+        <span class="kick">Кнопки</span>
+        <div class="row"><a class="btn" href="#a-form">Основная <span class="ar">→</span></a><a class="btn is-hover" href="#a-form">Hover <span class="ar">→</span></a></div>
+        <div class="row"><a class="btn ghost" href="#a-form">Вторичная</a><a class="tlink" href="#a-form">Текстовая ссылка</a></div>
+        <p class="type-meta" style="margin:0">Прямые углы, без теней. На hover кнопка «пустеет», стрелка сдвигается на 5 px. Ссылка: линия уходит вправо.</p>
+      </div>
+      <div>
+        <span class="kick">Карточка</span>
+        <article class="card"><div class="ph s-blinds"></div><div><h3>Домработница</h3><p>Порядок в доме, уход за вещами и гардеробом.</p></div></article>
+      </div>
+      <div>
+        <span class="kick">Поля</span>
+        <div class="fld"><label for="ak1">По умолчанию</label><input id="ak1" placeholder="Имя"></div>
+        <div class="fld is-focus"><label for="ak2">Фокус</label><input id="ak2" value="Анна"></div>
+        <div class="fld is-error"><label for="ak3">Ошибка</label><input id="ak3" value="+7 999"><span class="err">Проверьте номер: не хватает цифр.</span></div>
+        <div class="opts"><button type="button" class="opt" aria-pressed="true">Выбрано</button><button type="button" class="opt" aria-pressed="false">Вариант</button></div>
+      </div>
+    </div>
+    <div class="sec-head" style="margin:72px 0 24px"><span class="kick">Анимации</span><h2>Медленно и <i>тихо</i></h2></div>
+    <ul class="motion">
+      <li><span class="k">A1</span><span><b>Появление hero.</b> Строки заголовка, лид и кнопки проявляются по очереди с шагом 0.12 s и сдвигом 18 px.</span></li>
+      <li><span class="k">A2</span><span><b>Кадры «оседают».</b> Фото входит в кадр с масштаба 1.08 и за 1.6 s приходит к 1. Работает при прокрутке.</span></li>
+      <li><span class="k">A3</span><span><b>Оглавление персонала.</b> Hover: строка сдвигается на 18 px, заголовок переходит в курсив, рядом проявляется кадр.</span></li>
+      <li><span class="k">A4</span><span><b>Линии.</b> Горизонтальные линии шагов прорисовываются слева направо по мере прокрутки.</span></li>
+      <li><span class="k">A5</span><span><b>Sticky-разворот.</b> Фото стоит на месте, список разбора прокручивается рядом.</span></li>
+      <li><span class="k">A6</span><span><b>Лёгкий parallax.</b> Три колонки сервиса движутся с разной скоростью, разница не больше 40 px.</span></li>
+      <li><span class="k">A7</span><span><b>Отзывы.</b> Цитаты сменяются растворением, без стрелок-каруселей и автопрокрутки.</span></li>
+      <li><span class="k">—</span><span><b>Без:</b> 3D, отскоков, курсоров-эффектов, видеофонов. Уважаем prefers-reduced-motion.</span></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+/* 02 Close Circle — разговор: мягкие формы поверх строгой 12-колоночной сетки, наложения фото и записок */
+.B{
+  --milk:#F6F0E6; --paper:#FBF8F2; --oat:#EADFCD; --sand:#D9C7AD; --sage:#8C9075; --sageL:#DFE0D2; --cocoa:#3B2A20; --cocoa2:#5E4738; --mute:#86725F;
+  --disp:'Alegreya',Georgia,serif;
+  --text:'Alegreya Sans',system-ui,sans-serif;
+  --r-lg:28px; --r-md:18px;
+  --ph-l:#EED9BD; --ph-m:#CBA885; --ph-d:#7C5A42; --ph-dd:#4F3828; --ph-w:#FFF0D6; --ph-s:#D7A98A;
+  --sat:1.05;
+  background:var(--milk);color:var(--cocoa);font-family:var(--text);font-size:18px;line-height:1.55;position:relative
+}
+.B::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .12 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>")}
+.B>*{position:relative}
+.B h2,.B h3{font-family:var(--disp);font-weight:500;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.B h2{font-size:clamp(36px,4.6vw,64px);line-height:1.04}
+.B h2 i,.B h1 i{font-weight:500;color:var(--cocoa2)}
+.B .eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 15px/1 var(--text);color:var(--mute)}
+.B .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sage)}
+.B .sec{padding-block:clamp(72px,9vw,128px)}
+.B .sec-head{display:flex;flex-direction:column;gap:18px;max-width:720px;margin-bottom:clamp(36px,5vw,64px)}
+.B .sec-head p{margin:0;color:var(--cocoa2);max-width:56ch}
+.B .ph{border-radius:var(--r-lg)}
+
+/* spec */
+.B .spec{padding-block:clamp(56px,7vw,96px)}
+.B .spec-top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:end}
+.B .spec-top h2{font-size:clamp(52px,7.4vw,112px);line-height:.95}
+.B .spec-top p{margin:0;max-width:48ch}
+@media (max-width:860px){.B .spec-top{grid-template-columns:1fr}}
+.B .spec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:48px}
+.B .spec-grid>div{background:var(--paper);border-radius:var(--r-md);padding:24px;min-width:0;box-shadow:0 1px 0 rgba(59,42,32,.06),0 18px 40px -30px rgba(59,42,32,.35)}
+@media (max-width:860px){.B .spec-grid{grid-template-columns:1fr}}
+.B .sw{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.B .sw div{width:calc(33.33% - 7px);display:flex;flex-direction:column;gap:6px;font-size:12.5px;line-height:1.2}
+.B .sw i{display:block;aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(59,42,32,.1)}
+.B .meta{font-size:14.5px;color:var(--mute);margin-top:8px}
+
+/* header */
+.B .hdr{position:sticky;top:calc(env(safe-area-inset-top,0px) + 45px);z-index:20;padding-block:14px}
+.B .hdr .bar{display:flex;align-items:center;gap:24px;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-radius:99px;padding:10px 10px 10px 22px;box-shadow:0 10px 30px -22px rgba(59,42,32,.45)}
+.B .logo{display:flex;align-items:center;gap:12px;text-decoration:none;margin-right:auto}
+.B .logo b{font:600 22px/1 var(--disp)}
+.B .logo span{font-size:14px;color:var(--mute)}
+.B .hdr nav{display:flex;gap:22px;font-size:16px}
+.B .hdr nav a{text-decoration:none;color:var(--cocoa2)}
+.B .hdr nav a:hover{color:var(--cocoa)}
+@media (max-width:980px){.B .hdr nav{display:none}}
+
+/* buttons */
+.B .btn{display:inline-flex;align-items:center;gap:10px;border-radius:99px;background:var(--cocoa);color:var(--milk);font:500 17px/1 var(--text);text-decoration:none;padding:17px 26px;border:0;cursor:pointer;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,background .3s}
+.B .btn:hover,.B .btn.is-hover{transform:translateY(-2px);box-shadow:0 14px 26px -14px rgba(59,42,32,.7);background:#2E2018}
+.B .btn.sm{padding:12px 18px;font-size:15px}
+.B .btn.soft{background:var(--oat);color:var(--cocoa)}
+.B .btn.soft:hover{background:var(--sand);box-shadow:none}
+.B .link{color:var(--cocoa);text-decoration:underline;text-decoration-color:var(--sand);text-underline-offset:5px;text-decoration-thickness:2px;transition:text-decoration-color .3s}
+.B .link:hover{text-decoration-color:var(--cocoa)}
+
+/* hero */
+.B .hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;padding-block:clamp(28px,4vw,56px) clamp(64px,8vw,112px);align-items:center}
+.B .hero-txt{grid-column:1/7;display:flex;flex-direction:column;gap:26px;min-width:0}
+.B .hero h1{font:500 clamp(44px,5.8vw,86px)/1.0 var(--disp);letter-spacing:-.015em;margin:0;text-wrap:balance}
+.B .hero p{margin:0;font-size:clamp(18px,1.4vw,21px);max-width:46ch;color:var(--cocoa2)}
+.B .cta{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.B .tags{display:flex;flex-wrap:wrap;gap:8px}
+.B .tag{font-size:15px;padding:7px 14px;border-radius:99px;background:var(--paper);box-shadow:inset 0 0 0 1px rgba(59,42,32,.1)}
+.B .hero-media{grid-column:7/13;position:relative;min-width:0;padding:0 0 60px 40px}
+.B .hero-media .ph{aspect-ratio:5/6;border-radius:220px 220px var(--r-lg) var(--r-lg)}
+.B .notecard{position:absolute;left:0;bottom:0;width:min(330px,80%);background:var(--paper);border-radius:var(--r-md);padding:20px 22px;box-shadow:0 30px 60px -30px rgba(59,42,32,.55);transform:rotate(-1.5deg)}
+.B .notecard .t{font:600 13px/1 var(--text);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);display:flex;justify-content:space-between}
+.B .notecard ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.B .notecard li{display:flex;gap:10px;font-size:15.5px;line-height:1.35}
+.B .notecard li::before{content:"";flex:0 0 8px;height:8px;border-radius:50%;background:var(--sage);margin-top:7px}
+.B .bubble{position:absolute;right:-6px;top:38px;background:var(--sageL);color:var(--cocoa);border-radius:var(--r-md) var(--r-md) 4px var(--r-md);padding:12px 16px;font-size:15px;line-height:1.35;max-width:220px;box-shadow:0 14px 30px -20px rgba(59,42,32,.5)}
+.B .trustline{display:flex;flex-wrap:wrap;gap:10px 26px;font-size:15.5px;color:var(--cocoa2)}
+.B .trustline span{display:inline-flex;gap:8px;align-items:center}
+.B .trustline span::before{content:"✓";color:var(--sage);font-weight:700}
+@media (max-width:900px){.B .hero{grid-template-columns:1fr}.B .hero-txt,.B .hero-media{grid-column:auto}.B .hero-media{padding-left:16px}}
+
+/* situations */
+.B .oat{background:var(--oat);border-radius:48px;margin-inline:clamp(8px,1.5vw,20px)}
+.B .sit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.B .sit article{background:var(--paper);border-radius:var(--r-md);padding:28px;display:flex;flex-direction:column;gap:12px;min-width:0;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+.B .sit article:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px rgba(59,42,32,.5)}
+.B .sit h3{font-size:30px;line-height:1.05;font-style:italic}
+.B .sit p{margin:0;color:var(--cocoa2)}
+@media (max-width:860px){.B .sit{grid-template-columns:1fr}}
+
+/* staff */
+.B .staff{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.B .staff a{display:flex;flex-direction:column;gap:12px;text-decoration:none;min-width:0}
+.B .staff .ph{aspect-ratio:1/1;border-radius:var(--r-md)}
+.B .staff a:hover .ph::before,.B .staff a.is-hover .ph::before{transform:scale(1.06)}
+.B .staff h3{font-size:26px;line-height:1}
+.B .staff p{margin:0;font-size:15.5px;color:var(--cocoa2)}
+@media (max-width:860px){.B .staff{grid-template-columns:1fr 1fr}}
+
+/* promises */
+.B .prom{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.B .prom .sec-head{grid-column:1/6;position:sticky;top:150px}
+.B .prom-list{grid-column:7/13;display:flex;flex-direction:column;gap:14px;min-width:0}
+.B .prom-list article{display:grid;grid-template-columns:56px minmax(0,1fr);gap:18px;background:var(--paper);border-radius:var(--r-md);padding:22px}
+.B .prom-list .ic{width:56px;height:56px;border-radius:50%;background:var(--sageL);display:grid;place-items:center;font:500 italic 24px/1 var(--disp);color:var(--cocoa2)}
+.B .prom-list h3{font-size:25px;margin-bottom:6px}
+.B .prom-list p{margin:0;font-size:16.5px;color:var(--cocoa2)}
+@media (max-width:860px){.B .prom{grid-template-columns:1fr}.B .prom>*{grid-column:auto!important;position:static!important}}
+
+/* path */
+.B .path{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.B .path ol{grid-column:1/7;list-style:none;margin:0;padding:0;position:relative}
+.B .path ol::before{content:"";position:absolute;left:23px;top:24px;bottom:24px;width:2px;background:repeating-linear-gradient(180deg,var(--sand) 0 6px,transparent 6px 12px)}
+.B .path li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:22px;padding-bottom:34px;position:relative}
+.B .path .n{width:48px;height:48px;border-radius:50%;background:var(--cocoa);color:var(--milk);display:grid;place-items:center;font:500 20px/1 var(--disp)}
+.B .path li:not(:first-child) .n{background:var(--paper);color:var(--cocoa);box-shadow:inset 0 0 0 2px var(--sand)}
+.B .path h3{font-size:28px;margin:6px 0 6px}
+.B .path p{margin:0;color:var(--cocoa2)}
+.B .path-media{grid-column:8/13;position:sticky;top:150px}
+.B .path-media .ph{aspect-ratio:4/5}
+@media (max-width:860px){.B .path{grid-template-columns:1fr}.B .path>*{grid-column:auto!important;position:static!important}}
+
+/* sheet */
+.B .sheetwrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:center}
+.B .sheetwrap .sec-head{grid-column:1/6}
+.B .sheet{grid-column:7/13;background:#FFFDF8;border-radius:6px;padding:clamp(24px,3vw,40px);box-shadow:0 1px 0 rgba(59,42,32,.08),0 40px 70px -40px rgba(59,42,32,.6);transform:rotate(1deg);position:relative;min-width:0}
+.B .sheet::after{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-2deg);background:rgba(217,199,173,.75);border-radius:3px}
+.B .sheet-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--oat);padding-bottom:14px;margin-bottom:6px;font-size:14px;color:var(--mute)}
+.B .sheet-h b{font:600 22px/1.1 var(--disp);color:var(--cocoa)}
+.B .sheet dl{margin:0}
+.B .sheet dl div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:18px;padding:14px 0;border-bottom:1px dashed var(--sand)}
+.B .sheet dt{font:500 italic 21px/1.2 var(--disp)}
+.B .sheet dd{margin:0;font-size:16px;color:var(--cocoa2)}
+.B .sheet .sign{margin-top:18px;font:500 italic 20px/1.3 var(--disp);color:var(--cocoa2)}
+@media (max-width:860px){.B .sheetwrap{grid-template-columns:1fr}.B .sheetwrap>*{grid-column:auto!important}.B .sheet dl div{grid-template-columns:1fr;gap:4px}}
+
+/* service journey */
+.B .journey{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;position:relative}
+.B .journey article{background:var(--paper);border-radius:var(--r-lg);padding:14px 14px 26px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.B .journey .ph{aspect-ratio:16/11;border-radius:calc(var(--r-lg) - 10px)}
+.B .journey .lbl{font-size:14px;color:var(--mute);padding-inline:12px}
+.B .journey h3{font-size:32px;padding-inline:12px}
+.B .journey p{margin:0;padding-inline:12px;font-size:16.5px;color:var(--cocoa2)}
+@media (max-width:860px){.B .journey{grid-template-columns:1fr}}
+
+/* diagnosis */
+.B .diag{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
+.B .diag article{border-top:2px solid var(--cocoa);padding-top:18px;min-width:0}
+.B .diag h3{font-size:30px;font-style:italic;margin-bottom:10px}
+.B .diag p{margin:0;color:var(--cocoa2)}
+.B .diag-foot{margin-top:48px;font:500 clamp(24px,2.4vw,34px)/1.25 var(--disp);max-width:30ch}
+@media (max-width:860px){.B .diag{grid-template-columns:1fr}}
+
+/* messages */
+.B .chat{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.B .chat .sec-head{grid-column:1/5}
+.B .msgs{grid-column:6/13;display:flex;flex-direction:column;gap:14px;min-width:0}
+.B .msg{align-self:flex-start;max-width:min(560px,100%);background:var(--paper);border-radius:22px 22px 22px 6px;padding:16px 20px;white-space:pre-line;font-size:17px;line-height:1.45;box-shadow:0 12px 26px -22px rgba(59,42,32,.6)}
+.B .msg:nth-child(even){align-self:flex-end;border-radius:22px 22px 6px 22px;background:#FFFDF8}
+.B .msg small{display:block;margin-top:8px;font-size:13px;color:var(--mute)}
+@media (max-width:860px){.B .chat{grid-template-columns:1fr}.B .chat>*{grid-column:auto!important}}
+
+/* guarantees */
+.B .gar{background:var(--sageL);border-radius:48px;padding:clamp(32px,5vw,72px);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.B .gar .sec-head{grid-column:1/6;margin:0}
+.B .gar ul{grid-column:7/13;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.B .gar li{background:var(--paper);border-radius:var(--r-md);padding:18px 22px;display:flex;flex-direction:column;gap:4px}
+.B .gar li b{font:500 22px/1.15 var(--disp)}
+.B .gar li span{font-size:16px;color:var(--cocoa2)}
+.B .gar li.ph-row{background:transparent;box-shadow:inset 0 0 0 1.5px var(--sage);border-style:dashed}
+@media (max-width:860px){.B .gar{grid-template-columns:1fr}.B .gar>*{grid-column:auto!important}}
+
+/* faq */
+.B .faq{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.B .faq .sec-head{grid-column:1/5}
+.B .faq .list{grid-column:6/13;display:flex;flex-direction:column;gap:10px}
+.B details{background:var(--paper);border-radius:var(--r-md);padding:0 24px;transition:background .3s}
+.B details[open]{background:#FFFDF8}
+.B summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;align-items:center;padding:20px 0;font:500 21px/1.25 var(--disp)}
+.B summary::-webkit-details-marker{display:none}
+.B summary::after{content:"";flex:0 0 32px;height:32px;border-radius:50%;background:var(--oat) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'><path d='M6 1v10M1 6h10' stroke='%233B2A20' stroke-width='1.6'/></svg>") center/12px no-repeat;transition:transform .4s}
+.B details[open] summary::after{transform:rotate(45deg)}
+.B details p{margin:0 0 22px;color:var(--cocoa2);max-width:60ch}
+@media (max-width:860px){.B .faq{grid-template-columns:1fr}.B .faq>*{grid-column:auto!important}}
+
+/* form */
+.B .final{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.B .final-media{grid-column:1/6;display:flex;flex-direction:column;gap:22px;min-width:0}
+.B .final-media .ph{aspect-ratio:1/1;border-radius:50%}
+.B form{grid-column:7/13;background:var(--paper);border-radius:var(--r-lg);padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:24px;box-shadow:0 40px 70px -46px rgba(59,42,32,.6)}
+.B .q{font:500 24px/1.2 var(--disp);margin:0 0 12px}
+.B .chips{display:flex;flex-wrap:wrap;gap:8px}
+.B .chip{font:500 16px/1 var(--text);padding:11px 16px;border-radius:99px;border:0;background:var(--milk);color:var(--cocoa);box-shadow:inset 0 0 0 1px rgba(59,42,32,.12);cursor:pointer;transition:background .3s,box-shadow .3s}
+.B .chip:hover{box-shadow:inset 0 0 0 1px var(--cocoa)}
+.B .chip[aria-pressed="true"]{background:var(--cocoa);color:var(--milk);box-shadow:none}
+.B .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.B .in{display:flex;flex-direction:column;gap:6px}
+.B .in label{font-size:14.5px;color:var(--mute)}
+.B .in input,.B .in textarea{font:400 17px/1.3 var(--text);color:var(--cocoa);background:var(--milk);border:0;border-radius:14px;padding:15px 16px;box-shadow:inset 0 0 0 1px rgba(59,42,32,.12);outline:none;transition:box-shadow .3s,background .3s}
+.B .in input:focus,.B .in textarea:focus,.B .in.is-focus input{background:#FFFDF8;box-shadow:inset 0 0 0 2px var(--sage)}
+.B .in.is-error input{box-shadow:inset 0 0 0 2px #A0503A}
+.B .in .err{font-size:14px;color:#A0503A}
+.B .form-foot{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.B .form-msg{margin:0;font-size:14.5px;color:var(--mute)}
+@media (max-width:860px){.B .final{grid-template-columns:1fr}.B .final>*{grid-column:auto!important}.B .two{grid-template-columns:1fr}}
+
+/* footer */
+.B .ftr{background:var(--cocoa);color:var(--milk);border-radius:48px 48px 0 0;padding-block:clamp(56px,7vw,96px) 32px}
+.B .ftr .big{font:500 italic clamp(38px,5.4vw,80px)/1.02 var(--disp);margin:0 0 48px;max-width:16ch}
+.B .ftr-row{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;border-top:1px solid rgba(246,240,230,.2);padding-top:20px;font-size:15px;color:#D6C6B3}
+
+/* kit */
+.B .kit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.B .kit>div{background:var(--paper);border-radius:var(--r-md);padding:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.B .kit .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.B .motion{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.B .motion li{background:var(--paper);border-radius:var(--r-md);padding:16px 18px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;font-size:16px}
+.B .motion .k{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:99px;background:var(--mo-bg);color:var(--mo-fg);font:600 11px/1 var(--deck-font)}
+@media (max-width:860px){.B .kit,.B .motion{grid-template-columns:1fr}}
+
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.B .breathe::before{animation:breathe 14s ease-in-out infinite}
+</style>
+
+<div class="divider" id="concept-b"><div class="wrap"><b>Концепция 02</b><span>Close Circle · «Близкий круг»</span></div></div>
+
+<section class="B">
+  <div class="spec wrap">
+    <div class="spec-top">
+      <h2>02 —<br>Close <i>Circle</i></h2>
+      <p>Сервис с лицом и голосом. Тёплые молочные и ореховые тона, мягкая гуманистическая типографика, скруглённые кадры людей и рук за работой, бумажная фактура. Страница разговаривает с клиентом: начинается с его ситуации, показывает отзывы так, как их прислали, и ведёт к заявке через простые вопросы. Тепло без «милоты»: глубокий какао вместо пастели и строгая сетка под мягкими формами.</p>
+    </div>
+    <div class="spec-grid">
+      <div>
+        <span class="eyebrow">Палитра · молоко и какао</span>
+        <div class="sw">
+          <div><i style="background:#F6F0E6"></i>Молоко<br>#F6F0E6</div>
+          <div><i style="background:#EADFCD"></i>Овёс<br>#EADFCD</div>
+          <div><i style="background:#D9C7AD"></i>Песок<br>#D9C7AD</div>
+          <div><i style="background:#DFE0D2"></i>Светлый шалфей<br>#DFE0D2</div>
+          <div><i style="background:#8C9075"></i>Шалфей<br>#8C9075</div>
+          <div><i style="background:#3B2A20"></i>Какао<br>#3B2A20</div>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow">Типографика</span>
+        <div style="font:500 60px/1 var(--disp);margin-top:14px">Аа <i>семья</i></div>
+        <div class="meta">Alegreya 500 + курсив — заголовки и акценты. Живая, «рукописная» пластика, но взрослая и книжная.</div>
+        <div style="font:500 23px/1.3 var(--text);margin-top:16px">Аа Alegreya Sans</div>
+        <div class="meta">Alegreya Sans 400/500 — текст и интерфейс. Одна суперсемья: пара звучит как один голос.</div>
+      </div>
+      <div>
+        <span class="eyebrow">Фото-направление</span>
+        <p style="margin:14px 0 0;font-size:16.5px">Средние и крупные планы: руки за работой, разговор за столом, няня с ребёнком в профиль, вечерний тёплый свет. Лица естественные, люди не позируют в камеру. Фактуры: лён, дерево, керамика, шерсть.</p>
+        <div class="meta">Форма кадров: арка (окно дома), круг (портрет), мягкий прямоугольник.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap frame-label">Макет лендинга · desktop 1440</div>
+
+  <header class="hdr wrap">
+    <div class="bar">
+      <a class="logo" href="#concept-b"><b>ИКТ</b><span>Институт кадровых решений</span></a>
+      <nav><a href="#b-staff">Кого подбираем</a><a href="#b-process">Как работаем</a><a href="#b-check">Проверка</a><a href="#b-reviews">Отзывы</a><a href="#b-faq">Вопросы</a></nav>
+      <a class="btn sm" href="#b-form">Рассказать, кого вы ищете</a>
+    </div>
+  </header>
+
+  <!-- 1. Hero -->
+  <div class="wrap hero">
+    <div class="hero-txt rel">
+      <span class="mo" data-k="B1" style="top:-40px;left:0">Текст поднимается мягко, 1 s; фото «дышит» (scale 1 → 1.03, 14 s)</span>
+      <span class="eyebrow load">Подбор домашнего персонала</span>
+      <h1 class="load d1">Домашний персонал, который <i>остаётся</i> в вашей семье</h1>
+      <p class="load d2">Подбираем людей в дом, которым можно доверить детей, быт и личное пространство. Не присылаем стопку резюме — приходим с проверенными кандидатами и честным разбором по каждому.</p>
+      <div class="cta load d3"><a class="btn" href="#b-form">Рассказать, кого вы ищете →</a><a class="link" href="#b-form">Написать в Telegram</a></div>
+      <div class="tags load d4"><span class="tag">Няни</span><span class="tag">Домработницы</span><span class="tag">Повара</span><span class="tag">Водители</span><span class="tag">Управляющие домом</span><span class="tag">Гувернантки</span><span class="tag">Сиделки</span><span class="tag">Садовники</span></div>
+      <div class="trustline load d4"><span>Проверка на нашей стороне</span><span>Разбор по каждому кандидату</span><span>Рядом после выхода</span></div>
+    </div>
+    <div class="hero-media load d2">
+      <div class="ph s-portrait breathe"><span class="cap"><b>Кадр</b>Няня и ребёнок у окна, в профиль. Вечерний тёплый свет, взгляд не в камеру.</span></div>
+      <div class="bubble">Сначала разберёмся, почему прошлые варианты не сложились</div>
+      <div class="notecard rel">
+        <span class="mo" data-k="B2" style="top:-30px;left:0">Записка «прилетает» с поворотом −1.5°, задержка 0.6 s</span>
+        <div class="t"><span>Разбор кандидата</span><span>пример</span></div>
+        <ul><li>Кто это и какие задачи вёл</li><li>Что им движет</li><li>Где риски и реальный горизонт</li><li>Наше мнение по итогам проверки</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ситуация клиента -->
+  <section class="sec oat">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Почему нам доверяют</span><h2 class="rv">К нам приходят, когда <i>уже пробовали</i></h2><p>Через знакомых, через частные объявления, через другие агентства. Чаще всего это не первый человек в доме. Мы выясняем, почему прошлые варианты не сложились, и только потом начинаем поиск.</p></div>
+      <div class="sit rel">
+        <span class="mo" data-k="B3" style="top:-32px;right:0">Карточки поднимаются по очереди; hover — подъём на 4 px и тень</span>
+        <article class="rv"><h3>Не сошлись характерами</h3><p>На собеседовании всё было гладко, а в доме стало неуютно.</p></article>
+        <article class="rv"><h3>Не выдержала нагрузку</h3><p>Режим семьи оказался интенсивнее, чем человек готов тянуть.</p></article>
+        <article class="rv"><h3>Ушла внезапно</h3><p>Без предупреждения, и всё пришлось начинать заново.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Виды персонала -->
+  <section class="sec" id="b-staff">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Кого мы подбираем</span><h2 class="rv">Люди, с которыми <i>спокойно</i> дома</h2></div>
+      <div class="staff rel">
+        <span class="mo" data-k="B4" style="top:-32px;left:0">Hover: кадр медленно приближается внутри скругления</span>
+        <a href="#b-form" class="rv is-hover"><div class="ph s-portrait"></div><h3>Няня</h3><p>Режим, прогулки, занятия и спокойствие ребёнка.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-table"></div><h3>Гувернантка</h3><p>Обучение, языки, подготовка к школе.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-blinds"></div><h3>Домработница</h3><p>Порядок в доме, уход за вещами.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-hands"></div><h3>Повар</h3><p>Меню семьи, особые диеты, гости.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-car"></div><h3>Водитель</h3><p>Поездки семьи и детей.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-hall"></div><h3>Управляющий домом</h3><p>Персонал, хозяйство, подрядчики.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-window"></div><h3>Сиделка</h3><p>Бережный уход за близкими.</p></a>
+        <a href="#b-form" class="rv"><div class="ph s-garden"></div><h3>Садовник</h3><p>Сад, участок, сезонные работы.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Особенности -->
+  <section class="sec" style="padding-top:0">
+    <div class="wrap prom">
+      <div class="sec-head"><span class="eyebrow">Чем мы отличаемся</span><h2 class="rv">Больше, чем поиск <i>по базе</i></h2><p>Мы не пересылаем анкеты. Разбираемся в доме, в людях и в том, что раньше мешало.</p></div>
+      <div class="prom-list">
+        <article class="rv"><span class="ic">в</span><div><h3>Видим человека насквозь</h3><p>Разбираем кандидата по мотивации, устойчивости, рискам и тому, как долго он реально готов работать в вашей семье.</p></div></article>
+        <article class="rv"><span class="ic">п</span><div><h3>Ищем причину, а не симптом</h3><p>Выясняем, что не сработало: портрет, условия или сама организация работы в доме.</p></div></article>
+        <article class="rv"><span class="ic">с</span><div><h3>Настраиваем систему</h3><p>Если дело в устройстве роли, скажем об этом и предложим сначала навести порядок. Нанимать в сломанную структуру — терять и время, и людей.</p></div></article>
+        <article class="rv"><span class="ic">р</span><div><h3>Остаёмся рядом</h3><p>Найти человека — половина работы. Помогаем влиться в дом и подключаемся, когда что-то идёт не так.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Как проходит подбор -->
+  <section class="sec oat" id="b-process">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Как проходит подбор</span><h2 class="rv">Пять шагов, и на каждом <i>вы знаете,</i> что происходит</h2></div>
+      <div class="path">
+        <ol class="rel">
+          <span class="mo" data-k="B5" style="top:-30px;left:0">Пунктир «дорисовывается», активный шаг заливается какао</span>
+          <li class="rv"><span class="n">1</span><div><h3>Разговор и диагностика</h3><p>Вы рассказываете, кого ищете и что уже пробовали. Мы делаем вывод, почему до сих пор не получалось.</p></div></li>
+          <li class="rv"><span class="n">2</span><div><h3>Определяем, что чинить</h3><p>Если причина в подборе — идём искать. Если в устройстве роли — сначала наводим порядок в обязанностях и договорённостях.</p></div></li>
+          <li class="rv"><span class="n">3</span><div><h3>Подборка</h3><p>Приносим первых кандидатов, прошедших проверку и собеседования, с разбором по каждому.</p></div></li>
+          <li class="rv"><span class="n">4</span><div><h3>Выход</h3><p>Помогаем адаптироваться и спокойно пройти первые недели.</p></div></li>
+          <li class="rv" style="padding-bottom:0"><span class="n">5</span><div><h3>Дальше</h3><p>Остаёмся на связи и подключаемся, если появляются сложности.</p></div></li>
+        </ol>
+        <div class="path-media"><div class="ph s-table breathe"><span class="cap"><b>Кадр</b>Первая встреча: двое за кухонным столом, чай, блокнот. Снято через плечо, лиц почти не видно.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Как проверяем -->
+  <section class="sec" id="b-check">
+    <div class="wrap sheetwrap">
+      <div class="sec-head"><span class="eyebrow">Как мы проверяем кандидатов</span><h2 class="rv">По каждому кандидату — <i>разбор,</i> а не резюме</h2><p>Решение остаётся за вами. Мы помогаем принять его с полной картиной перед глазами.</p></div>
+      <div class="sheet rel">
+        <span class="mo" data-k="B6" style="top:-44px;right:0">Лист выравнивается из 1° в 0° при появлении</span>
+        <div class="sheet-h"><b>Разбор кандидата</b><span>так выглядит документ, который вы получаете</span></div>
+        <dl>
+          <div><dt>Кто это</dt><dd>Опыт и уровень задач, которые человек действительно вёл.</dd></div>
+          <div><dt>Что им движет</dt><dd>Мотивация и на чём она держится.</dd></div>
+          <div><dt>Где риски</dt><dd>Что может пойти не так и в какой момент.</dd></div>
+          <div><dt>Реальный горизонт</dt><dd>Как долго человек готов работать на этой позиции.</dd></div>
+          <div><dt>Наше мнение</dt><dd>Результаты проверки и честная оценка.</dd></div>
+        </dl>
+        <p class="sign">Решение — за вами.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Подбор, внедрение, сопровождение -->
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Подбор, внедрение и сопровождение</span><h2 class="rv">От первого разговора до уверенной работы <i>в вашем доме</i></h2></div>
+      <div class="journey">
+        <article class="rv"><div class="ph s-hands"></div><span class="lbl">до выхода</span><h3>Подбор</h3><p>Разбор задачи и причин прошлых неудач, профиль позиции, поиск по рекомендациям, холодным базам и хантингу, собеседования и проверка на нашей стороне.</p></article>
+        <article class="rv"><div class="ph s-hall"></div><span class="lbl">первые дни</span><h3>Внедрение</h3><p>Первые дни рядом: помогаем человеку войти в обязанности, познакомиться с укладом семьи и договориться о порядке постановки задач.</p></article>
+        <article class="rv"><div class="ph s-window"></div><span class="lbl">после выхода</span><h3>Сопровождение</h3><p>Остаёмся на связи после выхода. Разбираем сложности, вплоть до донастройки правил и процессов в доме.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Истории -->
+  <section class="sec oat">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Истории · что мы видим чаще всего <span class="todo-tag">реальные кейсы — после согласования</span></span><h2 class="rv">Почему человек в дом <i>не приживается</i></h2></div>
+      <div class="diag">
+        <article class="rv"><h3>Размытый портрет</h3><p>Ищут «хорошую помощницу», не описав ритм дома, правила семьи, возраст детей и степень самостоятельности, которая нужна.</p></article>
+        <article class="rv"><h3>Поверхностный отбор</h3><p>Резюме, рекомендации и один разговор. Мотивация, устойчивость и реальные планы человека остаются за кадром.</p></article>
+        <article class="rv"><h3>Неясная роль</h3><p>Не зафиксировано, что входит в обязанности, что нет, кто ставит задачи и как решаются спорные моменты. В такую роль не приживается никто.</p></article>
+      </div>
+      <p class="diag-foot rv">Прежде чем искать, мы разбираемся, что ломалось раньше, и говорим об этом прямо.</p>
+    </div>
+  </section>
+
+  <!-- 8. Отзывы -->
+  <section class="sec" id="b-reviews">
+    <div class="wrap chat">
+      <div class="sec-head"><span class="eyebrow">Что говорят клиенты</span><h2 class="rv">Как нам <i>написали</i></h2><p>Отзывы без правок, в том виде, в каком их прислали.</p></div>
+      <div class="msgs rel">
+        <span class="mo" data-k="B7" style="top:-32px;left:0">Сообщения появляются по одному, как в переписке</span>
+        <div class="msg rv">Привет! Она мне очень нравится
+Я сказала ей что беру
+И психологически и по навыкам
+То что я искала
+
+Мне очень комфортно с ней
+
+Быстрая
+Внимательная
+Умная<small>клиентка · подбор помощницы</small></div>
+        <div class="msg rv">Я не ожидала, что я к вам обращусь, и вы будете так всё вести. Я очень довольна вашей работой, что и мне советы даете, и её немного направляете
+В будущем это действительно принесет намного больше пользы, чем мы потратим ещё неделю-две, погружаясь в процессы
+Вы так классно уделяете внимание таким мелочам. Не ожидала такой вовлеченности. Мне кажется, вам дальше надо расти. Огромное спасибо!<small>клиентка</small></div>
+        <div class="msg rv">Спасибо огромное и за всю проделанную работу тоже спасибо 🙏
+Безумно благодарна тебе и желаю хороших выходных 😌<small>клиентка</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Гарантии -->
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="gar">
+        <div class="sec-head"><span class="eyebrow">Гарантии</span><h2 class="rv">Мы остаёмся <i>рядом</i></h2><p>Найти человека — половина работы. Вторая половина — чтобы он прижился.</p></div>
+        <ul>
+          <li class="rv"><b>Решение за вами</b><span>Приносим кандидатов с разбором и честной оценкой, выбираете вы.</span></li>
+          <li class="rv"><b>Первые недели вместе</b><span>Помогаем человеку войти в обязанности и пройти адаптацию.</span></li>
+          <li class="rv"><b>На связи после выхода</b><span>Подключаемся, если появляются сложности.</span></li>
+          <li class="rv ph-row"><b class="todo">Замена кандидата</b><span>Срок и условия <span class="todo-tag">уточнить</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FAQ -->
+  <section class="sec" id="b-faq" style="padding-top:0">
+    <div class="wrap faq">
+      <div class="sec-head"><span class="eyebrow">Вопросы</span><h2 class="rv">О чём <i>обычно</i> спрашивают</h2></div>
+      <div class="list">
+        <details open><summary>У нас уже было несколько неудачных помощниц. С чего вы начнёте?</summary><p>С разговора о том, что не сложилось раньше. Мы выясняем, почему прошлые варианты не сработали, и только потом начинаем поиск.</p></details>
+        <details><summary>Где вы ищете кандидатов?</summary><p>По рекомендациям, в холодных базах и через хантинг. Собеседования и проверку проводим на нашей стороне.</p></details>
+        <details><summary>Что я получу, кроме резюме?</summary><p>Разбор по каждому кандидату: опыт, мотивация, риски, реальный горизонт работы и наше мнение по итогам проверки.</p></details>
+        <details><summary>Кто принимает решение?</summary><p>Вы. Мы помогаем принять его с полной картиной перед глазами.</p></details>
+        <details><summary>Что происходит после выхода человека?</summary><p>Первые дни мы рядом: помогаем войти в обязанности и познакомиться с укладом семьи. Потом остаёмся на связи и подключаемся, если появляются сложности.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Заявка -->
+  <section class="sec oat" id="b-form">
+    <div class="wrap final">
+      <div class="final-media">
+        <span class="eyebrow">Заявка</span>
+        <h2 class="rv">Расскажите, кого вы ищете и <i>что уже пробовали</i></h2>
+        <p style="margin:0;color:var(--cocoa2)">За 20 минут станет понятно, что действительно нужно сделать и чем мы можем помочь.</p>
+        <div class="ph s-portrait" style="max-width:260px"></div>
+      </div>
+      <form class="mock-form rel" novalidate>
+        <span class="mo" data-k="B8" style="top:-14px;right:20px">Чипы переключаются с мягкой заливкой 0.3 s</span>
+        <div><p class="q">Кого вы ищете?</p>
+          <div class="chips"><button type="button" class="chip" aria-pressed="true">Няню</button><button type="button" class="chip" aria-pressed="false">Гувернантку</button><button type="button" class="chip" aria-pressed="false">Домработницу</button><button type="button" class="chip" aria-pressed="false">Повара</button><button type="button" class="chip" aria-pressed="false">Водителя</button><button type="button" class="chip" aria-pressed="false">Управляющего</button><button type="button" class="chip" aria-pressed="false">Сиделку</button><button type="button" class="chip" aria-pressed="false">Садовника</button></div></div>
+        <div><p class="q">Что уже пробовали?</p>
+          <div class="chips"><button type="button" class="chip" aria-pressed="false">Через знакомых</button><button type="button" class="chip" aria-pressed="true">Частные объявления</button><button type="button" class="chip" aria-pressed="false">Другие агентства</button><button type="button" class="chip" aria-pressed="false">Ищем впервые</button></div></div>
+        <div class="two"><div class="in"><label for="b-name">Как к вам обращаться</label><input id="b-name" placeholder="Имя"></div><div class="in"><label for="b-contact">Телефон или Telegram</label><input id="b-contact" placeholder="+7 или @username"></div></div>
+        <div class="in"><label for="b-more">Что ещё важно знать (по желанию)</label><textarea id="b-more" rows="3" placeholder="Возраст детей, график, что не сложилось раньше"></textarea></div>
+        <div class="form-foot"><button class="btn" type="submit">Отправить</button><span>или напишите в Telegram <a class="link" href="#b-form">@kateriniya</a></span></div>
+        <p class="form-msg" aria-live="polite">Макет: форма никуда не отправляет данные.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 12. Footer -->
+  <footer class="ftr" style="margin-top:clamp(40px,5vw,72px)">
+    <div class="wrap">
+      <p class="big">Находим людей, которые остаются.</p>
+      <div class="ftr-row"><span>ИКТ · Институт кадровых решений</span><span>Telegram: @kateriniya</span><span class="todo">Телефон, сайт — уточнить</span><span>Политика конфиденциальности</span></div>
+    </div>
+  </footer>
+
+  <!-- UI-система -->
+  <div class="spec wrap">
+    <div class="sec-head"><span class="eyebrow">UI-система</span><h2>Кнопки, карточки, <i>формы</i></h2></div>
+    <div class="kit">
+      <div>
+        <span class="eyebrow">Кнопки</span>
+        <div class="row"><a class="btn" href="#b-form">Основная</a><a class="btn is-hover" href="#b-form">Hover</a></div>
+        <div class="row"><a class="btn soft" href="#b-form">Вторичная</a><a class="link" href="#b-form">Ссылка</a></div>
+        <p class="meta" style="margin:0">Пилюли. Hover: подъём на 2 px и мягкая тень. Ссылки с толстым песочным подчёркиванием, на hover оно темнеет.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Карточка</span>
+        <article class="sit" style="display:block"><div class="ph s-hands" style="aspect-ratio:16/10;border-radius:var(--r-md);margin-bottom:12px"></div><h3 style="font-size:26px;font-style:normal">Повар</h3><p style="margin:4px 0 0;color:var(--cocoa2);font-size:16px">Меню семьи, особые диеты, гости.</p></article>
+      </div>
+      <div>
+        <span class="eyebrow">Поля и чипы</span>
+        <div class="in"><label for="bk1">По умолчанию</label><input id="bk1" placeholder="Имя"></div>
+        <div class="in is-focus"><label for="bk2">Фокус</label><input id="bk2" value="Анна"></div>
+        <div class="in is-error"><label for="bk3">Ошибка</label><input id="bk3" value="+7 999"><span class="err">Проверьте номер: не хватает цифр.</span></div>
+        <div class="chips"><button type="button" class="chip" aria-pressed="true">Выбрано</button><button type="button" class="chip" aria-pressed="false">Вариант</button></div>
+      </div>
+    </div>
+    <div class="sec-head" style="margin:64px 0 24px"><span class="eyebrow">Анимации</span><h2>Мягко, как <i>дыхание</i></h2></div>
+    <ul class="motion">
+      <li><span class="k">B1</span><span><b>Hero.</b> Текст поднимается по строкам за 1 s. Главный кадр медленно «дышит»: масштаб 1 → 1.03 за 14 s.</span></li>
+      <li><span class="k">B2</span><span><b>Записка.</b> Карточка «Разбор кандидата» появляется последней, с лёгким поворотом.</span></li>
+      <li><span class="k">B3</span><span><b>Карточки.</b> Поднимаются по очереди при прокрутке; на hover приподнимаются на 4 px.</span></li>
+      <li><span class="k">B4</span><span><b>Фото.</b> На hover кадр приближается внутри скругления, рамка остаётся на месте.</span></li>
+      <li><span class="k">B5</span><span><b>Путь.</b> Пунктир между шагами дорисовывается при прокрутке, текущий шаг заливается цветом.</span></li>
+      <li><span class="k">B6</span><span><b>Лист разбора.</b> Документ выравнивается из наклона, как будто его положили на стол.</span></li>
+      <li><span class="k">B7</span><span><b>Отзывы.</b> Сообщения появляются по одному с паузой, как в мессенджере.</span></li>
+      <li><span class="k">B8</span><span><b>Форма.</b> Чипы заливаются цветом за 0.3 s, поле в фокусе получает шалфейную обводку.</span></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+/* 03 Private Line — брифинг: видимая 12-колоночная сетка, волосяные линии, досье кандидата как главный образ */
+.C{
+  --porc:#F3F1EE; --porc2:#E8E4DF; --grey:#9C958E; --ox:#4A1D22; --ox2:#5C2A30; --rose:#D9C2BE; --ink:#141313;
+  --rule:rgba(20,19,19,.14); --rule-on-ox:rgba(243,241,238,.16);
+  --disp:'Unbounded',system-ui,sans-serif;
+  --text:'Onest',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --ph-l:#D3CFCA; --ph-m:#8F8883; --ph-d:#3A3434; --ph-dd:#1E1A1A; --ph-w:#F1ECE6; --ph-s:#A99A92;
+  --sat:.25;
+  background:var(--porc);color:var(--ink);font-family:var(--text);font-size:16.5px;line-height:1.6
+}
+.C h2,.C h3{font-family:var(--disp);font-weight:200;letter-spacing:-.025em;margin:0;text-wrap:balance}
+.C .mono{font:400 11.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.C .muted{color:var(--grey)}
+.C .grid12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.C .sec{padding-block:clamp(72px,9vw,136px);border-top:1px solid var(--rule);position:relative}
+.C .sec-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;margin-bottom:clamp(40px,5vw,72px)}
+.C .sec-head .mono{grid-column:1/4;padding-top:10px}
+.C .sec-head h2{grid-column:4/12;font-size:clamp(32px,4.2vw,60px);line-height:1.06}
+@media (max-width:860px){.C .sec-head,.C .grid12{grid-template-columns:1fr}.C .sec-head>*,.C .grid12>*{grid-column:auto!important}}
+.C .ox{background:var(--ox);color:var(--porc)}
+.C .ox .muted{color:var(--rose)}
+.C .ox .sec,.C .ox.sec{border-top-color:var(--rule-on-ox)}
+.C .gridlines{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.C .gridlines i{border-left:1px solid var(--rule-on-ox);border-right:1px solid var(--rule-on-ox);opacity:.35}
+
+/* spec */
+.C .spec{padding-block:clamp(56px,7vw,96px)}
+.C .spec-top h2{grid-column:1/8;font-size:clamp(44px,6.6vw,100px);line-height:.98}
+.C .spec-top p{grid-column:8/13;align-self:end;margin:0}
+.C .spec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:56px;border-top:1px solid var(--ink)}
+.C .spec-grid>div{padding:18px 24px 0 0;min-width:0}
+.C .spec-grid>div+div{padding-left:24px;border-left:1px solid var(--rule)}
+@media (max-width:860px){.C .spec-grid{grid-template-columns:1fr}.C .spec-grid>div+div{border-left:0;padding-left:0;border-top:1px solid var(--rule);margin-top:18px}}
+.C .sw{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:90px 60px;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:14px}
+.C .sw div{padding:8px;display:flex;flex-direction:column;justify-content:flex-end;font:400 10.5px/1.3 var(--mono)}
+
+/* header */
+.C .hdr{position:sticky;top:calc(env(safe-area-inset-top,0px) + 45px);z-index:20;background:var(--ox);color:var(--porc);border-bottom:1px solid var(--rule-on-ox)}
+.C .hdr .wrap{display:flex;align-items:center;gap:28px;padding-block:14px}
+.C .logo{display:flex;align-items:center;gap:14px;text-decoration:none;margin-right:auto}
+.C .logo b{font:300 18px/1 var(--disp);letter-spacing:.18em}
+.C .logo span{font:400 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--rose);border-left:1px solid var(--rule-on-ox);padding-left:14px}
+.C .hdr nav{display:flex;gap:24px;font-size:14px}
+.C .hdr nav a{text-decoration:none;color:var(--rose);transition:color .3s}
+.C .hdr nav a:hover{color:var(--porc)}
+@media (max-width:980px){.C .hdr nav{display:none}}
+
+/* buttons */
+.C .btn{display:inline-flex;align-items:center;justify-content:space-between;gap:28px;font:400 14.5px/1 var(--text);text-decoration:none;padding:18px 20px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;position:relative;overflow:hidden;isolation:isolate;transition:color .45s}
+.C .btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform .45s cubic-bezier(.7,0,.2,1);z-index:-1}
+.C .btn:hover,.C .btn.is-hover{color:var(--porc)}
+.C .btn:hover::before,.C .btn.is-hover::before{transform:scaleY(1)}
+.C .btn .mono{font-size:10.5px}
+.C .btn.fill{background:var(--porc);color:var(--ox);border-color:var(--porc)}
+.C .btn.fill::before{background:var(--rose)}
+.C .btn.fill:hover,.C .btn.fill.is-hover{color:var(--ox)}
+.C .btn.dark{background:var(--ox);color:var(--porc);border-color:var(--ox)}
+.C .btn.dark::before{background:var(--ink)}
+.C .ln{text-decoration:none;display:inline-flex;gap:10px;align-items:center;font-size:14.5px;padding-bottom:4px;border-bottom:1px solid currentColor;transition:gap .4s}
+.C .ln:hover{gap:16px}
+
+/* hero */
+.C .hero{position:relative;padding-block:clamp(48px,6vw,88px) 0;overflow:hidden}
+.C .hero .wrap{position:relative}
+.C .hero-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid var(--rule-on-ox)}
+.C .hero-grid{padding-block:clamp(40px,5vw,72px)}
+.C .hero-txt{grid-column:1/8;display:flex;flex-direction:column;gap:30px;min-width:0}
+.C .hero h1{font:200 clamp(38px,5.2vw,78px)/1.04 var(--disp);letter-spacing:-.035em;margin:0;text-wrap:balance}
+.C .hero h1 b{font-weight:300}
+.C .dossier .muted{color:var(--grey)}
+.C .hero-lead{margin:0;max-width:46ch;font-size:clamp(16.5px,1.3vw,19px);color:var(--rose)}
+.C .cta{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center}
+.C .dossier{grid-column:9/13;background:var(--porc);color:var(--ink);align-self:start;min-width:0;box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+.C .dossier-h{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.C .dossier .ph{aspect-ratio:16/10}
+.C .dossier dl{margin:0;padding:4px 16px 14px}
+.C .dossier dl div{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:center}
+.C .dossier dl div:last-child{border-bottom:0}
+.C .dossier dt{font:400 10.5px/1 var(--mono);color:var(--grey)}
+.C .dossier dd{margin:0;display:flex;flex-direction:column;gap:5px}
+.C .dossier dd b{font-weight:500;font-size:13.5px}
+.C .redact{display:block;height:7px;background:var(--ink);opacity:.85;width:var(--w,80%)}
+.C .trustbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule-on-ox)}
+.C .trustbar div{padding:18px 20px 22px 0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.C .trustbar div+div{padding-left:20px;border-left:1px solid var(--rule-on-ox)}
+.C .trustbar b{font-weight:400;font-size:15px}
+@media (max-width:900px){.C .hero-grid{grid-template-columns:1fr}.C .hero-grid>*{grid-column:auto!important}.C .trustbar{grid-template-columns:1fr}.C .trustbar div+div{border-left:0;padding-left:0;border-top:1px solid var(--rule-on-ox)}}
+
+/* marquee */
+.C .marq{overflow:hidden;border-top:1px solid var(--rule-on-ox);background:var(--ox);color:var(--porc)}
+.C .marq-track{display:flex;gap:56px;width:max-content;padding-block:18px;animation:marq 48s linear infinite}
+.C .marq-track span{font:200 22px/1 var(--disp);letter-spacing:-.01em;display:inline-flex;align-items:center;gap:56px;white-space:nowrap}
+.C .marq-track span::after{content:"";width:6px;height:6px;border:1px solid var(--rose);transform:rotate(45deg)}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* staff */
+.C .staff{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);border-left:1px solid var(--rule)}
+.C .staff a{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:48px;min-height:220px;padding:20px;text-decoration:none;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);overflow:hidden;isolation:isolate;transition:color .5s;min-width:0}
+.C .staff a .ph{position:absolute;inset:0;z-index:-2;opacity:0;transition:opacity .6s}
+.C .staff a::before{content:"";position:absolute;inset:0;background:var(--ox);z-index:-1;opacity:0;transition:opacity .5s}
+.C .staff a:hover,.C .staff a.is-hover{color:var(--porc)}
+.C .staff a:hover::before,.C .staff a.is-hover::before{opacity:.82}
+.C .staff a:hover .ph,.C .staff a.is-hover .ph{opacity:1}
+.C .staff h3{font-size:24px;line-height:1.1;font-weight:300}
+.C .staff p{margin:0;font-size:14px;opacity:.75}
+.C .staff .top{display:flex;justify-content:space-between}
+@media (max-width:860px){.C .staff{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.C .staff{grid-template-columns:1fr}}
+
+/* dossier section */
+.C .file{grid-column:4/13;border:1px solid var(--ink);background:#FAF9F7;min-width:0}
+.C .file-h{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--ink);background:var(--porc2)}
+.C .file-row{display:grid;grid-template-columns:70px minmax(0,1fr) minmax(0,1.6fr);gap:24px;padding:24px 20px;border-bottom:1px solid var(--rule);align-items:baseline;transition:background .4s}
+.C .file-row:hover{background:var(--porc)}
+.C .file-row:last-child{border-bottom:0}
+.C .file-row h3{font-size:22px;font-weight:300}
+.C .file-row p{margin:0;color:#3c3836}
+.C .file-foot{grid-column:4/13;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-top:20px}
+.C .file-foot p{margin:0;font:200 clamp(20px,1.8vw,26px)/1.3 var(--disp);max-width:32ch}
+@media (max-width:860px){.C .file-row{grid-template-columns:1fr;gap:6px}}
+
+/* process */
+.C .proc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;position:relative;border-top:1px solid var(--rule)}
+.C .proc .track{position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--ox)}
+.C .proc article{padding:28px 22px 0 0;min-width:0}
+.C .proc article+article{padding-left:22px;border-left:1px solid var(--rule)}
+.C .proc .dot{display:block;width:9px;height:9px;background:var(--ox);transform:rotate(45deg);margin:-33px 0 26px}
+.C .proc article+article .dot{background:var(--porc);box-shadow:inset 0 0 0 1px var(--ox)}
+.C .proc h3{font-size:19px;font-weight:400;line-height:1.2;margin:10px 0 10px}
+.C .proc p{margin:0;font-size:14.5px;color:#3c3836}
+@media (max-width:980px){.C .proc{grid-template-columns:1fr 1fr}.C .proc article+article{border-left:0;padding-left:0}.C .proc article{padding-right:16px}}
+@media (max-width:520px){.C .proc{grid-template-columns:1fr}}
+
+/* principles on ox */
+.C .prin{border-top:1px solid var(--rule-on-ox)}
+.C .prin article{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;padding:30px 0;border-bottom:1px solid var(--rule-on-ox);transition:padding .5s cubic-bezier(.2,.7,.2,1)}
+.C .prin article:hover{padding-left:12px}
+.C .prin h3{grid-column:1/7;font-size:clamp(24px,2.6vw,38px);line-height:1.08}
+.C .prin p{grid-column:8/13;margin:0;color:var(--rose)}
+@media (max-width:860px){.C .prin article{grid-template-columns:1fr}.C .prin article>*{grid-column:auto!important}}
+
+/* service */
+.C .svc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.C .svc article{display:flex;flex-direction:column;gap:14px;min-width:0}
+.C .svc .ph{aspect-ratio:4/5}
+.C .svc .lbl{display:flex;justify-content:space-between;border-top:1px solid var(--ink);padding-top:12px}
+.C .svc h3{font-size:30px;font-weight:200}
+.C .svc p{margin:0;font-size:15px;color:#3c3836}
+@media (max-width:860px){.C .svc{grid-template-columns:1fr}}
+
+/* cases */
+.C .cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--ink)}
+.C .cases>div{min-width:0}
+.C .cases>div+div{border-left:1px solid var(--rule);padding-left:24px}
+.C .cases .col-h{padding:14px 0;border-bottom:1px solid var(--rule)}
+.C .cases article{padding:22px 24px 22px 0;border-bottom:1px solid var(--rule)}
+.C .cases h3{font-size:21px;font-weight:300;margin-bottom:6px}
+.C .cases p{margin:0;font-size:15px;color:#3c3836}
+@media (max-width:860px){.C .cases{grid-template-columns:1fr}.C .cases>div+div{border-left:0;padding-left:0}}
+
+/* reviews */
+.C .rev{grid-column:1/13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;min-height:340px}
+.C .rev-count{grid-column:1/4;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.C .rev-count .n{font:200 72px/1 var(--disp);letter-spacing:-.04em}
+.C .rev-ctrl{display:flex;gap:8px}
+.C .rev-ctrl button{width:48px;height:48px;border:1px solid var(--ink);background:transparent;font:300 18px/1 var(--text);cursor:pointer;transition:background .3s,color .3s;color:var(--ink)}
+.C .rev-ctrl button:hover{background:var(--ink);color:var(--porc)}
+.C .rev-body{grid-column:4/12;min-width:0}
+.C .rev-body blockquote{margin:0;font:200 clamp(22px,2.2vw,32px)/1.35 var(--disp);letter-spacing:-.015em;white-space:pre-line;transition:opacity .5s}
+.C .rev-body blockquote.out{opacity:0}
+.C .rev-body .mono{display:block;margin-top:24px}
+.C .rev-progress{grid-column:1/13;height:1px;background:var(--rule);position:relative}
+.C .rev-progress i{position:absolute;left:0;top:0;height:1px;background:var(--ox);width:25%;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+@media (max-width:860px){.C .rev{grid-template-columns:1fr}.C .rev>*{grid-column:auto!important}}
+
+/* guarantees table */
+.C table{width:100%;border-collapse:collapse;font-size:15px}
+.C .tbl{grid-column:4/13;overflow-x:auto;min-width:0}
+.C th,.C td{text-align:left;padding:18px 16px 18px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.C thead th{font:400 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--grey);border-bottom:1px solid var(--ink)}
+.C tbody th{font:300 19px/1.25 var(--disp);width:34%}
+.C .status{font:400 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border:1px solid currentColor;white-space:nowrap}
+.C .status.ok{color:var(--ox)}
+.C .status.tbd{color:var(--grey);border-style:dashed}
+
+/* faq */
+.C .faq{grid-column:4/13;border-top:1px solid var(--ink)}
+.C details{border-bottom:1px solid var(--rule)}
+.C summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr 20px;gap:24px;padding:22px 0;font:300 clamp(18px,1.6vw,22px)/1.3 var(--disp);letter-spacing:-.01em}
+.C summary::-webkit-details-marker{display:none}
+.C summary::after{content:"";width:14px;height:14px;align-self:center;background:linear-gradient(var(--ink),var(--ink)) center/14px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) center/1px 14px no-repeat;transition:transform .4s}
+.C details[open] summary::after{transform:rotate(45deg)}
+.C details p{margin:0 0 24px;max-width:62ch;color:#3c3836}
+
+/* form */
+.C .final h2{grid-column:1/7;font-size:clamp(34px,4.4vw,64px);line-height:1.05}
+.C .final .side{grid-column:1/6;margin:24px 0 0;color:var(--rose)}
+.C form{grid-column:7/13;grid-row:1/3;display:flex;flex-direction:column;gap:22px;border:1px solid var(--rule-on-ox);padding:clamp(20px,2.4vw,32px)}
+.C .fh{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--rule-on-ox)}
+.C .f{display:flex;flex-direction:column;gap:6px}
+.C .f label,.C .f .lb{font:400 10.5px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--rose)}
+.C .f input,.C .f textarea{font:300 18px/1.3 var(--text);color:var(--porc);background:transparent;border:0;border-bottom:1px solid var(--rule-on-ox);padding:8px 0 10px;outline:none;border-radius:0;transition:border-color .3s}
+.C .f textarea{resize:vertical;min-height:70px}
+.C .f input::placeholder,.C .f textarea::placeholder{color:rgba(243,241,238,.38)}
+.C .f input:focus,.C .f textarea:focus,.C .f.is-focus input{border-bottom-color:var(--porc)}
+.C .f.is-error input{border-bottom-color:#E0A090}
+.C .f .err{font-size:13px;color:#E8B4A6}
+.C .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule-on-ox)}
+.C .seg button{font:400 14px/1 var(--text);padding:13px 8px;background:transparent;border:0;color:var(--porc);cursor:pointer;transition:background .3s,color .3s}
+.C .seg button+button{border-left:1px solid var(--rule-on-ox)}
+.C .seg button[aria-pressed="true"]{background:var(--porc);color:var(--ox)}
+.C .check{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--rose);cursor:pointer}
+.C .check input{appearance:none;width:16px;height:16px;border:1px solid var(--rose);margin:2px 0 0;flex:0 0 16px;display:grid;place-items:center;cursor:pointer}
+.C .check input:checked{background:var(--porc);border-color:var(--porc)}
+.C .check input:checked::after{content:"";width:8px;height:4px;border-left:1.5px solid var(--ox);border-bottom:1.5px solid var(--ox);transform:rotate(-45deg) translate(1px,-1px)}
+.C .form-msg{margin:0;font:400 11px/1.4 var(--mono);letter-spacing:.04em;color:var(--rose)}
+
+/* footer */
+.C .ftr{background:var(--ink);color:var(--porc);padding-block:56px 28px}
+.C .ftr-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:flex-end;padding-bottom:40px}
+.C .ftr-top p{margin:0;font:200 clamp(26px,3.4vw,48px)/1.1 var(--disp);letter-spacing:-.03em;max-width:20ch}
+.C .ftr-row{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;border-top:1px solid rgba(243,241,238,.16);padding-top:18px;color:var(--grey)}
+
+/* kit */
+.C .kit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ink)}
+.C .kit>div{padding:20px 24px 0 0;display:flex;flex-direction:column;gap:16px;min-width:0}
+.C .kit>div+div{padding-left:24px;border-left:1px solid var(--rule)}
+.C .kit .row{display:flex;gap:12px;flex-wrap:wrap}
+.C .kit .oxbox{background:var(--ox);color:var(--porc);padding:18px;display:flex;flex-direction:column;gap:14px}
+.C .motion{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.C .motion li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--rule);font-size:15px}
+.C .motion .k{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:99px;background:var(--mo-bg);color:var(--mo-fg);font:600 11px/1 var(--deck-font)}
+@media (max-width:860px){.C .kit,.C .motion{grid-template-columns:1fr}.C .kit>div+div{border-left:0;padding-left:0;border-top:1px solid var(--rule);margin-top:18px}}
+</style>
+
+<div class="divider" id="concept-c"><div class="wrap"><b>Концепция 03</b><span>Private Line · «Частная линия»</span></div></div>
+
+<section class="C">
+  <div class="spec wrap">
+    <div class="grid12 spec-top">
+      <h2>03 — Private Line</h2>
+      <p>Частный сервис в духе консьержа и закрытого клуба. Глубокий цвет бычьей крови и фарфоровый белый, широкий светлый гротеск, моноширинные пометки и тонкие линии. Главный образ — досье кандидата: клиент сразу видит, что получит на руки. Минимум цвета и слов, максимум точности. Ощущение, что о вашей семье знает только один человек.</p>
+    </div>
+    <div class="spec-grid">
+      <div>
+        <span class="mono muted">Палитра · бычья кровь и фарфор</span>
+        <div class="sw">
+          <div style="background:#4A1D22;color:#F3F1EE;grid-row:1/3">Бычья кровь<br>#4A1D22</div>
+          <div style="background:#F3F1EE">Фарфор<br>#F3F1EE</div>
+          <div style="background:#E8E4DF">Камень<br>#E8E4DF</div>
+          <div style="background:#D9C2BE">Пудра<br>#D9C2BE</div>
+          <div style="background:#141313;color:#F3F1EE">Тушь<br>#141313</div>
+        </div>
+        <p class="muted" style="font-size:13px;margin:10px 0 0">Тёплый серый #9C958E — служебный текст. Никакого золота: роскошь здесь в точности, а не в блеске.</p>
+      </div>
+      <div>
+        <span class="mono muted">Типографика</span>
+        <div style="font:200 50px/1 var(--disp);letter-spacing:-.04em;margin-top:14px">Аа Unbounded</div>
+        <p class="muted" style="font-size:13px;margin:8px 0 14px">Unbounded 200–400 — заголовки. Широкий и очень светлый: тихий, но заметный.</p>
+        <div style="font:400 20px/1.3 var(--text)">Аа Onest — текст</div>
+        <div class="mono" style="margin-top:8px">Аа IBM Plex Mono — пометки, индексы</div>
+        <p class="muted" style="font-size:13px;margin:8px 0 0">Моноширинный шрифт — язык досье: поля, статусы, шаги.</p>
+      </div>
+      <div>
+        <span class="mono muted">Фото-направление</span>
+        <p style="margin:12px 0 0;font-size:15px">Строгие кадры-детали: ключи на консоли в прихожей, сложенный плед, приоткрытая дверь в приватную часть дома, водитель у машины со спины. Обесцвеченная, чуть холодная коррекция, много тени. Людей мало, лиц почти нет: приватность — часть образа.</p>
+        <p class="muted" style="font-size:13px;margin:10px 0 0">Кадрирование строго по колонкам сетки.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap frame-label">Макет лендинга · desktop 1440</div>
+
+  <header class="hdr">
+    <div class="wrap">
+      <a class="logo" href="#concept-c"><b>ИКТ</b><span>Домашний персонал · Private</span></a>
+      <nav><a href="#c-staff">Персонал</a><a href="#c-file">Досье</a><a href="#c-process">Процесс</a><a href="#c-reviews">Отзывы</a><a href="#c-faq">Вопросы</a></nav>
+      <a class="btn" href="#c-form" style="padding:12px 16px">Конфиденциальный запрос</a>
+    </div>
+  </header>
+
+  <!-- 1. Hero -->
+  <div class="ox hero">
+    <div class="wrap">
+      <div class="gridlines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="hero-top load"><span class="mono muted">Подбор домашнего персонала</span><span class="mono muted">Только по запросу · без публичных анкет</span></div>
+      <div class="grid12 hero-grid">
+        <div class="hero-txt rel">
+          <span class="mo" data-k="C1" style="top:-26px;left:0">Заголовок проявляется маской снизу вверх, линии сетки прорисовываются</span>
+          <h1 class="load d1">Домашний персонал, который <b>остаётся</b> в вашей семье</h1>
+          <p class="hero-lead load d2">Подбираем людей в дом, которым можно доверить детей, быт и личное пространство. Не присылаем стопку резюме — приходим с проверенными кандидатами и честным разбором по каждому.</p>
+          <div class="cta load d3"><a class="btn fill" href="#c-form">Рассказать, кого вы ищете <span class="mono">→</span></a><a class="ln" href="#c-form">Написать в Telegram <span>→</span></a></div>
+        </div>
+        <aside class="dossier load d3 rel" aria-label="Пример досье">
+          <span class="mo" data-k="C2" style="top:-30px;left:0">Поля досье заполняются по одному, 120 ms шаг</span>
+          <div class="dossier-h"><span class="mono">Разбор кандидата</span><span class="mono muted">Конфиденциально</span></div>
+          <div class="ph s-hall"><span class="cap"><b>Кадр</b>Прихожая: ключи на консоли, приоткрытая дверь. Холодная коррекция.</span></div>
+          <dl>
+            <div><dt>01</dt><dd><b>Кто это</b><span class="redact" style="--w:86%"></span></dd></div>
+            <div><dt>02</dt><dd><b>Что им движет</b><span class="redact" style="--w:62%"></span></dd></div>
+            <div><dt>03</dt><dd><b>Где риски</b><span class="redact" style="--w:74%"></span></dd></div>
+            <div><dt>04</dt><dd><b>Реальный горизонт</b><span class="redact" style="--w:40%"></span></dd></div>
+            <div><dt>05</dt><dd><b>Наше мнение</b><span class="redact" style="--w:92%"></span></dd></div>
+          </dl>
+        </aside>
+      </div>
+      <div class="trustbar load d4">
+        <div><span class="mono muted">Проверка</span><b>Собеседования и проверка — на нашей стороне</b></div>
+        <div><span class="mono muted">Разбор</span><b>По каждому кандидату, а не стопка резюме</b></div>
+        <div><span class="mono muted">После выхода</span><b>Остаёмся на связи и подключаемся при сложностях</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="marq rel" aria-label="Позиции"><span class="mo" data-k="C3" style="top:50%;right:24px;transform:translateY(-50%)">Бегущая строка, 48 s на круг, пауза при наведении</span>
+    <div class="marq-track"><span>Няни</span><span>Гувернантки</span><span>Домработницы</span><span>Повара</span><span>Водители</span><span>Управляющие домом</span><span>Сиделки</span><span>Садовники</span><span>Няни</span><span>Гувернантки</span><span>Домработницы</span><span>Повара</span><span>Водители</span><span>Управляющие домом</span><span>Сиделки</span><span>Садовники</span></div>
+  </div>
+
+  <!-- 2. Виды персонала -->
+  <section class="sec" id="c-staff" style="border-top:0">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Персонал</span><h2 class="rv">Кого мы подбираем</h2></div>
+      <div class="staff rel">
+        <span class="mo" data-k="C4" style="top:-32px;right:0">Hover: ячейка заливается цветом, под ним проявляется кадр</span>
+        <a href="#c-form" class="is-hover"><span class="ph s-portrait"></span><div class="top"><span class="mono">Дети</span><span>→</span></div><div><h3>Няня</h3><p>Режим, прогулки, занятия</p></div></a>
+        <a href="#c-form"><span class="ph s-table"></span><div class="top"><span class="mono">Дети</span><span>→</span></div><div><h3>Гувернантка</h3><p>Обучение, языки, школа</p></div></a>
+        <a href="#c-form"><span class="ph s-blinds"></span><div class="top"><span class="mono">Дом</span><span>→</span></div><div><h3>Домработница</h3><p>Порядок, вещи, гардероб</p></div></a>
+        <a href="#c-form"><span class="ph s-hands"></span><div class="top"><span class="mono">Дом</span><span>→</span></div><div><h3>Повар</h3><p>Меню семьи, диеты, гости</p></div></a>
+        <a href="#c-form"><span class="ph s-car"></span><div class="top"><span class="mono">Семья</span><span>→</span></div><div><h3>Водитель</h3><p>Поездки семьи и детей</p></div></a>
+        <a href="#c-form"><span class="ph s-hall"></span><div class="top"><span class="mono">Дом</span><span>→</span></div><div><h3>Управляющий домом</h3><p>Персонал и хозяйство</p></div></a>
+        <a href="#c-form"><span class="ph s-window"></span><div class="top"><span class="mono">Уход</span><span>→</span></div><div><h3>Сиделка</h3><p>Уход за близкими</p></div></a>
+        <a href="#c-form"><span class="ph s-garden"></span><div class="top"><span class="mono">Участок</span><span>→</span></div><div><h3>Садовник</h3><p>Сад и сезонные работы</p></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Досье -->
+  <section class="sec" id="c-file">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Как мы проверяем кандидатов</span><h2 class="rv">По каждому кандидату — разбор, а не резюме</h2></div>
+      <div class="grid12">
+        <div style="grid-column:1/4" class="rel">
+          <span class="mo static" data-k="C5">Строки досье подсвечиваются на hover</span>
+          <p class="muted" style="margin:0;font-size:14.5px">Это структура документа, который вы получаете по каждому кандидату. Все данные — только для вас.</p>
+        </div>
+        <div class="file rv">
+          <div class="file-h"><span class="mono">ИКТ / Разбор кандидата</span><span class="mono muted">Доступ: только заказчик</span></div>
+          <div class="file-row"><span class="mono muted">01</span><h3>Кто это</h3><p>Опыт и уровень задач, которые человек действительно вёл.</p></div>
+          <div class="file-row"><span class="mono muted">02</span><h3>Что им движет</h3><p>Мотивация и на чём она держится.</p></div>
+          <div class="file-row"><span class="mono muted">03</span><h3>Где риски</h3><p>Что может пойти не так и в какой момент.</p></div>
+          <div class="file-row"><span class="mono muted">04</span><h3>Реальный горизонт</h3><p>Как долго человек готов работать на этой позиции.</p></div>
+          <div class="file-row"><span class="mono muted">05</span><h3>Наше мнение</h3><p>Результаты проверки и честная оценка.</p></div>
+        </div>
+        <div class="file-foot"><p>Решение остаётся за вами. Мы помогаем принять его с полной картиной перед глазами.</p><a class="btn dark" href="#c-form">Запросить подбор <span class="mono">→</span></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Процесс -->
+  <section class="sec" id="c-process">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Как проходит подбор</span><h2 class="rv">Пять шагов от разговора до спокойной работы</h2></div>
+      <div class="proc rel">
+        <span class="mo" data-k="C6" style="top:-44px;left:0">Линия прогресса тянется по шагам при прокрутке (sticky-секция)</span>
+        <span class="track rv-line"></span>
+        <article><span class="dot"></span><span class="mono muted">Шаг 1 / 5</span><h3>Разговор и диагностика</h3><p>Вы рассказываете, кого ищете и что уже пробовали. Мы делаем вывод, почему до сих пор не получалось.</p></article>
+        <article><span class="dot"></span><span class="mono muted">Шаг 2 / 5</span><h3>Определяем, что чинить</h3><p>Если причина в подборе — идём искать. Если в устройстве роли — сначала наводим порядок в обязанностях и договорённостях.</p></article>
+        <article><span class="dot"></span><span class="mono muted">Шаг 3 / 5</span><h3>Подборка</h3><p>Приносим первых кандидатов, прошедших проверку и собеседования, с разбором по каждому.</p></article>
+        <article><span class="dot"></span><span class="mono muted">Шаг 4 / 5</span><h3>Выход</h3><p>Помогаем адаптироваться и спокойно пройти первые недели.</p></article>
+        <article><span class="dot"></span><span class="mono muted">Шаг 5 / 5</span><h3>Дальше</h3><p>Остаёмся на связи и подключаемся, если появляются сложности.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Почему доверяют -->
+  <section class="sec ox">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Почему нам доверяют</span><h2 class="rv">К нам приходят, когда уже пробовали. Поэтому мы работаем иначе.</h2></div>
+      <div class="prin rel">
+        <span class="mo" data-k="C7" style="top:-32px;right:0">Hover: строка смещается на 12 px</span>
+        <article class="rv"><h3>Видим человека насквозь</h3><p>Разбираем кандидата по мотивации, устойчивости, рискам и тому, как долго он реально готов работать в вашей семье.</p></article>
+        <article class="rv"><h3>Ищем причину, а не симптом</h3><p>Выясняем, что не сработало: портрет, условия или сама организация работы в доме.</p></article>
+        <article class="rv"><h3>Настраиваем систему</h3><p>Если дело в устройстве роли, скажем об этом и предложим сначала навести порядок. Нанимать в сломанную структуру — терять и время, и людей.</p></article>
+        <article class="rv"><h3>Остаёмся рядом</h3><p>Найти человека — половина работы. Помогаем влиться в дом и подключаемся, когда что-то идёт не так.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Сервис -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Подбор · внедрение · сопровождение</span><h2 class="rv">Весь путь до уверенной работы человека в вашем доме мы берём на себя</h2></div>
+      <div class="svc">
+        <article class="rv"><div class="ph s-hands rv-img"></div><div class="lbl"><span class="mono">До выхода</span><span class="mono muted">01</span></div><h3>Подбор</h3><p>Разбор задачи и причин прошлых неудач, профиль позиции, поиск по рекомендациям, холодным базам и хантингу, собеседования и проверка на нашей стороне.</p></article>
+        <article class="rv"><div class="ph s-car rv-img"></div><div class="lbl"><span class="mono">Первые дни</span><span class="mono muted">02</span></div><h3>Внедрение</h3><p>Первые дни рядом: помогаем человеку войти в обязанности, познакомиться с укладом семьи и договориться о порядке постановки задач.</p></article>
+        <article class="rv"><div class="ph s-blinds rv-img"></div><div class="lbl"><span class="mono">После выхода</span><span class="mono muted">03</span></div><h3>Сопровождение</h3><p>Остаёмся на связи после выхода. Разбираем сложности, вплоть до донастройки правил и процессов в доме.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Истории -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Истории <span class="todo-tag">кейсы — после согласования</span></span><h2 class="rv">С чем приходят и что мы находим</h2></div>
+      <div class="cases">
+        <div>
+          <div class="col-h mono muted">Ситуация клиента</div>
+          <article class="rv"><h3>Не сошлись характерами</h3><p>На собеседовании всё было гладко, а в доме стало неуютно.</p></article>
+          <article class="rv"><h3>Не выдержала нагрузку</h3><p>Режим семьи оказался интенсивнее, чем человек готов тянуть.</p></article>
+          <article class="rv"><h3>Ушла внезапно</h3><p>Без предупреждения, и всё пришлось начинать заново.</p></article>
+        </div>
+        <div>
+          <div class="col-h mono muted">Причина, которую мы ищем</div>
+          <article class="rv"><h3>Размытый портрет</h3><p>Ищут «хорошую помощницу», не описав ритм дома, правила семьи, возраст детей и степень самостоятельности, которая нужна.</p></article>
+          <article class="rv"><h3>Поверхностный отбор</h3><p>Резюме, рекомендации и один разговор. Мотивация, устойчивость и реальные планы человека остаются за кадром.</p></article>
+          <article class="rv"><h3>Неясная роль</h3><p>Не зафиксировано, что входит в обязанности, что нет, кто ставит задачи и как решаются спорные моменты. В такую роль не приживается никто.</p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Отзывы -->
+  <section class="sec" id="c-reviews">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Что говорят клиенты</span><h2 class="rv">Отзывы без правок</h2></div>
+      <div class="grid12">
+        <div class="rev rel" id="c-rev">
+          <span class="mo" data-k="C8" style="top:-34px;left:0">Смена отзыва: растворение 0.5 s, линия прогресса сдвигается</span>
+          <div class="rev-count"><span class="n" id="c-rev-n">01</span><div><span class="mono muted">из 04</span><div class="rev-ctrl" style="margin-top:12px"><button type="button" id="c-prev" aria-label="Предыдущий отзыв">←</button><button type="button" id="c-next" aria-label="Следующий отзыв">→</button></div></div></div>
+          <div class="rev-body"><blockquote id="c-rev-q">Привет! Она мне очень нравится
+Я сказала ей что беру
+И психологически и по навыкам
+То что я искала
+
+Мне очень комфортно с ней
+
+Быстрая
+Внимательная
+Умная</blockquote><span class="mono muted">Отзыв клиентки · без правок</span></div>
+          <div class="rev-progress"><i id="c-rev-bar"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Гарантии -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Гарантии</span><h2 class="rv">Что мы берём на себя</h2></div>
+      <div class="grid12">
+        <p class="muted" style="grid-column:1/4;margin:0;font-size:14.5px">Только то, что действительно входит в работу. Цифры появятся, когда будут подтверждены.</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>Обязательство</th><th>Что это значит</th><th>Статус</th></tr></thead>
+            <tbody>
+              <tr><th>Решение за вами</th><td>Приносим кандидатов с разбором и честной оценкой, выбираете вы.</td><td><span class="status ok">Входит</span></td></tr>
+              <tr><th>Первые недели</th><td>Помогаем человеку войти в обязанности и пройти адаптацию.</td><td><span class="status ok">Входит</span></td></tr>
+              <tr><th>Сопровождение</th><td>На связи после выхода, подключаемся при сложностях.</td><td><span class="status ok">Входит</span></td></tr>
+              <tr><th class="todo">Замена кандидата</th><td class="todo">Срок и условия</td><td><span class="status tbd">Уточнить</span></td></tr>
+              <tr><th class="todo">Конфиденциальность</th><td class="todo">Формулировка и документы</td><td><span class="status tbd">Уточнить</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FAQ -->
+  <section class="sec" id="c-faq">
+    <div class="wrap">
+      <div class="sec-head"><span class="mono muted">Вопросы</span><h2 class="rv">Коротко о главном</h2></div>
+      <div class="grid12">
+        <div class="faq">
+          <details open><summary>У нас уже было несколько неудачных помощниц. С чего вы начнёте?</summary><p>С разговора о том, что не сложилось раньше. Мы выясняем, почему прошлые варианты не сработали, и только потом начинаем поиск.</p></details>
+          <details><summary>Где вы ищете кандидатов?</summary><p>По рекомендациям, в холодных базах и через хантинг. Собеседования и проверку проводим на нашей стороне.</p></details>
+          <details><summary>Что я получу, кроме резюме?</summary><p>Разбор по каждому кандидату: опыт, мотивация, риски, реальный горизонт работы и наше мнение по итогам проверки.</p></details>
+          <details><summary>Кто принимает решение?</summary><p>Вы. Мы помогаем принять его с полной картиной перед глазами.</p></details>
+          <details><summary>А если дело не в человеке, а в том, как устроена работа в доме?</summary><p>Тогда скажем об этом прямо и предложим сначала навести порядок в обязанностях и договорённостях.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Заявка -->
+  <section class="sec ox" id="c-form">
+    <div class="wrap grid12 final">
+      <h2 class="rv">Расскажите, кого вы ищете и что уже пробовали</h2>
+      <p class="side">За 20 минут станет понятно, что действительно нужно сделать и чем мы можем помочь.</p>
+      <form class="mock-form rel" novalidate>
+        <span class="mo" data-k="C9" style="top:-14px;right:20px">Фокус: линия поля светлеет; сегменты переключаются заливкой</span>
+        <div class="fh"><span class="mono">Конфиденциальный запрос</span><span class="mono muted">Данные видит только консультант</span></div>
+        <div class="f"><label for="c-name">Как к вам обращаться</label><input id="c-name" placeholder="Имя"></div>
+        <div class="f"><label for="c-who">Кого ищете</label><input id="c-who" placeholder="Например: няня для двоих детей, 5 дней"></div>
+        <div class="f"><label for="c-tried">Что уже пробовали</label><textarea id="c-tried" placeholder="Коротко"></textarea></div>
+        <div class="f"><span class="lb">Как удобнее связаться</span><div class="seg"><button type="button" aria-pressed="true">Telegram</button><button type="button" aria-pressed="false">Звонок</button><button type="button" aria-pressed="false">Сообщение</button></div></div>
+        <div class="f"><label for="c-contact">Контакт</label><input id="c-contact" placeholder="@username или телефон"></div>
+        <label class="check"><input type="checkbox" id="c-agree" checked> Согласен(на) с политикой конфиденциальности</label>
+        <div class="cta"><button class="btn fill" type="submit">Отправить запрос <span class="mono">→</span></button><a class="ln" href="#c-form">Telegram @kateriniya <span>→</span></a></div>
+        <p class="form-msg" aria-live="polite">Макет: форма никуда не отправляет данные.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 12. Footer -->
+  <footer class="ftr">
+    <div class="wrap">
+      <div class="ftr-top"><p>Находим людей, которые остаются.</p><a class="btn" href="#c-form">Конфиденциальный запрос <span class="mono">→</span></a></div>
+      <div class="ftr-row mono"><span>ИКТ · Институт кадровых решений</span><span>Telegram @kateriniya</span><span class="todo">Телефон, сайт — уточнить</span><span>Политика конфиденциальности</span></div>
+    </div>
+  </footer>
+
+  <!-- UI-система -->
+  <div class="spec wrap">
+    <div class="sec-head"><span class="mono muted">UI-система</span><h2>Кнопки, карточки, формы</h2></div>
+    <div class="kit">
+      <div>
+        <span class="mono muted">Кнопки</span>
+        <div class="row"><a class="btn dark" href="#c-form">Основная <span class="mono">→</span></a><a class="btn dark is-hover" href="#c-form">Hover <span class="mono">→</span></a></div>
+        <div class="row"><a class="btn" href="#c-form">Контурная <span class="mono">→</span></a><a class="ln" href="#c-form">Ссылка <span>→</span></a></div>
+        <p class="muted" style="font-size:13.5px;margin:0">Без скруглений. Hover: заливка поднимается снизу за 0.45 s. У ссылки стрелка отъезжает.</p>
+      </div>
+      <div>
+        <span class="mono muted">Карточка</span>
+        <div class="staff" style="grid-template-columns:1fr 1fr"><a href="#c-form"><span class="ph s-car"></span><div class="top"><span class="mono">Семья</span><span>→</span></div><div><h3>Водитель</h3><p>Покой</p></div></a><a href="#c-form" class="is-hover"><span class="ph s-car"></span><div class="top"><span class="mono">Семья</span><span>→</span></div><div><h3>Водитель</h3><p>Hover</p></div></a></div>
+      </div>
+      <div>
+        <span class="mono muted">Поля (на тёмном)</span>
+        <div class="oxbox">
+          <div class="f"><label for="ck1">По умолчанию</label><input id="ck1" placeholder="Имя"></div>
+          <div class="f is-focus"><label for="ck2">Фокус</label><input id="ck2" value="Анна"></div>
+          <div class="f is-error"><label for="ck3">Ошибка</label><input id="ck3" value="+7 999"><span class="err">Проверьте номер: не хватает цифр.</span></div>
+          <div class="seg"><button type="button" aria-pressed="true">Выбрано</button><button type="button" aria-pressed="false">Вариант</button><button type="button" aria-pressed="false">Вариант</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-head" style="margin:72px 0 24px"><span class="mono muted">Анимации</span><h2>Точно и беззвучно</h2></div>
+    <ul class="motion">
+      <li><span class="k">C1</span><span><b>Hero.</b> Строки заголовка выходят из-под маски снизу, вертикальные линии сетки прорисовываются сверху вниз.</span></li>
+      <li><span class="k">C2</span><span><b>Досье.</b> Поля заполняются по очереди, «чёрные полосы» проявляются как в рассекреченном документе.</span></li>
+      <li><span class="k">C3</span><span><b>Бегущая строка.</b> Позиции медленно идут по кругу (48 s), на hover останавливаются.</span></li>
+      <li><span class="k">C4</span><span><b>Ячейки персонала.</b> Hover: заливка цветом бычьей крови, под ней проявляется кадр.</span></li>
+      <li><span class="k">C5</span><span><b>Строки досье.</b> Подсветка строки на hover, без сдвигов.</span></li>
+      <li><span class="k">C6</span><span><b>Процесс.</b> Линия прогресса тянется по шагам по мере прокрутки, ромб активного шага заливается.</span></li>
+      <li><span class="k">C7</span><span><b>Принципы.</b> Строка сдвигается на 12 px на hover.</span></li>
+      <li><span class="k">C8</span><span><b>Отзывы.</b> Счётчик 01–04, смена растворением, линия прогресса едет под текстом.</span></li>
+      <li><span class="k">C9</span><span><b>Форма.</b> Линия поля светлеет в фокусе; сегменты переключаются заливкой.</span></li>
+    </ul>
+  </div>
+</section>
+
+<style>.C .marq:hover .marq-track{animation-play-state:paused}</style>
+<script>
+(function(){
+  // Слой пометок анимаций
+  var t=document.getElementById('mo-toggle');
+  t.addEventListener('click',function(){
+    var off=document.body.classList.toggle('no-mo');
+    t.setAttribute('aria-pressed',off?'false':'true');
+  });
+
+  // Чипы / варианты: множественный выбор; сегменты (.seg) — один вариант
+  document.querySelectorAll('.opt,.chip,.seg button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var seg=b.closest('.seg');
+      if(seg){seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');return;}
+      b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')==='true'?'false':'true');
+    });
+  });
+
+  // Формы — только макет
+  document.querySelectorAll('.mock-form').forEach(function(f){
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var m=f.querySelector('.form-msg');
+      if(m) m.textContent='Так будет выглядеть подтверждение: «Спасибо. Мы свяжемся с вами». В макете данные никуда не отправляются.';
+    });
+  });
+
+  // Отзывы в концепции 03
+  var reviews=[
+    'Привет! Она мне очень нравится\nЯ сказала ей что беру\nИ психологически и по навыкам\nТо что я искала\n\nМне очень комфортно с ней\n\nБыстрая\nВнимательная\nУмная',
+    'Я не ожидала, что я к вам обращусь, и вы будете так всё вести. Я очень довольна вашей работой, что и мне советы даете, и её немного направляете\nВ будущем это действительно принесет намного больше пользы, чем мы потратим ещё неделю-две, погружаясь в процессы\nВы так классно уделяете внимание таким мелочам. Не ожидала такой вовлеченности. Мне кажется, вам дальше надо расти. Огромное спасибо!',
+    'Кать, я быстро убежала и не успела попрощаться. Хочу ещё раз поблагодарить тебя за такое продуктивное совещание! Я вышла с очень приятными эмоциями! Я уже вижу решение многих проблем, с которыми сталкиваюсь, и сильно настроена и заряжена работать дальше!\nА ведь это только начало. Спасибо тебе 🫶',
+    'Спасибо огромное и за всю проделанную работу тоже спасибо 🙏\nБезумно благодарна тебе и желаю хороших выходных 😌'
+  ];
+  var i=0,q=document.getElementById('c-rev-q'),n=document.getElementById('c-rev-n'),bar=document.getElementById('c-rev-bar');
+  function show(k){
+    i=(k+reviews.length)%reviews.length;
+    q.classList.add('out');
+    setTimeout(function(){q.textContent=reviews[i];n.textContent='0'+(i+1);bar.style.transform='translateX('+(i*100)+'%)';q.classList.remove('out');},250);
+  }
+  document.getElementById('c-prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('c-next').addEventListener('click',function(){show(i+1)});
+})();
+</script>
+</body></html>
