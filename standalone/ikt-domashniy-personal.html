@@ -81,6 +81,8 @@ em{font-style:italic}
 .ph figcaption{position:absolute;left:16px;bottom:14px;right:16px;z-index:2;display:flex;gap:8px;align-items:flex-start;font:400 12.5px/1.35 var(--sans);color:rgba(35,41,31,.78)}
 .ph figcaption::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;margin-top:5px;flex:none;opacity:.7}
 .ph.on-dark figcaption{color:rgba(241,238,229,.88)}
+.ph .photo{background-image:var(--img)!important;background-size:cover;background-position:center}
+.ph .photo::after{display:none}
 .arch{border-radius:999px 999px 6px 6px}
 .arch-l{border-radius:260px 6px 6px 6px}
 /* light & material tones */
@@ -487,7 +489,7 @@ em{font-style:italic}
         </ul>
         <div class="rv">
           <figure class="ph arch role-photo" aria-live="polite">
-            <div class="layer t-sage on"><span class="sr">Няни</span></div>
+            <div class="layer t-sage on photo" style="--img:url(photo-nanny.webp)" role="img" aria-label="Няня читает книгу ребёнку на диване у окна"><span class="sr">Няни</span></div>
             <div class="layer t-linen"></div>
             <div class="layer t-oak"></div>
             <div class="layer t-moss"></div>
@@ -495,7 +497,7 @@ em{font-style:italic}
             <div class="layer t-morning"></div>
             <div class="layer t-dusk"></div>
             <div class="layer t-sage" style="--lp:10% 70%;--ls:90%"></div>
-            <figcaption id="role-cap">Фото: няня с ребёнком читают на полу у окна, мягкий дневной свет</figcaption>
+            <figcaption id="role-cap" hidden>Фото: няня с ребёнком читают на полу у окна, мягкий дневной свет</figcaption>
           </figure>
         </div>
         <ul class="role-list right rv" role="list">
@@ -513,7 +515,7 @@ em{font-style:italic}
     <div class="wrap tried-grid">
       <h2 class="h2 rv" id="h-tried">К нам приходят, когда <em>уже пробовали</em></h2>
       <p class="lead rv">Через знакомых, через частные объявления, через другие агентства. Чаще всего это не первый человек в доме. Мы выясняем, почему прошлые варианты не сложились, и только потом начинаем поиск.</p>
-      <figure class="ph tried-band rv" data-par=".04"><div class="in t-linen"></div><figcaption>Фото: прихожая — дверь в дом приоткрыта, на скамье льняная сумка и ключи</figcaption></figure>
+      <figure class="ph tried-band rv" data-par=".04"><div class="in t-linen photo" style="--img:url(photo-hallway.jpg)" role="img" aria-label="Прихожая: приоткрытая дверь в сад, на деревянной скамье льняная сумка и ключи"></div></figure>
       <ul class="tried-list" role="list">
         <li class="rv"><h3>Не сошлись характерами</h3><p>На собеседовании всё было гладко, а в доме стало неуютно.</p></li>
         <li class="rv"><h3>Не выдержала нагрузку</h3><p>Режим семьи оказался интенсивнее, чем человек готов тянуть.</p></li>
@@ -541,7 +543,7 @@ em{font-style:italic}
   <section class="more" aria-labelledby="h-more">
     <div class="wrap more-grid">
       <figure class="ph arch-l more-photo rv" data-par=".06"><div class="in t-oak"></div><figcaption>Фото: гостиная с дубовым столом, льняные шторы и крупное растение в горшке</figcaption></figure>
-      <figure class="ph more-small rv"><div class="in t-sage"></div><figcaption>Фото: зелень на подоконнике</figcaption></figure>
+      <figure class="ph more-small rv"><div class="in t-sage photo" style="--img:url(photo-windowsill.jpg)" role="img" aria-label="Травы в горшках на подоконнике"></div></figure>
       <div class="more-head rv">
         <p class="label">Отличие</p>
         <h2 class="h2" id="h-more">Больше, чем <em>поиск по базе</em></h2>
@@ -575,12 +577,12 @@ em{font-style:italic}
     <div class="wrap process-grid">
       <div class="process-media rv">
         <figure class="ph arch process-photo">
-          <div class="layer t-linen on"></div>
-          <div class="layer t-stone"></div>
+          <div class="layer t-linen on photo" style="--img:url(photo-kitchen.jpg)" role="img" aria-label="Кухня утром: стол у окна, ваза с ветками и кружка"></div>
+          <div class="layer t-stone photo" style="--img:url(photo-notes.webp)" role="img" aria-label="Листы бумаги и карандаши на деревянном блюде с оливковыми ветками"></div>
           <div class="layer t-sage"></div>
           <div class="layer t-morning"></div>
           <div class="layer t-moss"></div>
-          <figcaption id="proc-cap">Фото: две чашки на столе у окна — первый разговор</figcaption>
+          <figcaption id="proc-cap" hidden>Фото: две чашки на столе у окна — первый разговор</figcaption>
         </figure>
       </div>
       <div>
@@ -815,13 +817,13 @@ em{font-style:italic}
   // roles: switch scene
   var caps=['Фото: няня с ребёнком читают на полу у окна, мягкий дневной свет','Фото: свежее бельё на льняном покрывале, утреннее солнце на стене','Фото: руки повара нарезают зелень на дубовой доске','Фото: машина у дома после дождя, мокрая хвоя, открытая дверь','Фото: ключи, блокнот и ваза с веткой на консоли в прихожей','Фото: детский стол — книги, тетради, акварель','Фото: кресло у окна, плед и чашка травяного чая','Фото: руки в рабочих перчатках пересаживают растение'];
   var rbtn=[].slice.call(document.querySelectorAll('.role-list button')),layers=[].slice.call(document.querySelectorAll('.role-photo .layer')),rcap=document.getElementById('role-cap');
-  function setRole(i){rbtn.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.i==i)});layers.forEach(function(l,k){l.classList.toggle('on',k==i)});rcap.textContent=caps[i]}
+  function setRole(i){rbtn.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.i==i)});layers.forEach(function(l,k){l.classList.toggle('on',k==i)});rcap.textContent=caps[i];rcap.hidden=layers[i].classList.contains('photo')}
   rbtn.forEach(function(b){b.addEventListener('click',function(){setRole(b.dataset.i)});b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)setRole(b.dataset.i)})});
 
   // process: sticky photo follows the step in view
   var steps=[].slice.call(document.querySelectorAll('.step')),pl=[].slice.call(document.querySelectorAll('.process-photo .layer')),pcap=document.getElementById('proc-cap');
   if('IntersectionObserver' in window){
-    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=steps.indexOf(e.target);steps.forEach(function(s,k){s.classList.toggle('active',k===i)});pl.forEach(function(l,k){l.classList.toggle('on',k===i)});pcap.textContent=e.target.dataset.cap}})},{rootMargin:'-45% 0px -45% 0px'});
+    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=steps.indexOf(e.target);steps.forEach(function(s,k){s.classList.toggle('active',k===i)});pl.forEach(function(l,k){l.classList.toggle('on',k===i)});pcap.textContent=e.target.dataset.cap;pcap.hidden=pl[i].classList.contains('photo')}})},{rootMargin:'-45% 0px -45% 0px'});
     steps.forEach(function(s){so.observe(s)});
   }
 
