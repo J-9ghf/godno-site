@@ -356,6 +356,10 @@ em{font-style:italic}
 .check .err{grid-column:2}
 .formcard .btn{width:100%;justify-content:space-between;min-height:56px}
 .fnote{font-size:13px;color:var(--muted);margin-top:16px;line-height:1.5}
+.fnote a{color:var(--forest);text-underline-offset:2px}
+.foot .legal{display:flex;flex-wrap:wrap;gap:8px 24px;width:100%}
+.foot .legal a{color:var(--on-forest-muted);font-size:13px;text-underline-offset:3px}
+.foot .legal a:hover{color:var(--on-forest)}
 .thanks{display:grid;gap:18px}
 .thanks h3{font-size:clamp(28px,2.6vw,38px);font-weight:500;color:var(--forest)}
 .thanks p{color:var(--muted)}
@@ -786,7 +790,7 @@ em{font-style:italic}
             <span class="err" id="e-agree" hidden>Без согласия мы не сможем принять заявку</span>
           </div>
           <button class="btn" type="submit">Отправить заявку <svg><use href="#arr"/></svg></button>
-          <p class="fnote">Заявка не сохраняется на сайте. После проверки откроется чат с @kateriniya в Telegram с готовым текстом — останется нажать «Отправить».</p>
+          <p class="fnote">Отправляя форму, вы даёте <a href="soglasie-na-obrabotku-personalnyh-dannyh.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a> и принимаете <a href="politika-obrabotki-personalnyh-dannyh.html" target="_blank" rel="noopener">Политику в отношении обработки персональных данных</a>.</p>
         </form>
         <div class="thanks" id="thanks" hidden tabindex="-1">
           <h3>Спасибо</h3>
@@ -811,6 +815,7 @@ em{font-style:italic}
       <div class="base">
         <span class="logo" role="img" aria-label="ИКТ · Институт кадровых решений"><i class="lm"></i><i class="la"></i></span>
         <p>ИКТ · Институт кадровых решений. Находим людей, которые остаются.</p>
+        <nav class="legal" aria-label="Документы"><a href="politika-obrabotki-personalnyh-dannyh.html">Политика в отношении обработки персональных данных</a><a href="soglasie-na-obrabotku-personalnyh-dannyh.html">Согласие на обработку персональных данных</a></nav>
       </div>
     </div>
   </footer>
