@@ -1,0 +1,277 @@
+<title>03 Крупно и ясно</title>
+<style>
+/* 03 Крупно и ясно — типографика как графика: одно вариативное семейство, контраст ширины и веса, маркер вместо цвета */
+:root{
+  --paper:#FAFAF7; --fog:#E6E5DF; --mid:#8B8A85; --ink:#121212; --marker:#ECDF8E;
+  --f:'Roboto Flex',system-ui,sans-serif;
+  --ph-l:#D9D9D6; --ph-m:#9A9A97; --ph-d:#4A4A48; --ph-dd:#1E1E1D; --ph-w:#F4F4F2; --ph-s:#B5B5B2; --sat:0; --con:1.12; --grain:.7; --blur:5px;
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--f);font-size:18px;line-height:1.5;font-stretch:100%}
+.board{background:var(--paper)}
+.wrap{padding:0 64px;position:relative}
+.cond{font-stretch:25%;font-weight:720;letter-spacing:-.01em}
+.wide{font-stretch:151%;font-weight:250;letter-spacing:-.02em}
+.lab{font:700 13px/1 var(--f);font-stretch:130%;letter-spacing:.12em;text-transform:uppercase}
+.mk{background:linear-gradient(transparent 12%,var(--marker) 12% 92%,transparent 92%);padding:0 .06em}
+.mk-low{background:linear-gradient(transparent 58%,var(--marker) 58% 94%,transparent 94%)}
+.muted{color:#5f5e5a}
+.inph{display:inline-block;vertical-align:middle;position:relative}
+
+/* header */
+.hdr{display:flex;align-items:center;gap:38px;height:76px;padding:0 64px}
+.logo{display:flex;align-items:baseline;gap:14px;margin-right:auto}
+.logo b{font:900 26px/1 var(--f);font-stretch:151%;letter-spacing:.02em}
+.logo span{font:400 14px/1 var(--f);color:var(--mid)}
+.hdr nav{display:flex;gap:28px}
+.hdr nav span{font:600 15px/1 var(--f);font-stretch:115%}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:22px;background:var(--ink);color:var(--paper);font:750 15px/1 var(--f);font-stretch:130%;letter-spacing:.06em;text-transform:uppercase;padding:24px 30px}
+.btn.hv{background:var(--marker);color:var(--ink)}
+.btn.lt{background:var(--fog);color:var(--ink)}
+.btn.off{background:var(--fog);color:#b1b0aa}
+.tl{font:650 17px/1 var(--f);font-stretch:115%;background:linear-gradient(transparent 62%,var(--marker) 62%);padding:2px 2px}
+
+/* hero */
+.hero{height:824px;padding:22px 64px 0;position:relative}
+.hl{font-weight:720;font-size:176px;line-height:.86;letter-spacing:-.01em;font-stretch:25%}
+.hl .w{font-stretch:151%;font-weight:200;font-size:.62em;letter-spacing:-.04em;vertical-align:.06em}
+.hero-bottom{position:absolute;left:64px;right:64px;bottom:40px;display:grid;grid-template-columns:420px 1fr 1fr 1fr;gap:40px;align-items:end}
+.hero-bottom .tr b{display:block;font:720 30px/1 var(--f);font-stretch:30%;margin-bottom:8px;text-transform:uppercase}
+.hero-bottom .tr span{font-size:15px;color:#5f5e5a}
+
+/* sections */
+.sec{padding-top:150px;position:relative}
+.kick{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:40px}
+.h2{font-size:140px;line-height:.86;letter-spacing:-.01em;font-stretch:25%;font-weight:720}
+
+.cloud{font-size:120px;line-height:1.02;font-stretch:25%;font-weight:700;letter-spacing:0}
+.cloud .x{font-stretch:151%;font-weight:200;font-size:.58em;letter-spacing:-.04em}
+.cloud sup{font:500 15px/1.2 var(--f);font-stretch:100%;letter-spacing:0;vertical-align:top;position:relative;top:22px;margin:0 22px 0 6px;color:var(--mid);display:inline-block;max-width:150px}
+.cloud .sl{color:#C9C8C2;font-weight:200}
+
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:28px}
+.steps .n{font:100 300px/.8 var(--f);font-stretch:25%;letter-spacing:-.04em;display:block;margin-bottom:24px}
+.steps h3{font:720 38px/1 var(--f);font-stretch:30%;text-transform:uppercase;margin-bottom:10px}
+.steps p{font-size:16.5px;color:#4a4946}
+
+.check{display:grid;grid-template-columns:1fr 1fr;gap:56px 80px;margin-top:60px}
+.check div b{display:block;font:720 76px/.9 var(--f);font-stretch:25%;margin-bottom:12px}
+.check div p{font-size:19px;max-width:34ch;color:#3e3d3a}
+.strike{position:relative}
+.strike::after{content:"";position:absolute;left:-2%;right:-2%;top:48%;height:.16em;background:var(--marker);mix-blend-mode:multiply;transform:rotate(-2deg)}
+
+.quote{font:500 82px/1.02 var(--f);font-stretch:62%;letter-spacing:-.02em;max-width:1240px}
+.gar .gr{display:grid;grid-template-columns:1fr 360px;gap:48px;align-items:end;padding:26px 0}
+.gar .big{font:200 80px/.95 var(--f);font-stretch:151%;letter-spacing:-.045em}
+.gar .big b{font-weight:850}
+.gar p{font-size:17px;color:#4a4946}
+
+.faq .q{font:700 58px/1 var(--f);font-stretch:28%;padding:16px 0;display:flex;justify-content:space-between;align-items:baseline;gap:40px;color:#B9B8B2}
+.faq .q.open{color:var(--ink)}
+.faq .q .pm{font-stretch:100%;font-weight:200;font-size:56px}
+.faq .a{font-size:21px;max-width:58ch;color:#3e3d3a;margin:6px 0 22px}
+
+.madlib{font:300 60px/1.45 var(--f);font-stretch:100%;letter-spacing:-.025em;max-width:1300px}
+.slot{display:inline-block;background:var(--fog);padding:0 18px;line-height:1.15;font-weight:600;font-stretch:80%;color:#a3a29c;vertical-align:baseline}
+.slot.fill{color:var(--ink)}
+.slot.focus{background:var(--marker);color:var(--ink)}
+.slot .car{display:inline-block;width:3px;height:.8em;background:var(--ink);vertical-align:-.05em;margin-left:4px}
+.slot .dd{font-weight:200;margin-left:14px}
+
+.ftr{margin-top:150px;background:var(--ink);color:var(--paper);padding:56px 64px 36px;overflow:hidden}
+.ftr .mega{font:900 380px/.74 var(--f);font-stretch:151%;letter-spacing:-.02em;margin:40px 0 0 -14px}
+.ftr .row{display:flex;justify-content:space-between;font-size:16px;color:#A9A8A3}
+
+/* UI */
+.ui{padding:60px 64px 72px;display:flex;flex-direction:column;gap:56px}
+.ui-top{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:end}
+.sw{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+.sw div{height:240px;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.sw b{font:720 64px/.9 var(--f);font-stretch:25%}
+.sw span{font:600 14px/1.4 var(--f);font-stretch:115%}
+.ramp{display:flex;align-items:baseline;gap:22px;font-size:120px;line-height:1;font-weight:800}
+.ramp span{display:flex;flex-direction:column;gap:12px}
+.ramp small{font:600 12px/1 var(--f);font-stretch:120%;letter-spacing:.08em;color:var(--mid)}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;align-items:start}
+.col{display:flex;flex-direction:column;gap:22px}
+.inp{display:flex;flex-direction:column;gap:10px}
+.inp label{font:700 12.5px/1 var(--f);font-stretch:130%;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+.inp .box{background:var(--fog);padding:18px 20px;font:500 22px/1.2 var(--f);font-stretch:80%;color:#a3a29c}
+.inp .box.fill{color:var(--ink)}
+.inp.focus .box{background:var(--marker);color:var(--ink)}
+.inp.err .box{background:#F1DCD3;color:var(--ink)}
+.inp .e{font-size:14px;color:#8E3B22}
+.rolecard{background:var(--paper);display:flex;flex-direction:column;gap:6px}
+</style>
+<body>
+
+<div class="board" id="landing">
+  <header class="hdr">
+    <div class="logo"><b>ИКТ</b><span>Институт кадровых решений</span></div>
+    <nav><span>Кого подбираем</span><span>Как работаем</span><span>Проверка</span><span>Вопросы</span></nav>
+    <span class="btn" style="padding:16px 20px;font-size:13px">Рассказать, кого вы ищете</span>
+  </header>
+
+  <section class="hero">
+    <div class="lab" style="color:var(--mid);margin-bottom:22px">Подбор домашнего персонала</div>
+    <h1 class="hl">
+      <span class="l1">Домашний персонал,</span><br>
+      <span>который <span class="mk ost">остаётся</span></span><br>
+      <span class="w">в вашей семье</span> <span class="inph ph s-portrait ip" style="width:300px;height:138px;vertical-align:.02em"><span class="cap" style="font-size:10px;bottom:6px;left:8px"><em>Плейсхолдер</em></span></span>
+    </h1>
+    <div class="hero-bottom">
+      <div style="display:flex;flex-direction:column;gap:26px"><p style="font-size:19px;color:#3e3d3a">Подбираем людей в дом, которым можно доверить детей, быт и личное пространство. Приходим с проверенными кандидатами и честным разбором по каждому.</p><div style="display:flex;gap:26px;align-items:center"><span class="btn cta">Рассказать, кого вы ищете →</span></div></div>
+      <div class="tr"><b>Проверка</b><span>Собеседования и разбор мотивации — на нашей стороне</span></div>
+      <div class="tr"><b>Разбор</b><span>По каждому кандидату, а не стопка резюме</span></div>
+      <div class="tr"><b>После выхода</b><span>Остаёмся рядом первые недели и дальше · <span class="tl">как мы проверяем</span></span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".l1" data-pos="tr" data-dx="-10" data-dy="-6"><b>1</b><i>⇔</i>Слова «раздвигаются» по ширине: wdth 25 → 151 → итог, 1.2 с</span>
+  <span class="an" data-at=".ost" data-pos="tr" data-dx="330" data-dy="20"><b>2</b><i>→</i>Маркер прорисовывается слева направо после заголовка</span>
+  <span class="an" data-at=".ip" data-pos="bl" data-dy="58" data-dx="-16"><b>3</b><i>▭</i>Фото внутри строки раскрывается из узкой полосы</span>
+  <span class="an" data-at=".cta" data-pos="tr" data-dx="370" data-dy="0"><b>4</b><i>▇</i>Hover: кнопка заливается маркером</span>
+
+  <!-- ВИДЫ ПЕРСОНАЛА -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Кого подбираем</span><span class="muted" style="max-width:40ch">Каждого кандидата мы видим лично, прежде чем показать вам.</span></div>
+      <p class="cloud">Няни<span class="sl"> · </span> <span class="x">Гувернантки</span><span class="sl"> · </span> Домработницы<span class="sl"> · </span> <span class="mk cl">Повара</span><span class="inph ph s-hands" style="width:190px;height:120px;margin:0 10px;vertical-align:.1em"><span class="cap" style="font-size:9px;bottom:5px;left:7px"><em>Плейсхолдер</em></span></span><sup style="top:30px">меню семьи,<br>особые диеты</sup><span class="sl"> · </span> <span class="x">Семейные водители</span><span class="sl"> · </span> Сиделки<span class="sl"> · </span> <span class="x">Управляющие домом</span></p>
+    </div>
+  </section>
+  <span class="an" data-at=".cl" data-pos="tl" data-dy="-56"><b>5</b><i>✦</i>Hover на роль: маркер + кадр раскрывается прямо в строке</span>
+
+  <!-- ПРОЦЕСС -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Как проходит подбор</span><span class="muted">Пять шагов от разговора до спокойной работы</span></div>
+      <div class="steps">
+        <div class="s1"><span class="n">1</span><h3>Разговор</h3><p>Вы рассказываете, кого ищете и что уже пробовали.</p></div>
+        <div><span class="n">2</span><h3>Диагностика</h3><p>Понимаем, почему раньше не получалось.</p></div>
+        <div><span class="n">3</span><h3>Подборка</h3><p>Приносим проверенных кандидатов с разбором.</p></div>
+        <div><span class="n">4</span><h3>Выход</h3><p>Помогаем спокойно пройти первые недели.</p></div>
+        <div><span class="n" style="font-weight:900">5</span><h3>Сопровождение</h3><p>Остаёмся на связи после выхода.</p></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".s1" data-pos="tl" data-dy="-52" data-dx="-16"><b>6</b><i>↟</i>Цифры набирают вес при прокрутке: wght 100 → 900, текущий шаг — жирный</span>
+
+  <!-- ПРОВЕРКА -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Как мы проверяем кандидатов</span><span class="muted">Решение остаётся за вами</span></div>
+      <h2 class="h2">Разбор, а не <span class="strike sk">резюме</span></h2>
+      <div class="check">
+        <div><b>Опыт</b><p>Какие задачи человек действительно вёл.</p></div>
+        <div><b>Мотивация</b><p>Что им движет и на чём это держится.</p></div>
+        <div><b>Риски</b><p>Что может пойти не так и в какой момент.</p></div>
+        <div><b>Горизонт</b><p>Как долго человек готов работать в семье.</p></div>
+        <div style="grid-column:1/3"><b><span class="mk">Наше мнение</span></b><p style="max-width:60ch">Результаты проверки и честная оценка: берём или нет, и почему.</p></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".sk" data-pos="tr" data-dy="-50"><b>7</b><i>—</i>Слово «резюме» зачёркивается маркером при появлении</span>
+
+  <!-- ОТЗЫВ -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Отзыв клиентки</span></div>
+      <p class="quote qt">«Она мне очень нравится. И&nbsp;психологически, и&nbsp;по&nbsp;навыкам — то, что я&nbsp;искала. <span class="mk">Мне очень комфортно с&nbsp;ней</span>».</p>
+      <div style="display:flex;gap:20px;align-items:center;margin-top:36px"><span class="ph s-care" style="width:120px;height:120px;display:block"></span><span class="muted" style="font-size:15px;max-width:44ch">Плейсхолдер: спокойный ч/б портрет помощницы в интерьере семьи, взгляд в сторону</span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".qt" data-pos="br" data-dy="54"><b>8</b><i>≡</i>Цитата набирается по словам, маркер — последним</span>
+
+  <!-- ГАРАНТИИ -->
+  <section class="sec gar">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Гарантии</span><span class="muted">Условия замены кандидата — уточняются</span></div>
+      <div class="gr"><p class="big"><b>Решение</b> — за&nbsp;вами</p><p>Приносим кандидатов с разбором, выбираете вы.</p></div>
+      <div class="gr"><p class="big"><b>Первые недели</b> — вместе</p><p>Помогаем человеку войти в дом и обязанности.</p></div>
+      <div class="gr"><p class="big"><b>После выхода</b> — рядом</p><p>Подключаемся, если что-то идёт не так.</p></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec faq">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Вопросы</span></div>
+      <div class="q open qo"><span><span class="mk-low">С чего вы начинаете?</span></span><span class="pm">−</span></div>
+      <p class="a">С разговора о том, кого вы ищете и что не сложилось раньше. Только потом начинаем поиск.</p>
+      <div class="q"><span>Где вы ищете кандидатов?</span><span class="pm">+</span></div>
+      <div class="q"><span>Кто принимает решение?</span><span class="pm">+</span></div>
+      <div class="q"><span>Что происходит после выхода человека?</span><span class="pm">+</span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".qo" data-pos="tr" data-dx="-120" data-dy="-44"><b>9</b><i>↕</i>Открытый вопрос темнеет из серого, ответ выезжает снизу</span>
+
+  <!-- ФОРМА -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="kick"><span class="lab">Заявка</span><span class="muted">За 20 минут станет понятно, чем мы можем помочь</span></div>
+      <h2 class="h2" style="font-size:120px">Расскажите, кого вы ищете</h2>
+      <p class="madlib ml" style="margin-top:40px">Меня зовут <span class="slot fill">Анна</span>, мы ищем <span class="slot fill">няню<span class="dd">▾</span></span>. Раньше пробовали <span class="slot focus">через знакомых<span class="car"></span></span>. Связаться: <span class="slot">телефон или @telegram</span>.</p>
+      <div style="display:flex;gap:40px;align-items:center;margin-top:44px"><span class="btn">Отправить заявку →</span><span class="tl">или написать в Telegram @kateriniya</span><span class="muted" style="font-size:14px">Нажимая, вы соглашаетесь с политикой конфиденциальности</span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".ml" data-pos="tr" data-dy="-56"><b>10</b><i>▍</i>Форма-предложение: активное поле подсвечено маркером, курсор мигает</span>
+
+  <footer class="ftr">
+    <div class="row"><span>Находим людей, которые остаются.</span><span>Telegram @kateriniya · Политика конфиденциальности</span></div>
+    <div class="mega">ИКТ</div>
+    <div class="row" style="margin-top:24px"><span>Институт кадровых решений</span><span>Подбор домашнего персонала</span></div>
+  </footer>
+</div>
+
+<!-- UI -->
+<div class="board ui" id="ui">
+  <div class="ui-top">
+    <div><span class="lab" style="color:var(--mid)">Концепция 03 · UI-система</span><h1 class="hl" style="font-size:170px;margin-top:20px">Крупно <span class="w">и ясно</span></h1></div>
+    <p style="font-size:20px;color:#3e3d3a">Уверенная типографика на светлом листе: текст сам становится графикой, а фото появляются внутри строк. Одно семейство в разной ширине и весе, чёрный цвет и маркер, которым мы выделяем главное, как в рабочих записях консультанта. Спокойно, прямо, без украшений.</p>
+  </div>
+  <div class="sw">
+    <div style="background:#FAFAF7;box-shadow:inset 0 0 0 1px #dcdbd5"><b>Лист</b><span>#FAFAF7 · фон</span></div>
+    <div style="background:#E6E5DF"><b>Туман</b><span>#E6E5DF · поля, блоки</span></div>
+    <div style="background:#8B8A85;color:#FAFAF7"><b>Графит</b><span>#8B8A85 · подписи</span></div>
+    <div style="background:#121212;color:#FAFAF7"><b>Тушь</b><span>#121212 · текст, кнопки</span></div>
+    <div style="background:#ECDF8E"><b>Маркер</b><span>#ECDF8E · единственный акцент</span></div>
+  </div>
+  <div>
+    <span class="lab" style="color:var(--mid)">Шрифт · Roboto Flex (одно вариативное семейство) · ось ширины</span>
+    <div class="ramp" style="margin-top:22px">
+      <span><span style="font-stretch:25%;font-weight:900">Дом</span><small>wdth 25 · 900</small></span>
+      <span><span style="font-stretch:50%;font-weight:700">Дом</span><small>wdth 50 · 700</small></span>
+      <span><span style="font-stretch:75%;font-weight:500">Дом</span><small>wdth 75 · 500</small></span>
+      <span><span style="font-stretch:100%;font-weight:400">Дом</span><small>wdth 100 · 400</small></span>
+      <span><span style="font-stretch:125%;font-weight:300">Дом</span><small>wdth 125 · 300</small></span>
+      <span><span style="font-stretch:151%;font-weight:200">Дом</span><small>wdth 151 · 200</small></span>
+    </div>
+    <div class="grid3" style="margin-top:36px">
+      <div class="col"><small class="lab" style="color:var(--mid)">Заголовок</small><span style="font:720 64px/.86 var(--f);font-stretch:25%">Узкий 720 — главные слова</span></div>
+      <div class="col"><small class="lab" style="color:var(--mid)">Контрапункт</small><span style="font:200 34px/1 var(--f);font-stretch:151%;letter-spacing:-.04em">Широкий 200 — второй голос</span></div>
+      <div class="col"><small class="lab" style="color:var(--mid)">Текст</small><span style="font-size:18px">Нормальная ширина, 400, 18/27. Подбираем людей в дом, которым можно доверить детей, быт и личное пространство.</span></div>
+    </div>
+  </div>
+  <div class="grid3">
+    <div class="col">
+      <span class="lab" style="color:var(--mid)">Кнопки</span>
+      <div style="display:flex;gap:14px;flex-wrap:wrap"><span class="btn">Основная →</span><span class="btn hv">Hover →</span></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap"><span class="btn lt">Вторичная</span><span class="btn off">Неактивна</span></div>
+      <span class="tl" style="align-self:flex-start">текстовая ссылка с маркером</span>
+      <p class="muted" style="font-size:14.5px">Прямоугольник без скруглений, широкие капители. Hover: заливка маркером, текст остаётся чёрным.</p>
+    </div>
+    <div class="col">
+      <span class="lab" style="color:var(--mid)">Карточка роли</span>
+      <div class="rolecard"><span class="cond" style="font-size:88px;line-height:.9">Сиделки</span><span class="muted">бережный уход за близкими →</span></div>
+      <div class="rolecard"><span class="cond mk" style="font-size:88px;line-height:.9;align-self:flex-start">Повара</span><span class="ph s-hands" style="height:120px;display:block"></span><span class="muted">hover: маркер + кадр</span></div>
+    </div>
+    <div class="col">
+      <span class="lab" style="color:var(--mid)">Поля формы</span>
+      <div class="inp"><label>По умолчанию</label><span class="box">Имя</span></div>
+      <div class="inp focus"><label>Фокус</label><span class="box">Анна</span></div>
+      <div class="inp"><label>Заполнено</label><span class="box fill">@anna_home</span></div>
+      <div class="inp err"><label>Ошибка</label><span class="box">+7 999</span><span class="e">Проверьте номер: не хватает цифр</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

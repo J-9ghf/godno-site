@@ -1,0 +1,330 @@
+<title>02 Семейный альбом</title>
+<style>
+/* 02 Семейный альбом — плотная живая вёрстка: отпечатки, скотч, штампы, контактные листы плёнки */
+:root{
+  --board:#D8D2C8; --board2:#E9E5DE; --print:#FBF9F5; --ink:#24211F; --stamp:#D9772F; --tape:rgba(236,226,180,.78); --film:#1D1A18;
+  --f:'Ysabeau',system-ui,sans-serif; --c:'Sofia Sans Extra Condensed',system-ui,sans-serif;
+  --ph-l:#E9CFAA; --ph-m:#B98D66; --ph-d:#6B4A34; --ph-dd:#3A281D; --ph-w:#FFE6BE; --ph-s:#D9A882; --sat:1.08; --grain:.95; --blur:7px;
+}
+body{background:var(--board);color:var(--ink);font-family:var(--f);font-size:18px;line-height:1.5}
+.board{background:var(--board)}
+.wrap{padding:0 64px;position:relative}
+.stamp{display:inline-block;font:800 15px/1 var(--c);letter-spacing:.08em;text-transform:uppercase;color:var(--stamp);border:2px solid var(--stamp);padding:6px 10px 5px;border-radius:3px}
+.cn{font:800 14px/1 var(--c);letter-spacing:.1em;text-transform:uppercase}
+.hand{font:500 italic 19px/1.3 var(--f);color:#4a433d}
+h1{font:800 76px/.95 var(--f);letter-spacing:-.035em}
+h2{font:800 64px/.98 var(--f);letter-spacing:-.03em}
+h3{font:750 26px/1.1 var(--f);letter-spacing:-.015em}
+.muted{color:#5b534c}
+
+/* фото-отпечатки */
+.print{position:absolute;background:var(--print);padding:12px 12px 14px;box-shadow:0 1px 1px rgba(0,0,0,.12),0 18px 30px -16px rgba(40,25,10,.55)}
+.print .ph{width:100%;height:100%}
+.print .ph{box-shadow:inset 0 0 60px rgba(40,20,5,.45)}
+.print .leak::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 40% 60% at 100% 0%,rgba(255,140,60,.45),transparent 70%);mix-blend-mode:screen;z-index:1}
+.tape{position:absolute;width:110px;height:30px;background:var(--tape);z-index:3;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.datestamp{position:absolute;right:22px;bottom:22px;z-index:3;font:700 15px/1 var(--c);letter-spacing:.12em;color:#FF9A4D;text-shadow:0 0 6px rgba(255,120,40,.6)}
+.print .ph .cap{bottom:14px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--print);font:700 17px/1 var(--f);padding:18px 24px;border-radius:4px;box-shadow:4px 4px 0 var(--stamp)}
+.btn.hv{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--stamp)}
+.btn.lt{background:var(--print);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn.off{background:#B9B2A8;color:#EEE;box-shadow:none}
+.lnk{font:600 italic 18px/1 var(--f);border-bottom:2px solid var(--stamp);padding-bottom:4px}
+
+/* header */
+.hdr{display:flex;align-items:center;gap:34px;height:84px;padding:0 64px}
+.logo{display:flex;align-items:baseline;gap:12px;margin-right:auto}
+.logo b{font:900 28px/1 var(--f);letter-spacing:-.02em}
+.logo span{font:500 italic 15px/1 var(--f);color:#5b534c}
+.hdr nav{display:flex;gap:26px}
+.hdr nav span{font:800 15px/1 var(--c);letter-spacing:.1em;text-transform:uppercase}
+
+/* hero */
+.hero{height:816px;position:relative}
+.hero .txt{position:absolute;left:64px;top:30px;width:660px;display:flex;flex-direction:column;gap:22px}
+.hero .lead{font-size:19px;max-width:40ch;color:#3d3732}
+.cards{display:flex;gap:14px;margin-top:10px}
+.icard{background:var(--print);padding:16px 16px 18px;width:196px;box-shadow:0 10px 20px -14px rgba(40,25,10,.6);display:flex;flex-direction:column;gap:8px}
+.icard b{font:750 17px/1.2 var(--f)}
+.icard span{font-size:14px;line-height:1.35;color:#5b534c}
+
+/* sections */
+.sec{padding:120px 0 0;position:relative}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:48px}
+.head p{max-width:38ch;color:#4a433d}
+
+.strip{background:var(--film);padding:34px 26px;position:relative;display:grid;gap:18px}
+.strip::before,.strip::after{content:"";position:absolute;left:0;right:0;height:14px;background:radial-gradient(circle at 50% 50%,var(--board2) 0 4.5px,transparent 5px) 0 0/30px 14px repeat-x}
+.strip::before{top:10px}.strip::after{bottom:10px}
+.frame{display:flex;flex-direction:column;gap:12px}
+.frame .ph{height:250px}
+.frame .meta{display:flex;justify-content:space-between;align-items:baseline;color:#E9E5DE}
+.frame .meta .n{font:700 14px/1 var(--c);letter-spacing:.12em;color:var(--stamp)}
+.frame h3{color:var(--print);font-size:24px}
+.frame p{font-size:14.5px;color:#B8B0A6;margin-top:4px}
+.frame.req .ph{display:grid;place-items:center;background:#2C2825}
+.frame.req .ph::before,.frame.req .ph::after{display:none}
+
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;align-items:start}
+.step{background:var(--print);padding:24px 22px 26px;min-height:280px;display:flex;flex-direction:column;gap:14px;box-shadow:0 14px 24px -18px rgba(40,25,10,.6)}
+.step .no{width:54px;height:54px;border:2.5px solid var(--stamp);border-radius:50%;display:grid;place-items:center;font:800 28px/1 var(--c);color:var(--stamp);transform:rotate(-8deg)}
+.step p{font-size:16px;color:#4a433d}
+
+.dossier{display:grid;grid-template-columns:520px 1fr;gap:56px;align-items:start}
+.sheet{background:var(--print);padding:40px 44px;position:relative;box-shadow:0 26px 40px -24px rgba(40,25,10,.6)}
+.sheet .grid{display:grid;grid-template-columns:1fr 1fr;gap:26px 34px;margin-top:28px}
+.sheet .grid div{display:flex;flex-direction:column;gap:6px}
+.sheet .grid b{font:800 15px/1 var(--c);letter-spacing:.1em;text-transform:uppercase}
+.sheet .grid span{font-size:16.5px;color:#4a433d}
+.sheet .verdict{grid-column:1/3;background:var(--board2);padding:18px 20px}
+.bigstamp{position:absolute;right:34px;top:30px;font:900 30px/1 var(--c);letter-spacing:.08em;color:var(--stamp);border:3px solid var(--stamp);padding:8px 14px 6px;transform:rotate(-9deg);opacity:.9}
+
+.review{position:relative;height:640px}
+.note{position:absolute;background:var(--print);padding:46px 52px;box-shadow:0 26px 44px -24px rgba(40,25,10,.6)}
+.note blockquote{margin:0;font:600 italic 42px/1.18 var(--f);letter-spacing:-.02em}
+
+.gar{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.lab{background:var(--print);padding:30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 14px 24px -18px rgba(40,25,10,.6)}
+.lab p{font-size:16.5px;color:#4a433d}
+
+.faq{display:grid;grid-template-columns:420px 1fr;gap:56px}
+.qs{display:flex;flex-direction:column;gap:12px}
+.q{background:var(--board2);padding:22px 26px;display:flex;justify-content:space-between;align-items:center;font:700 21px/1.25 var(--f);border-left:6px solid #B9B2A8}
+.q.open{background:var(--print);border-left-color:var(--stamp);display:block;box-shadow:0 18px 30px -22px rgba(40,25,10,.6)}
+.q.open p{font:400 17.5px/1.5 var(--f);color:#4a433d;margin-top:12px;max-width:54ch}
+.q .pm{font:800 26px/1 var(--c);color:var(--stamp)}
+
+.slip{background:var(--print);padding:48px 56px;display:grid;grid-template-columns:420px 1fr;gap:56px;position:relative;box-shadow:0 30px 50px -30px rgba(40,25,10,.6)}
+.slip::before{content:"";position:absolute;left:0;right:0;top:-1px;height:12px;background:radial-gradient(circle at 50% 0,var(--board) 0 5px,transparent 5.5px) 0 0/22px 12px repeat-x}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fl{display:flex;flex-direction:column;gap:8px}
+.fl label{font:800 14px/1 var(--c);letter-spacing:.1em;text-transform:uppercase;color:#6b625a}
+.fl .box{border:2px solid var(--ink);padding:14px 16px;font:500 18px/1.3 var(--f);color:#9b928a;background:#fff;border-radius:3px}
+.fl .box.fill{color:var(--ink)}
+.fl.focus .box{border-color:var(--stamp);box-shadow:3px 3px 0 var(--stamp)}
+.fl.err .box{border-color:#A2462A}
+.fl .e{font-size:14px;color:#A2462A;font-style:italic}
+.fl.wide{grid-column:1/3}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tg{font:700 16px/1 var(--f);padding:11px 14px;border:2px solid var(--ink);border-radius:3px;background:#fff}
+.tg.on{background:var(--ink);color:var(--print)}
+
+.ftr{background:var(--film);color:var(--board2);margin-top:120px;padding:72px 64px 40px}
+.ftr .big{font:800 italic 68px/1 var(--f);letter-spacing:-.03em;max-width:15ch}
+.ftr .row{display:flex;justify-content:space-between;margin-top:56px;padding-top:22px;border-top:2px dashed #4a433d;font-size:16px;color:#B8B0A6}
+
+/* UI */
+.ui{padding:60px 64px 72px;display:flex;flex-direction:column;gap:50px}
+.ui-top{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:end}
+.ui-top p{font-size:20px;color:#3d3732}
+.chips{display:grid;grid-template-columns:repeat(6,1fr);gap:22px}
+.chipc{background:var(--print);padding:10px 10px 14px;box-shadow:0 12px 20px -14px rgba(40,25,10,.6)}
+.chipc i{display:block;height:150px}
+.chipc b{display:block;font:750 17px/1.2 var(--f);margin-top:10px}
+.chipc span{font:700 14px/1.3 var(--c);letter-spacing:.08em;color:#6b625a}
+.row3{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:28px;align-items:start}
+.panel{background:var(--board2);padding:30px;display:flex;flex-direction:column;gap:18px}
+.spec{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:baseline}
+.spec small{font:700 13.5px/1.35 var(--c);letter-spacing:.06em;text-transform:uppercase;color:#6b625a}
+</style>
+<body>
+
+<div class="board" id="landing">
+  <header class="hdr">
+    <div class="logo"><b>ИКТ</b><span>Институт кадровых решений</span></div>
+    <nav><span>Кого подбираем</span><span>Как работаем</span><span>Проверка</span><span>Вопросы</span></nav>
+    <span class="btn" style="padding:13px 18px;font-size:15px;box-shadow:3px 3px 0 var(--stamp)">Рассказать, кого вы ищете</span>
+  </header>
+
+  <section class="hero">
+    <div class="txt">
+      <span class="stamp" style="transform:rotate(-2deg);align-self:flex-start">Подбор домашнего персонала</span>
+      <h1 class="h1t">Домашний персонал, который остаётся в&nbsp;вашей семье</h1>
+      <p class="lead">Подбираем людей в дом, которым можно доверить детей, быт и личное пространство. Приходим с проверенными кандидатами и честным разбором по каждому.</p>
+      <div style="display:flex;gap:30px;align-items:center"><span class="btn bt1">Рассказать, кого вы ищете &nbsp;→</span><span class="lnk">как мы проверяем</span></div>
+      <div class="cards">
+        <div class="icard" style="transform:rotate(-1.5deg)"><span class="cn" style="color:var(--stamp)">Проверка</span><b>На нашей стороне</b><span>Собеседования и разбор мотивации</span></div>
+        <div class="icard" style="transform:rotate(1deg)"><span class="cn" style="color:var(--stamp)">Разбор</span><b>По каждому кандидату</b><span>Опыт, мотивация, риски, мнение</span></div>
+        <div class="icard" style="transform:rotate(-.5deg)"><span class="cn" style="color:var(--stamp)">После выхода</span><b>Мы рядом</b><span>Помогаем пройти первые недели</span></div>
+      </div>
+    </div>
+
+    <div class="print p1" style="left:770px;top:34px;width:560px;height:410px;transform:rotate(-2.2deg)"><div class="ph s-hands leak"><div class="cap"><em>Плейсхолдер</em><span>Кадр: руки помощницы раскладывают тесто на кухонном столе, утренний свет, плёнка</span></div></div><span class="datestamp">КАДР 01</span></div>
+    <span class="tape" style="left:990px;top:18px;transform:rotate(3deg)"></span>
+    <div class="print p2" style="left:1040px;top:388px;width:330px;height:400px;transform:rotate(3.5deg)"><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em><span>Кадр: няня и ребёнок читают у окна, профиль</span></div></div><span class="datestamp">КАДР 02</span></div>
+    <span class="tape" style="left:1150px;top:372px;transform:rotate(-6deg);width:90px"></span>
+    <div class="print p3" style="left:770px;top:500px;width:250px;height:250px;transform:rotate(-4deg)"><div class="ph s-keys"><div class="cap"><em>Плейсхолдер</em><span>Кадр: ключи от дома на ладони</span></div></div></div>
+    <span class="hand" style="position:absolute;left:800px;top:770px;transform:rotate(-3deg)">ключи от дома доверяют не каждому</span>
+  </section>
+  <span class="an" data-at=".p1" data-pos="tl" data-dy="-6"><b>1</b><i>↘</i>Снимки «ложатся» на стол по одному и доворачиваются до угла</span>
+  <span class="an" data-at=".p2" data-pos="bl" data-dy="-40"><b>2</b><i>⤒</i>Hover: отпечаток приподнимается, тень растёт</span>
+  <span class="an" data-at=".lnk" data-pos="tl" data-dx="150" data-dy="-12"><b>3</b><i>↘</i>Hover: кнопка «вдавливается», оранжевая тень сжимается</span>
+
+  <!-- ВИДЫ ПЕРСОНАЛА: контактный лист -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="head"><div><span class="stamp">Кого подбираем</span><h2 style="margin-top:20px">Контактный лист</h2></div><p>Семь ролей в доме. Каждого кандидата мы видим лично, прежде чем показать вам.</p></div>
+      <div class="strip s1" style="grid-template-columns:repeat(4,1fr)">
+        <div class="frame"><div class="ph s-portrait"><div class="cap"><em>Плейсхолдер</em><span>Няня с ребёнком на прогулке</span></div></div><div class="meta"><h3>Няня</h3><span class="n">01А</span></div><p>Режим, прогулки, занятия</p></div>
+        <div class="frame"><div class="ph s-table"><div class="cap"><em>Плейсхолдер</em><span>Тетради и учебник на столе</span></div></div><div class="meta"><h3>Гувернантка</h3><span class="n">02А</span></div><p>Обучение, языки, школа</p></div>
+        <div class="frame"><div class="ph s-blinds"><div class="cap"><em>Плейсхолдер</em><span>Сложенное бельё, свет через жалюзи</span></div></div><div class="meta"><h3>Домработница</h3><span class="n">03А</span></div><p>Порядок и уход за вещами</p></div>
+        <div class="frame"><div class="ph s-hands"><div class="cap"><em>Плейсхолдер</em><span>Руки повара, ужин семьи</span></div></div><div class="meta"><h3>Повар</h3><span class="n">04А</span></div><p>Меню семьи, особые диеты</p></div>
+      </div>
+      <div class="strip" style="grid-template-columns:repeat(4,1fr);margin-top:14px">
+        <div class="frame"><div class="ph s-car"><div class="cap"><em>Плейсхолдер</em><span>Водитель ждёт у машины, со спины</span></div></div><div class="meta"><h3>Семейный водитель</h3><span class="n">05А</span></div><p>Поездки семьи и детей</p></div>
+        <div class="frame"><div class="ph s-care"><div class="cap"><em>Плейсхолдер</em><span>Сиделка и пожилой человек у окна</span></div></div><div class="meta"><h3>Сиделка</h3><span class="n">06А</span></div><p>Бережный уход за близкими</p></div>
+        <div class="frame"><div class="ph s-hall"><div class="cap"><em>Плейсхолдер</em><span>Холл большого дома</span></div></div><div class="meta"><h3>Управляющий домом</h3><span class="n">07А</span></div><p>Персонал и хозяйство</p></div>
+        <div class="frame req"><div class="ph"><span style="font:600 italic 22px/1.3 var(--f);color:#B8B0A6;text-align:center;padding:0 24px">Не нашли роль?<br>Расскажите, кого ищете</span></div><div class="meta"><h3 style="color:var(--stamp)">Ваш запрос</h3><span class="n">08А</span></div><p>Подберём и под особую задачу</p></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".s1" data-pos="tr" data-dy="-48"><b>4</b><i>⇆</i>Лента плёнки чуть смещается при прокрутке; hover — кадр проявляется из тёмного</span>
+
+  <!-- КАК ПРОХОДИТ ПОДБОР -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="head"><div><span class="stamp">Как проходит подбор</span><h2 style="margin-top:20px">Пять шагов</h2></div><p>От первого разговора до спокойной жизни с новым человеком в доме.</p></div>
+      <div class="steps">
+        <div class="step st1" style="transform:rotate(-1deg)"><span class="no">1</span><h3>Разговор</h3><p>Вы рассказываете, кого ищете и что уже пробовали.</p></div>
+        <div class="step" style="transform:rotate(.8deg);margin-top:26px"><span class="no">2</span><h3>Диагностика</h3><p>Понимаем, почему раньше не получалось.</p></div>
+        <div class="step" style="transform:rotate(-.6deg)"><span class="no">3</span><h3>Подборка</h3><p>Приносим проверенных кандидатов с разбором.</p></div>
+        <div class="step" style="transform:rotate(1deg);margin-top:26px"><span class="no">4</span><h3>Выход</h3><p>Помогаем спокойно пройти первые недели.</p></div>
+        <div class="step" style="transform:rotate(-.8deg)"><span class="no">5</span><h3>Сопровождение</h3><p>Остаёмся на связи после выхода.</p></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".st1" data-pos="bl" data-dy="70" data-dx="-16"><b>5</b><i>✳</i>Штамп с номером «ставится» с лёгкой отдачей, по одному на шаг</span>
+
+  <!-- ПРОВЕРКА -->
+  <section class="sec">
+    <div class="wrap dossier">
+      <div style="position:relative;height:620px">
+        <span class="stamp">Как мы проверяем</span>
+        <h2 style="margin-top:20px">Разбор, а не резюме</h2>
+        <p class="muted" style="margin-top:18px;max-width:30ch">Решение остаётся за вами. Мы даём полную картину перед глазами.</p>
+        <div class="print" style="left:0;top:330px;width:400px;height:280px;transform:rotate(-2deg)"><div class="ph s-table"><div class="cap"><em>Плейсхолдер</em><span>Кадр: разговор с кандидатом за столом, через плечо</span></div></div></div>
+      </div>
+      <div class="sheet sh">
+        <span class="bigstamp">Проверено</span>
+        <span class="cn" style="color:#6b625a">Карта кандидата</span>
+        <h3 style="font-size:34px;margin-top:10px">Что вы получаете по каждому</h3>
+        <div class="grid">
+          <div><b>Опыт</b><span>Какие задачи человек действительно вёл</span></div>
+          <div><b>Мотивация</b><span>Что им движет и на чём это держится</span></div>
+          <div><b>Риски</b><span>Что может пойти не так и когда</span></div>
+          <div><b>Горизонт</b><span>Как долго готов работать в семье</span></div>
+          <div class="verdict"><b style="color:var(--stamp)">Наше мнение</b><span style="font-size:18px">Результаты проверки и честная оценка: берём или нет, и почему.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".sh" data-pos="tr" data-dy="-52"><b>6</b><i>✳</i>Штамп «Проверено» опускается на лист при появлении</span>
+
+  <!-- ОТЗЫВ -->
+  <section class="sec">
+    <div class="wrap review">
+      <div class="print" style="left:64px;top:0;width:520px;height:620px;transform:rotate(-1.5deg)"><div class="ph s-care leak"><div class="cap"><em>Плейсхолдер</em><span>Кадр: помощница и хозяйка дома пьют чай на кухне, тёплый вечер, лица в полупрофиль</span></div></div><span class="datestamp">КАДР 12</span></div>
+      <div class="note nt" style="left:520px;top:120px;width:780px;transform:rotate(1deg)">
+        <span class="stamp">Отзыв клиентки</span>
+        <blockquote style="margin-top:24px">«Она мне очень нравится. И психологически, и по навыкам — то, что я искала. Мне очень комфортно с ней».</blockquote>
+      </div>
+      <span class="tape" style="left:860px;top:100px;transform:rotate(-4deg)"></span>
+    </div>
+  </section>
+  <span class="an" data-at=".nt" data-pos="br" data-dy="56"><b>7</b><i>↗</i>Записка с отзывом наезжает на фото при прокрутке (лёгкий parallax)</span>
+
+  <!-- ГАРАНТИИ -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="head"><div><span class="stamp">Гарантии</span><h2 style="margin-top:20px">Что мы берём на себя</h2></div><p>Условия замены кандидата — уточняются.</p></div>
+      <div class="gar">
+        <div class="lab"><span class="cn" style="color:var(--stamp)">01 · решение</span><h3>Выбираете вы</h3><p>Приносим кандидатов с разбором, решение за вами.</p></div>
+        <div class="lab"><span class="cn" style="color:var(--stamp)">02 · адаптация</span><h3>Первые недели вместе</h3><p>Помогаем человеку войти в дом и обязанности.</p></div>
+        <div class="lab"><span class="cn" style="color:var(--stamp)">03 · связь</span><h3>Рядом после выхода</h3><p>Подключаемся, если что-то идёт не так.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec">
+    <div class="wrap faq">
+      <div><span class="stamp">Вопросы</span><h2 style="margin-top:20px">О чём обычно спрашивают</h2></div>
+      <div class="qs">
+        <div class="q open qo"><div style="display:flex;justify-content:space-between"><span>С чего вы начинаете?</span><span class="pm">−</span></div><p>С разговора о том, кого вы ищете и что не сложилось раньше. Только потом начинаем поиск.</p></div>
+        <div class="q"><span>Где вы ищете кандидатов?</span><span class="pm">+</span></div>
+        <div class="q"><span>Кто принимает решение?</span><span class="pm">+</span></div>
+        <div class="q"><span>Что происходит после выхода человека?</span><span class="pm">+</span></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".qo" data-pos="tr" data-dy="-48"><b>8</b><i>↕</i>Карточка вытягивается из стопки, оранжевый корешок проявляется</span>
+
+  <!-- ФОРМА -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="slip">
+        <div><span class="stamp">Заявка</span><h2 style="margin-top:20px">Расскажите, кого вы ищете</h2><p class="muted" style="margin-top:18px">За 20 минут станет понятно, чем мы можем помочь.</p><p class="hand" style="margin-top:40px">или напишите в Telegram: @kateriniya</p></div>
+        <div class="fields fm">
+          <div class="fl"><label>Имя</label><span class="box fill">Анна</span></div>
+          <div class="fl focus"><label>Телефон или Telegram</label><span class="box">@username</span></div>
+          <div class="fl wide"><label>Кого ищете</label><div class="tags"><span class="tg on">Няня</span><span class="tg">Гувернантка</span><span class="tg">Домработница</span><span class="tg">Повар</span><span class="tg">Водитель</span><span class="tg">Сиделка</span><span class="tg">Управляющий</span></div></div>
+          <div class="fl wide"><label>Что уже пробовали</label><span class="box" style="min-height:96px">Коротко, своими словами</span></div>
+          <div class="wide" style="grid-column:1/3;display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span style="font-size:14.5px;color:#6b625a">Нажимая, вы соглашаетесь с политикой конфиденциальности</span><span class="btn">Отправить заявку &nbsp;→</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".fm" data-pos="tr" data-dy="-56"><b>9</b><i>▭</i>Фокус: рамка поля становится оранжевой с «печатной» тенью</span>
+
+  <footer class="ftr">
+    <p class="big">Находим людей, которые остаются.</p>
+    <div class="row"><span>ИКТ · Институт кадровых решений</span><span>Telegram @kateriniya</span><span>Политика конфиденциальности</span></div>
+  </footer>
+</div>
+
+<!-- UI -->
+<div class="board ui" id="ui">
+  <div class="ui-top">
+    <div><span class="stamp">Концепция 02 · UI-система</span><h1 style="margin-top:22px">Семейный альбом</h1></div>
+    <p>Сайт как альбом семьи, которой мы помогаем: отпечатки на плёнке, скотч, штампы, плотная живая вёрстка. Тактильно и по-человечески, но без сентиментальности: крепкий тёмный текст, строгие прямые формы и один «плёночный» оранжевый — цвет даты в углу снимка.</p>
+  </div>
+  <div class="chips">
+    <div class="chipc" style="transform:rotate(-1deg)"><i style="background:#D8D2C8"></i><b>Картон</b><span>#D8D2C8 · фон</span></div>
+    <div class="chipc" style="transform:rotate(1deg)"><i style="background:#E9E5DE"></i><b>Светлый картон</b><span>#E9E5DE · блоки</span></div>
+    <div class="chipc" style="transform:rotate(-.5deg)"><i style="background:#FBF9F5;box-shadow:inset 0 0 0 1px #ddd"></i><b>Фотобумага</b><span>#FBF9F5 · карточки</span></div>
+    <div class="chipc" style="transform:rotate(.8deg)"><i style="background:#24211F"></i><b>Тушь</b><span>#24211F · текст, кнопки</span></div>
+    <div class="chipc" style="transform:rotate(-1.2deg)"><i style="background:#1D1A18"></i><b>Плёнка</b><span>#1D1A18 · контактные листы</span></div>
+    <div class="chipc" style="transform:rotate(.6deg)"><i style="background:#D9772F"></i><b>Штамп</b><span>#D9772F · акцент</span></div>
+  </div>
+  <div class="row3">
+    <div class="panel">
+      <span class="cn" style="color:var(--stamp)">Шрифты</span>
+      <div class="spec"><small>Ysabeau 800<br>заголовки</small><span style="font:800 56px/.95 var(--f);letter-spacing:-.035em">Остаётся в семье</span></div>
+      <div class="spec"><small>Ysabeau 600 italic<br>цитаты, подписи</small><span style="font:600 italic 30px/1.15 var(--f)">Мне очень комфортно с ней</span></div>
+      <div class="spec"><small>Ysabeau 400<br>текст 18/27</small><span>Подбираем людей в дом, которым можно доверить детей, быт и личное пространство.</span></div>
+      <div class="spec"><small>Sofia Sans Extra Condensed 800</small><span class="cn" style="font-size:20px">Штампы · метки · номера кадров</span></div>
+      <p style="font-size:14.5px;color:#6b625a">Оба шрифта без засечек. Ysabeau — гуманистический гротеск с живой пластикой; узкий Sofia Sans — «технический» голос плёнки и штампов.</p>
+    </div>
+    <div class="panel">
+      <span class="cn" style="color:var(--stamp)">Кнопки</span>
+      <div style="display:flex;gap:18px;flex-wrap:wrap"><span class="btn">Основная →</span><span class="btn hv">Hover →</span></div>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center"><span class="btn lt">Вторичная</span><span class="btn off">Неактивна</span></div>
+      <span class="lnk" style="align-self:flex-start">текстовая ссылка</span>
+      <p style="font-size:14.5px;color:#6b625a">Твёрдая «печатная» тень. Hover: кнопка вдавливается на 2 px.</p>
+      <span class="cn" style="color:var(--stamp);margin-top:6px">Карточка-отпечаток</span>
+      <div style="position:relative;height:250px"><div class="print" style="left:10px;top:6px;width:250px;height:230px;transform:rotate(-2deg)"><div class="ph s-hall"></div><span class="datestamp">КАДР 07</span></div><span class="tape" style="left:90px;top:-6px;transform:rotate(4deg);width:80px"></span><span class="hand" style="position:absolute;left:280px;top:90px;max-width:120px">подпись от руки — курсив Ysabeau</span></div>
+    </div>
+    <div class="panel" style="background:var(--print)">
+      <span class="cn" style="color:var(--stamp)">Поля формы</span>
+      <div class="fl"><label>По умолчанию</label><span class="box">Имя</span></div>
+      <div class="fl focus"><label>Фокус</label><span class="box fill">Анна</span></div>
+      <div class="fl"><label>Заполнено</label><span class="box fill">@anna_home</span></div>
+      <div class="fl err"><label>Ошибка</label><span class="box fill">+7 999</span><span class="e">Проверьте номер: не хватает цифр</span></div>
+      <div class="tags"><span class="tg on">Выбрано</span><span class="tg">Вариант</span></div>
+      <span class="stamp" style="align-self:flex-start;transform:rotate(-3deg)">Штамп-метка</span>
+    </div>
+  </div>
+</div>
+</body></html>
