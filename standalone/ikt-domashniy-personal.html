@@ -178,6 +178,10 @@ em{font-style:italic}
 .more{padding-block:clamp(90px,11vw,170px)}
 .more-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:auto 1fr;column-gap:clamp(14px,1.6vw,24px);align-items:start}
 .more-photo{grid-column:1/6;grid-row:1/3;aspect-ratio:3/4.3;width:100%}
+.more-quote{grid-column:1/6;grid-row:1/3;aspect-ratio:3/4.3;width:100%;margin:0;background:var(--forest);color:var(--on-forest);border-radius:260px 6px 6px 6px;padding:clamp(28px,4vw,60px) clamp(28px,4vw,60px) clamp(130px,12vw,180px);display:flex;flex-direction:column;justify-content:center;gap:22px;position:relative;overflow:hidden}
+.more-quote::after{content:"";position:absolute;right:-12%;top:-8%;width:70%;aspect-ratio:1;background:var(--leaf) center/contain no-repeat;filter:invert(1);opacity:.08;transform:rotate(20deg);pointer-events:none}
+.more-quote .label{color:var(--on-forest-muted)}
+.more-quote p{font:400 clamp(24px,2.4vw,38px)/1.22 var(--head);letter-spacing:-.02em;max-width:16ch;position:relative}
 .more-photo .in{--lp:60% -10%;--ls:95%}
 .more-head{grid-column:7/13;display:grid;gap:22px;margin-bottom:clamp(36px,5vw,60px)}
 .more-items{grid-column:7/13;grid-row:2;display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,4vw,56px) clamp(24px,3vw,48px)}
@@ -206,6 +210,11 @@ em{font-style:italic}
 .process-photo{aspect-ratio:4/5;width:100%;max-height:calc(100vh - 140px)}
 .process-photo .layer{opacity:0}
 .process-photo .layer.on{opacity:1}
+.ph .type-layer{inset:0;background:var(--sage);display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:clamp(28px,4vw,56px)}
+.ph .type-layer::after{background-position:85% 10%;background-size:70% auto;opacity:.12}
+.tl-num{font:400 clamp(120px,14vw,220px)/.8 var(--head);letter-spacing:-.06em;color:var(--herb)}
+.tl-txt{font:400 clamp(26px,2.4vw,36px)/1.15 var(--head);letter-spacing:-.02em;color:var(--ink);margin-top:18px}
+.tl-note{font-size:clamp(20px,1.8vw,26px)}
 .process-media .label{margin-top:16px}
 .steps{list-style:none;margin:clamp(40px,5vw,70px) 0 0;padding:0}
 .step{display:grid;grid-template-columns:clamp(70px,8vw,120px) minmax(0,1fr);gap:clamp(14px,2vw,28px);padding:clamp(34px,5vw,64px) 0;border-top:1px solid var(--line);transition:opacity .8s var(--ease)}
@@ -247,6 +256,11 @@ em{font-style:italic}
 .case .story{grid-column:9/13;display:grid;gap:18px;padding-top:clamp(0px,2vw,30px)}
 .case.rev .ph{grid-column:6/13;grid-row:1;aspect-ratio:4/4.6}
 .case.rev .story{grid-column:1/5;grid-row:1}
+.facts{grid-column:6/13;grid-row:1;position:sticky;top:100px;aspect-ratio:4/4.6;background:var(--forest);color:var(--on-forest);border-radius:999px 999px 6px 6px;padding:clamp(28px,4vw,60px);display:flex;flex-direction:column;justify-content:flex-end;gap:clamp(18px,2vw,28px)}
+.facts .label{color:var(--on-forest-muted)}
+.fact{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:20px;align-items:baseline;padding-top:clamp(16px,2vw,24px);border-top:1px solid rgba(241,238,229,.2)}
+.fact b{font:400 clamp(52px,6vw,96px)/.9 var(--head);letter-spacing:-.05em;color:var(--sage-2)}
+.fact span{color:var(--on-forest-muted);font-size:15.5px}
 .case-tag{font:500 clamp(15px,1.25vw,17px)/1.4 var(--head);color:var(--forest);padding-bottom:18px;border-bottom:1px solid var(--line-strong)}
 .case h3{font-size:clamp(24px,2.2vw,34px);line-height:1.12}
 .case dl{margin:0;display:grid;gap:16px}
@@ -295,13 +309,17 @@ em{font-style:italic}
 .qa .ans p{padding:0 48px 28px 0;color:var(--muted);max-width:60ch}
 
 /* ---------- final cta ---------- */
-.final{position:relative;padding-block:clamp(70px,9vw,140px) clamp(60px,8vw,110px);overflow:hidden}
-.final-bg{position:absolute;inset:0;border-radius:0}
+.final{position:relative;padding-block:clamp(110px,12vw,180px);overflow:hidden;min-height:min(100vh,940px);display:flex;align-items:center}
+.final>.wrap{width:100%}
+.final-bg{position:absolute;inset:0;border-radius:0;margin:0}
+.final-bg::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(22,30,22,.66) 0%,rgba(22,30,22,.42) 48%,rgba(22,30,22,.18) 100%);pointer-events:none}
 .final-bg .in{--lp:88% -5%;--ls:46%;--lo:.2}
 .final-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(30px,5vw,90px);align-items:center}
-.final-copy{display:grid;gap:26px;color:var(--ink)}
+.final-copy{display:grid;gap:26px;color:var(--on-forest)}
+.final-copy .label{color:var(--on-forest-muted)}
+.final-copy .h2 em{color:var(--sage-2)}
 .final-copy .h2{font-size:clamp(32px,4.2vw,62px)}
-.final-copy .lead{color:#363D31}
+.final-copy .lead{color:rgba(241,238,229,.88)}
 .final .ph figcaption{left:var(--gut);bottom:18px}
 .formcard{background:rgba(252,251,248,.94);backdrop-filter:blur(6px);border-radius:6px;padding:clamp(24px,3.2vw,46px);box-shadow:0 40px 90px -50px rgba(35,41,31,.45)}
 .field{display:grid;gap:8px;margin-bottom:22px}
@@ -382,6 +400,8 @@ em{font-style:italic}
   .why-note{grid-column:1}
   .why-item{grid-template-columns:minmax(0,1fr)}
   .more-photo{aspect-ratio:4/4.4;margin-bottom:40px}
+  .more-quote{aspect-ratio:auto;min-height:340px;padding-bottom:clamp(28px,4vw,60px);margin-bottom:40px;border-radius:160px 6px 6px 6px}
+  .facts{position:relative;top:auto;aspect-ratio:auto;border-radius:200px 200px 6px 6px;padding-top:110px}
   .more-small{display:none}
   .srow{grid-template-columns:minmax(0,1fr)}
   .process-media{position:static}
@@ -389,12 +409,8 @@ em{font-style:italic}
   .case .story{margin-top:28px}
   .case .ph,.case.rev .ph{position:relative;top:auto;aspect-ratio:4/3.4}
   .case.rev .story{order:2}
-  .final-bg{position:relative;height:340px;margin:0 var(--gut);border-radius:6px}
-  .final{padding-top:0}
-  .final-grid{margin-top:-120px}
-  .final-copy{background:var(--milk);padding:28px 24px 0;border-radius:6px 6px 0 0;margin-inline:var(--gut)}
-  .formcard{margin-inline:var(--gut)}
-  .final-grid.wrap{padding-inline:0}
+  .final{padding-block:72px;min-height:0}
+  .final-bg::after{background:linear-gradient(180deg,rgba(22,30,22,.66) 0%,rgba(22,30,22,.45) 45%,rgba(22,30,22,.3) 100%)}
   .foot .wrap{grid-template-columns:minmax(0,1fr)}
   .foot nav{justify-items:start}
 }
@@ -478,7 +494,7 @@ em{font-style:italic}
     <div class="wrap">
       <div class="roles-head rv">
         <h2 class="h2" id="h-roles">Кого <em>подбираем</em></h2>
-        <p class="lead">Выберите роль — покажем, какую сцену дома мы для неё снимем. <span class="hand" style="display:block;margin-top:8px;font-size:22px">восемь ролей, один подход</span></p>
+        <p class="lead"><span class="hand" style="display:block;font-size:22px">восемь ролей, один подход</span></p>
       </div>
       <div class="roles-grid">
         <ul class="role-list rv" role="list">
@@ -488,16 +504,9 @@ em{font-style:italic}
           <li><button type="button" data-i="3" aria-pressed="false">Водители <small>04</small></button></li>
         </ul>
         <div class="rv">
-          <figure class="ph arch role-photo" aria-live="polite">
+          <figure class="ph arch role-photo">
             <div class="layer t-sage on photo" style="--img:url(photo-nanny.webp)" role="img" aria-label="Няня читает книгу ребёнку на диване у окна"><span class="sr">Няни</span></div>
-            <div class="layer t-linen"></div>
-            <div class="layer t-oak"></div>
-            <div class="layer t-moss"></div>
-            <div class="layer t-stone"></div>
-            <div class="layer t-morning"></div>
-            <div class="layer t-dusk"></div>
-            <div class="layer t-sage" style="--lp:10% 70%;--ls:90%"></div>
-            <figcaption id="role-cap" hidden>Фото: няня с ребёнком читают на полу у окна, мягкий дневной свет</figcaption>
+            
           </figure>
         </div>
         <ul class="role-list right rv" role="list">
@@ -542,7 +551,7 @@ em{font-style:italic}
   <!-- MORE THAN A DATABASE -->
   <section class="more" aria-labelledby="h-more">
     <div class="wrap more-grid">
-      <figure class="ph arch-l more-photo rv" data-par=".06"><div class="in t-oak"></div><figcaption>Фото: гостиная с дубовым столом, льняные шторы и крупное растение в горшке</figcaption></figure>
+      <blockquote class="more-quote rv"><span class="label">Принцип</span><p>Не присылаем стопку резюме — приходим с проверенными кандидатами и честным разбором по каждому.</p></blockquote>
       <figure class="ph more-small rv"><div class="in t-sage photo" style="--img:url(photo-windowsill.jpg)" role="img" aria-label="Травы в горшках на подоконнике"></div></figure>
       <div class="more-head rv">
         <p class="label">Отличие</p>
@@ -579,7 +588,7 @@ em{font-style:italic}
         <figure class="ph arch process-photo">
           <div class="layer t-linen on photo" style="--img:url(photo-kitchen.jpg)" role="img" aria-label="Кухня утром: стол у окна, ваза с ветками и кружка"></div>
           <div class="layer t-stone photo" style="--img:url(photo-notes.webp)" role="img" aria-label="Листы бумаги и карандаши на деревянном блюде с оливковыми ветками"></div>
-          <div class="layer t-sage"></div>
+          <div class="layer type-layer" aria-hidden="true"><span class="tl-num">03</span><span class="tl-txt">Подборка</span><span class="hand tl-note">с разбором по каждому</span></div>
           <div class="layer t-morning photo" style="--img:url(photo-breakfast.jpg)" role="img" aria-label="Утренняя кухня: человек готовит завтрак, на столе выпечка и сок"></div>
           <div class="layer t-moss photo" style="--img:url(photo-garden.jpg)" role="img" aria-label="Сад: ребёнок читает книгу под льняным навесом между деревьями"></div>
           <figcaption id="proc-cap" hidden>Фото: две чашки на столе у окна — первый разговор</figcaption>
@@ -647,7 +656,7 @@ em{font-style:italic}
       </article>
 
       <article class="case rev">
-        <figure class="ph arch rv" data-par=".05"><div class="in t-sage" style="--lp:0% 0%;--ls:85%"></div><figcaption>Фото: детская в загородном доме — кроватка, льняной плед, за окном сосны</figcaption></figure>
+        <div class="facts rv" aria-label="Кейс в цифрах"><span class="label">Итог</span><div class="fact"><b>2–3</b><span>недели — закрыли запрос</span></div><div class="fact"><b>1-й</b><span>кандидат — сразу подошёл</span></div><div class="fact"><b>1+</b><span>год — няня работает в семье</span></div></div>
         <div class="story rv">
           <p class="case-tag">Закрыто за 2–3 недели · с первого кандидата · работает больше года</p>
           <p class="pos">Позиция: грудничковая няня</p>
@@ -814,16 +823,15 @@ em{font-style:italic}
     addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(tick)}},{passive:true});tick();
   }
 
-  // roles: switch scene
-  var caps=['Фото: няня с ребёнком читают на полу у окна, мягкий дневной свет','Фото: свежее бельё на льняном покрывале, утреннее солнце на стене','Фото: руки повара нарезают зелень на дубовой доске','Фото: машина у дома после дождя, мокрая хвоя, открытая дверь','Фото: ключи, блокнот и ваза с веткой на консоли в прихожей','Фото: детский стол — книги, тетради, акварель','Фото: кресло у окна, плед и чашка травяного чая','Фото: руки в рабочих перчатках пересаживают растение'];
-  var rbtn=[].slice.call(document.querySelectorAll('.role-list button')),layers=[].slice.call(document.querySelectorAll('.role-photo .layer')),rcap=document.getElementById('role-cap');
-  function setRole(i){rbtn.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.i==i)});layers.forEach(function(l,k){l.classList.toggle('on',k==i)});rcap.textContent=caps[i];rcap.hidden=layers[i].classList.contains('photo')}
+  // roles: highlight the chosen role
+  var rbtn=[].slice.call(document.querySelectorAll('.role-list button'));
+  function setRole(i){rbtn.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.i==i)})}
   rbtn.forEach(function(b){b.addEventListener('click',function(){setRole(b.dataset.i)});b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)setRole(b.dataset.i)})});
 
   // process: sticky photo follows the step in view
   var steps=[].slice.call(document.querySelectorAll('.step')),pl=[].slice.call(document.querySelectorAll('.process-photo .layer')),pcap=document.getElementById('proc-cap');
   if('IntersectionObserver' in window){
-    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=steps.indexOf(e.target);steps.forEach(function(s,k){s.classList.toggle('active',k===i)});pl.forEach(function(l,k){l.classList.toggle('on',k===i)});pcap.textContent=e.target.dataset.cap;pcap.hidden=pl[i].classList.contains('photo')}})},{rootMargin:'-45% 0px -45% 0px'});
+    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=steps.indexOf(e.target);steps.forEach(function(s,k){s.classList.toggle('active',k===i)});pl.forEach(function(l,k){l.classList.toggle('on',k===i)});pcap.textContent=e.target.dataset.cap;pcap.hidden=pl[i].classList.contains('photo')||pl[i].classList.contains('type-layer')}})},{rootMargin:'-45% 0px -45% 0px'});
     steps.forEach(function(s){so.observe(s)});
   }
 
