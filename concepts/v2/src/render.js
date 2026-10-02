@@ -3,7 +3,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 (async () => {
   const name = process.argv[2];
-  const html = fs.readFileSync('common.html','utf8') + fs.readFileSync(name + '.html','utf8');
+  const html = (fs.readFileSync('common.html','utf8') + fs.readFileSync(name + '.html','utf8')).replace('/*FONTS4*/', fs.existsSync('fonts/local4.css') ? fs.readFileSync('fonts/local4.css','utf8') : '');
   fs.writeFileSync(name + '.full.html', html);
   const b = await chromium.launch({ proxy: { server: process.env.HTTPS_PROXY } });
   const p = await b.newPage({ ignoreHTTPSErrors: true, viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
