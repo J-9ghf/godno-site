@@ -203,23 +203,29 @@ em{font-style:italic}
 .srow:hover h3{color:var(--forest)}
 .srow p{color:var(--muted);font-size:16px;max-width:52ch}
 
-/* ---------- process: vertical, sticky photo ---------- */
+/* ---------- process: typographic, no photos ---------- */
 .process{padding-block:clamp(90px,11vw,170px)}
 .process-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(30px,6vw,110px);align-items:start}
-.process-media{position:sticky;top:96px}
-.process-photo{aspect-ratio:4/5;width:100%;max-height:calc(100vh - 140px)}
-.process-photo .layer{opacity:0}
-.process-photo .layer.on{opacity:1}
-.ph .type-layer{inset:0;background:var(--sage);display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:clamp(28px,4vw,56px)}
-.ph .type-layer::after{background-position:85% 10%;background-size:70% auto;opacity:.12}
-.tl-num{font:400 clamp(120px,14vw,220px)/.8 var(--head);letter-spacing:-.06em;color:var(--herb)}
-.tl-txt{font:400 clamp(26px,2.4vw,36px)/1.15 var(--head);letter-spacing:-.02em;color:var(--ink);margin-top:18px}
-.tl-note{font-size:clamp(20px,1.8vw,26px)}
-.process-media .label{margin-top:16px}
+.proc-panel{position:sticky;top:96px;min-height:min(640px,calc(100vh - 150px));background:var(--forest);color:var(--on-forest);border-radius:260px 6px 6px 6px;padding:clamp(30px,4vw,60px);display:flex;flex-direction:column;justify-content:flex-end;gap:clamp(18px,2vw,26px);overflow:hidden;isolation:isolate}
+.proc-panel::after{content:"";position:absolute;right:-14%;top:-6%;width:72%;aspect-ratio:1;background:var(--leaf) center/contain no-repeat;filter:invert(1);opacity:.07;transform:rotate(18deg);z-index:-1;pointer-events:none}
+.proc-panel .label{color:var(--on-forest-muted)}
+.proc-num{font:400 clamp(130px,15vw,240px)/.78 var(--head);letter-spacing:-.07em;color:var(--sage-2);display:block}
+.proc-title{font:400 clamp(24px,2.3vw,34px)/1.15 var(--head);letter-spacing:-.02em;min-height:2.3em}
+.proc-num.swap,.proc-title.swap{animation:procIn .9s var(--ease)}
+@keyframes procIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.proc-track{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:clamp(18px,2vw,26px);border-top:1px solid rgba(241,238,229,.2);font:500 13px/1 var(--head);letter-spacing:.04em}
+.proc-track span{color:rgba(241,238,229,.45);transition:color .8s var(--ease)}
+.proc-track span.on{color:var(--on-forest)}
+.proc-track i{font-style:normal;color:rgba(241,238,229,.3)}
+.proc-panel .hand{color:var(--sage-2);font-size:clamp(19px,1.6vw,23px)}
 .steps{list-style:none;margin:clamp(40px,5vw,70px) 0 0;padding:0}
-.step{display:grid;grid-template-columns:clamp(70px,8vw,120px) minmax(0,1fr);gap:clamp(14px,2vw,28px);padding:clamp(34px,5vw,64px) 0;border-top:1px solid var(--line);transition:opacity .8s var(--ease)}
+.step{position:relative;display:grid;grid-template-columns:clamp(70px,8vw,120px) minmax(0,1fr);gap:clamp(14px,2vw,28px);padding:clamp(34px,5vw,64px) 0;border-top:1px solid var(--line);transition:opacity .8s var(--ease)}
 .step .num{font:400 clamp(44px,5vw,80px)/.9 var(--head);letter-spacing:-.04em;color:var(--sage-2);transition:color .8s var(--ease)}
 .step.active .num{color:var(--herb)}
+.step .link{position:absolute;left:clamp(14px,1.6vw,26px);top:calc(clamp(34px,5vw,64px) + clamp(44px,5vw,80px) + 14px);bottom:calc(-1 * clamp(34px,5vw,64px) + 18px);width:1px;background:var(--line-strong);transition:background .8s var(--ease)}
+.step .link::after{content:"";position:absolute;left:-4px;bottom:0;width:8px;height:8px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;color:var(--line-strong);transform:rotate(45deg);transition:color .8s var(--ease)}
+.step.active .link{background:var(--herb)}
+.step.active .link::after{color:var(--herb)}
 .step h3{font-size:clamp(21px,1.9vw,28px);line-height:1.18;margin-bottom:12px;font-weight:500}
 .step p{color:var(--muted);max-width:44ch}
 
@@ -404,8 +410,7 @@ em{font-style:italic}
   .facts{position:relative;top:auto;aspect-ratio:auto;border-radius:200px 200px 6px 6px;padding-top:110px}
   .more-small{display:none}
   .srow{grid-template-columns:minmax(0,1fr)}
-  .process-media{position:static}
-  .process-photo{aspect-ratio:16/11}
+  .proc-panel{display:none}
   .case .story{margin-top:28px}
   .case .ph,.case.rev .ph{position:relative;top:auto;aspect-ratio:4/3.4}
   .case.rev .story{order:2}
@@ -420,6 +425,7 @@ em{font-style:italic}
   .dos-list li{grid-template-columns:minmax(0,1fr);gap:4px}
   .dossier{transform:none}
   .step{grid-template-columns:minmax(0,1fr)}
+  .step .link{display:none}
   .step .num{font-size:56px}
   .logo{--lw:132px}
   .seal{display:none}
@@ -584,25 +590,22 @@ em{font-style:italic}
   <!-- PROCESS -->
   <section class="process" id="process" aria-labelledby="h-process">
     <div class="wrap process-grid">
-      <div class="process-media rv">
-        <figure class="ph arch process-photo">
-          <div class="layer t-linen on photo" style="--img:url(photo-kitchen.jpg)" role="img" aria-label="Кухня утром: стол у окна, ваза с ветками и кружка"></div>
-          <div class="layer t-stone photo" style="--img:url(photo-notes.webp)" role="img" aria-label="Листы бумаги и карандаши на деревянном блюде с оливковыми ветками"></div>
-          <div class="layer type-layer" aria-hidden="true"><span class="tl-num">03</span><span class="tl-txt">Подборка</span><span class="hand tl-note">с разбором по каждому</span></div>
-          <div class="layer t-morning photo" style="--img:url(photo-breakfast.jpg)" role="img" aria-label="Утренняя кухня: человек готовит завтрак, на столе выпечка и сок"></div>
-          <div class="layer t-moss photo" style="--img:url(photo-garden.jpg)" role="img" aria-label="Сад: ребёнок читает книгу под льняным навесом между деревьями"></div>
-          <figcaption id="proc-cap" hidden>Фото: две чашки на столе у окна — первый разговор</figcaption>
-        </figure>
-      </div>
+      <aside class="proc-panel rv" aria-hidden="true">
+        <span class="label">Шаг</span>
+        <span class="proc-num" id="proc-num">01</span>
+        <span class="proc-title" id="proc-title">Разговор и диагностика</span>
+        <span class="hand">от первого разговора до уверенной работы</span>
+        <div class="proc-track" id="proc-track"><span class="on">01</span><i>→</i><span>02</span><i>→</i><span>03</span><i>→</i><span>04</span><i>→</i><span>05</span></div>
+      </aside>
       <div>
         <p class="label rv">Пять шагов</p>
         <h2 class="h2 rv" id="h-process" style="margin-top:18px">Как мы <em>работаем</em></h2>
         <ol class="steps">
-          <li class="step active" data-cap="Фото: две чашки на столе у окна — первый разговор"><span class="num">01</span><div><h3>Разговор и диагностика</h3><p>Вы рассказываете, кого ищете и что уже пробовали. Мы делаем вывод, почему до сих пор не получалось.</p></div></li>
-          <li class="step" data-cap="Фото: открытый блокнот с заметками и карандаш на льняной скатерти"><span class="num">02</span><div><h3>Определяем, что чинить</h3><p>Если причина в подборе — идём искать. Если в устройстве роли — сначала наводим порядок в обязанностях и договорённостях.</p></div></li>
-          <li class="step" data-cap="Фото: несколько папок с разборами кандидатов, рядом ветка эвкалипта"><span class="num">03</span><div><h3>Подборка</h3><p>Приносим первых кандидатов, прошедших проверку и собеседования, с разбором по каждому.</p></div></li>
-          <li class="step" data-cap="Фото: утренняя кухня — новый человек в доме готовит завтрак, видны только руки"><span class="num">04</span><div><h3>Выход</h3><p>Помогаем адаптироваться и спокойно пройти первые недели.</p></div></li>
-          <li class="step" data-cap="Фото: сад за домом вечером, на скамье плед"><span class="num">05</span><div><h3>Дальше</h3><p>Остаёмся на связи и подключаемся, если появляются сложности.</p></div></li>
+          <li class="step active"><span class="num">01</span><span class="link" aria-hidden="true"></span><div><h3>Разговор и диагностика</h3><p>Вы рассказываете, кого ищете и что уже пробовали. Мы делаем вывод, почему до сих пор не получалось.</p></div></li>
+          <li class="step"><span class="num">02</span><span class="link" aria-hidden="true"></span><div><h3>Определяем, что чинить</h3><p>Если причина в подборе — идём искать. Если в устройстве роли — сначала наводим порядок в обязанностях и договорённостях.</p></div></li>
+          <li class="step"><span class="num">03</span><span class="link" aria-hidden="true"></span><div><h3>Подборка</h3><p>Приносим первых кандидатов, прошедших проверку и собеседования, с разбором по каждому.</p></div></li>
+          <li class="step"><span class="num">04</span><span class="link" aria-hidden="true"></span><div><h3>Выход</h3><p>Помогаем адаптироваться и спокойно пройти первые недели.</p></div></li>
+          <li class="step"><span class="num">05</span><div><h3>Дальше</h3><p>Остаёмся на связи и подключаемся, если появляются сложности.</p></div></li>
         </ol>
       </div>
     </div>
@@ -828,10 +831,13 @@ em{font-style:italic}
   function setRole(i){rbtn.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.i==i)})}
   rbtn.forEach(function(b){b.addEventListener('click',function(){setRole(b.dataset.i)});b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)setRole(b.dataset.i)})});
 
-  // process: sticky photo follows the step in view
-  var steps=[].slice.call(document.querySelectorAll('.step')),pl=[].slice.call(document.querySelectorAll('.process-photo .layer')),pcap=document.getElementById('proc-cap');
+  // process: the green panel follows the step in view
+  var steps=[].slice.call(document.querySelectorAll('.step')),pnum=document.getElementById('proc-num'),ptitle=document.getElementById('proc-title'),ptrack=[].slice.call(document.querySelectorAll('#proc-track span')),cstep=0;
+  function setStep(i){if(i===cstep)return;cstep=i;steps.forEach(function(s,k){s.classList.toggle('active',k===i)});ptrack.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    [pnum,ptitle].forEach(function(el){el.classList.remove('swap');void el.offsetWidth;el.classList.add('swap')});
+    pnum.textContent=steps[i].querySelector('.num').textContent;ptitle.textContent=steps[i].querySelector('h3').textContent}
   if('IntersectionObserver' in window){
-    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=steps.indexOf(e.target);steps.forEach(function(s,k){s.classList.toggle('active',k===i)});pl.forEach(function(l,k){l.classList.toggle('on',k===i)});pcap.textContent=e.target.dataset.cap;pcap.hidden=pl[i].classList.contains('photo')||pl[i].classList.contains('type-layer')}})},{rootMargin:'-45% 0px -45% 0px'});
+    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)setStep(steps.indexOf(e.target))})},{rootMargin:'-45% 0px -45% 0px'});
     steps.forEach(function(s){so.observe(s)});
   }
 
