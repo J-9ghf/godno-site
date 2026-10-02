@@ -300,13 +300,9 @@ em{font-style:italic}
 .rv-stage{position:relative;min-height:clamp(260px,30vw,420px)}
 .quote{margin:0;transition:opacity 1s var(--ease),transform 1.2s var(--ease)}
 .quote.out{opacity:0;transform:translateY(14px)}
-.quote p{font:300 italic var(--qs,40px)/1.32 var(--serif);white-space:pre-line;letter-spacing:-.005em}
+.quote p{font:400 clamp(20px,1.9vw,27px)/1.45 var(--head);white-space:pre-line;letter-spacing:-.01em}
 .quote::before{content:"“";display:block;font:300 120px/.6 var(--serif);color:var(--sage-2);height:56px}
 .quote footer{margin-top:28px;font-size:14px;color:var(--muted)}
-.q-s{--qs:clamp(28px,3.2vw,46px)}
-.q-m{--qs:clamp(23px,2.4vw,34px)}
-.q-l{--qs:clamp(19px,1.75vw,25px)}
-.q-m p,.q-l p{font-family:var(--head);font-style:normal;font-weight:400;letter-spacing:-.01em}
 .rv-dots{display:flex;gap:8px;margin-top:40px}
 .rv-dots button{width:28px;height:2px;border:0;padding:8px 0;background:linear-gradient(var(--line-strong),var(--line-strong)) center/100% 2px no-repeat;cursor:pointer}
 .rv-dots button[aria-current="true"]{background-image:linear-gradient(var(--forest),var(--forest))}
