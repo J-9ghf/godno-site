@@ -262,6 +262,18 @@ em{font-style:italic}
 .case .story{grid-column:9/13;display:grid;gap:18px;padding-top:clamp(0px,2vw,30px)}
 .case.rev .ph{grid-column:6/13;grid-row:1;aspect-ratio:4/4.6}
 .case.rev .story{grid-column:1/5;grid-row:1}
+.story-mark{grid-column:1/8;position:sticky;top:100px;aspect-ratio:4/4.3;width:100%;background:var(--linen);border-radius:6px;padding:clamp(28px,4vw,60px);display:flex;flex-direction:column;justify-content:space-between;gap:28px;isolation:isolate;overflow:hidden}
+.story-mark::before{content:"";position:absolute;inset:14px;border:1px solid var(--line-strong);border-radius:3px;pointer-events:none}
+.story-mark::after{content:"";position:absolute;right:-10%;bottom:-14%;width:62%;aspect-ratio:1;background:var(--leaf) center/contain no-repeat;opacity:.1;transform:rotate(-30deg);z-index:-1;pointer-events:none}
+.sm-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.sm-num{font:400 clamp(130px,15vw,230px)/.78 var(--head);letter-spacing:-.07em;color:var(--herb)}
+.sm-mid{display:flex;align-items:center;gap:10px;color:var(--herb)}
+.sm-line{flex:1;height:1px;background:var(--line-strong)}
+.sm-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.sm-quote{font:300 italic clamp(26px,2.7vw,42px)/1.22 var(--serif);color:var(--forest);max-width:18ch}
+.sm-foot{display:flex;flex-wrap:wrap;gap:8px}
+.sm-foot span{font:500 13px/1 var(--head);padding:9px 14px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink)}
+.facts-num{font:400 clamp(90px,10vw,160px)/.8 var(--head);letter-spacing:-.07em;color:var(--sage-2);margin-bottom:auto;padding-top:clamp(40px,6vw,90px)}
 .facts{grid-column:6/13;grid-row:1;position:sticky;top:100px;aspect-ratio:4/4.6;background:var(--forest);color:var(--on-forest);border-radius:999px 999px 6px 6px;padding:clamp(28px,4vw,60px);display:flex;flex-direction:column;justify-content:flex-end;gap:clamp(18px,2vw,28px)}
 .facts .label{color:var(--on-forest-muted)}
 .fact{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:20px;align-items:baseline;padding-top:clamp(16px,2vw,24px);border-top:1px solid rgba(241,238,229,.2)}
@@ -393,7 +405,7 @@ em{font-style:italic}
   .hero-note{bottom:auto;top:16px;left:16px}
   .hero-shot::after{inset:0;height:auto;background:linear-gradient(to bottom,rgba(30,38,28,.32),rgba(30,38,28,0) 30%)}
   .tried-grid,.more-grid,.case{grid-template-columns:minmax(0,1fr)}
-  .tried .h2,.tried .lead,.tried-band,.tried-list,.more-photo,.more-head,.more-items,.case .ph,.case .story,.case.rev .ph,.case.rev .story{grid-column:1/-1;grid-row:auto}
+  .tried .h2,.tried .lead,.tried-band,.tried-list,.more-photo,.more-head,.more-items,.case .ph,.case .story,.case.rev .ph,.case.rev .story,.story-mark,.facts{grid-column:1/-1;grid-row:auto}
   .roles-grid{grid-template-columns:minmax(0,1fr)}
   .role-photo{order:-1;aspect-ratio:4/4.4}
   .role-list.right{text-align:left}
@@ -413,6 +425,8 @@ em{font-style:italic}
   .proc-panel{display:none}
   .case .story{margin-top:28px}
   .case .ph,.case.rev .ph{position:relative;top:auto;aspect-ratio:4/3.4}
+  .story-mark{position:relative;top:auto;aspect-ratio:auto;min-height:380px}
+  .facts-num{padding-top:0}
   .case.rev .story{order:2}
   .final{padding-block:72px;min-height:0}
   .final-bg::after{background:linear-gradient(180deg,rgba(22,30,22,.66) 0%,rgba(22,30,22,.45) 45%,rgba(22,30,22,.3) 100%)}
@@ -644,7 +658,12 @@ em{font-style:italic}
       </div>
 
       <article class="case">
-        <figure class="ph rv" data-par=".04"><div class="in t-stone photo" style="--lp:95% -10%;--img:url(photo-hotel-desk.jpg)" role="img" aria-label="Номер отеля: стол у окна с учебниками, тетрадями и глобусом"></div></figure>
+        <div class="story-mark rv" aria-hidden="true">
+          <div class="sm-top"><span class="sm-num">01</span><span class="label">История</span></div>
+          <div class="sm-mid"><span class="sm-line"></span><span class="sm-dot"></span><span class="sm-line"></span></div>
+          <p class="sm-quote">«…преподаватели полноценно заменили мальчикам школу»</p>
+          <div class="sm-foot"><span>Дубай</span><span>три месяца</span><span>по будням почти весь учебный день</span></div>
+        </div>
         <div class="story rv">
           <p class="case-tag">Дубай · три месяца · заменили школу</p>
           <p class="pos">Позиция: преподаватели начальных классов в Дубае</p>
@@ -659,7 +678,7 @@ em{font-style:italic}
       </article>
 
       <article class="case rev">
-        <div class="facts rv" aria-label="Кейс в цифрах"><span class="label">Итог</span><div class="fact"><b>2–3</b><span>недели — закрыли запрос</span></div><div class="fact"><b>1-й</b><span>кандидат — сразу подошёл</span></div><div class="fact"><b>1+</b><span>год — няня работает в семье</span></div></div>
+        <div class="facts rv" aria-label="Кейс в цифрах"><span class="facts-num" aria-hidden="true">02</span><span class="label">Итог</span><div class="fact"><b>2–3</b><span>недели — закрыли запрос</span></div><div class="fact"><b>1-й</b><span>кандидат — сразу подошёл</span></div><div class="fact"><b>1+</b><span>год — няня работает в семье</span></div></div>
         <div class="story rv">
           <p class="case-tag">Закрыто за 2–3 недели · с первого кандидата · работает больше года</p>
           <p class="pos">Позиция: грудничковая няня</p>
