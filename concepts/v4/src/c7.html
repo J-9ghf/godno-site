@@ -1,0 +1,418 @@
+<title>ИКТ Домашний персонал</title>
+<style>/*FONTS:local5*/</style>
+<style>
+/* Конструкция по референсам: hero = Enki (светлая панель + кирпичная панель с выходящим предметом, контурные пилюли,
+   нарезанное фото, большая контурная кнопка + круг), секции = фотограф / Miljö / Inner Voice / Grape&Gold.
+   Слипшиеся плашки только в 3 местах: hero→«Пробовали», «Кейсы», форма→футер. */
+:root{
+  --milk:#F4ECE1; --white:#FBF7F1; --terra:#C2461F; --brown:#6B1F12; --caramel:#D98A45; --ink:#1E1410;
+  --line:rgba(30,20,16,.85); --hair:rgba(30,20,16,.16);
+  --d:'Roboto Flex',system-ui,sans-serif; --t:'Inter Tight',system-ui,sans-serif;
+}
+body{background:var(--milk);color:var(--ink);font-family:var(--t);font-size:16px;line-height:1.45}
+.board{background:var(--milk)}
+.W{font-family:var(--d);font-stretch:135%;font-weight:680;text-transform:uppercase;letter-spacing:-.02em}
+.h2{font:680 52px/1 var(--d);font-stretch:135%;text-transform:uppercase;letter-spacing:-.025em}
+.lbl{font:600 12px/1 var(--t);letter-spacing:.1em;text-transform:uppercase}
+.wrap{padding:0 20px;position:relative}
+.fl{position:absolute;width:var(--R,32px);height:var(--R,32px);pointer-events:none;z-index:3}
+.fl.o-tl{background:radial-gradient(circle at 0 0,transparent calc(var(--R,32px) - .5px),var(--c) var(--R,32px))}
+.fl.o-tr{background:radial-gradient(circle at 100% 0,transparent calc(var(--R,32px) - .5px),var(--c) var(--R,32px))}
+
+/* фото-плейсхолдер: плотный тон, чёткая пиктограмма, подпись — без размытия */
+.pp{position:relative;overflow:hidden;background:var(--pt,#B98A66);color:#FFF6EC}
+.pp::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,240,220,.22),rgba(255,240,220,0) 45%),linear-gradient(0deg,rgba(40,15,8,.35),rgba(40,15,8,0) 55%)}
+.pp::after{content:"";position:absolute;inset:0;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .3 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.pp svg.pic{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:var(--ps,64px);height:var(--ps,64px);fill:none;stroke:rgba(255,246,236,.85);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;z-index:1}
+.pp .pc{position:absolute;left:14px;right:14px;bottom:12px;z-index:2;font:500 11.5px/1.35 var(--t)}
+.pp .pc em{display:inline-block;font-style:normal;font:700 9.5px/1 var(--t);letter-spacing:.12em;text-transform:uppercase;background:rgba(30,20,16,.55);padding:4px 6px;border-radius:3px;margin-bottom:5px}
+.pp .pc span{display:block}
+
+/* контурные пилюли и круги (Enki) */
+.op{display:inline-flex;align-items:center;height:56px;padding:0 22px;border:1.5px solid var(--line);border-radius:999px;font:500 14.5px/1 var(--t);background:transparent}
+.oc{width:56px;height:56px;border:1.5px solid var(--line);border-radius:50%;display:inline-grid;place-items:center;flex:none}
+.oc svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.join{display:inline-flex;align-items:center}
+.join>*+*{margin-left:-1.5px}
+.bigbtn{display:inline-flex;align-items:center}
+.bigbtn .p{height:104px;padding:0 44px;white-space:nowrap;border:1.5px solid var(--line);border-radius:999px;display:flex;align-items:center;font:640 17px/1 var(--d);font-stretch:120%;text-transform:uppercase}
+.bigbtn .c{width:104px;height:104px;border:1.5px solid var(--line);border-radius:50%;display:grid;place-items:center;margin-left:-1.5px}
+.bigbtn .c svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1.6}
+.bigbtn.fill .p{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.dbtn{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--white);border-radius:999px;padding:6px 6px 6px 22px;font:500 14.5px/1 var(--t)}
+.dbtn i{width:36px;height:36px;border-radius:50%;background:var(--white);color:var(--ink);display:grid;place-items:center;font-style:normal}
+
+/* ===== HERO (Enki) ===== */
+.hero{position:relative;height:856px}
+.hl{position:absolute;left:20px;top:20px;width:872px;height:820px;background:var(--white);border-radius:32px;padding:22px 26px}
+.hr{position:absolute;left:908px;top:20px;width:512px;height:836px;background:var(--terra);border-radius:32px 32px 0 0}
+.nav{display:flex;align-items:center;gap:14px}
+.logo{width:56px;height:56px;border:1.5px solid var(--line);border-radius:50%;display:grid;place-items:center;font:800 13px/1 var(--d);font-stretch:140%}
+.navp{display:flex;align-items:center;gap:30px;height:56px;padding:0 30px;border:1.5px solid var(--line);border-radius:999px;font:500 14.5px/1 var(--t);margin-left:-15px}
+.hh{position:absolute;left:26px;top:112px;font:690 63px/.99 var(--d);font-stretch:132%;text-transform:uppercase;letter-spacing:-.025em}
+.hh .mk{display:inline-flex;gap:4px;vertical-align:middle;margin-right:14px}
+.hh .mk i{width:14px;height:52px;border-radius:7px;background:var(--ink);display:block}
+.hh .chip{display:inline-block;width:150px;height:56px;border-radius:28px;vertical-align:middle;margin-left:10px;position:relative;overflow:hidden}
+.slices{position:absolute;left:26px;right:26px;top:448px;height:208px;display:flex}
+.slices .s{height:100%;border-radius:104px;overflow:hidden;position:relative}
+.slices .s+.s{margin-left:-10px}
+.dots{position:absolute;right:-4px;top:50%;transform:translateY(-50%);background:var(--white);border-radius:22px 0 0 22px;padding:14px 10px 14px 14px;display:flex;flex-direction:column;gap:7px;z-index:3}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--ink)} .dots i.o{background:transparent;box-shadow:inset 0 0 0 1.5px var(--terra)}
+.hb{position:absolute;left:26px;right:26px;bottom:34px;display:flex;justify-content:space-between;align-items:center;gap:30px}
+.hb p{max-width:300px;font-size:15px}
+.key{position:absolute;left:1010px;top:-30px;width:330px;height:640px;z-index:5;filter:drop-shadow(0 30px 30px rgba(60,12,4,.45))}
+.hot{position:absolute;left:1080px;top:132px;z-index:6;background:rgba(255,246,236,.18);backdrop-filter:blur(6px);border:1px solid rgba(255,246,236,.45);border-radius:16px;padding:12px 12px 12px 16px;display:flex;gap:14px;align-items:center;color:var(--white)}
+.hot b{display:block;font:600 14px/1.2 var(--t)} .hot span{font-size:13px;opacity:.9}
+.hot .ph2{width:64px;height:48px;border-radius:10px;overflow:hidden;position:relative}
+.hotline{position:absolute;left:1070px;top:196px;width:60px;height:1.5px;background:rgba(255,246,236,.8);transform:rotate(-38deg);transform-origin:right;z-index:6}
+.hotdot{position:absolute;left:1062px;top:226px;width:12px;height:12px;border-radius:50%;background:var(--white);z-index:6;box-shadow:0 0 0 5px rgba(255,246,236,.3)}
+.news{position:absolute;left:1180px;top:578px;width:220px;height:240px;background:var(--white);border-radius:26px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;z-index:4}
+.news h4{margin:0;font:700 26px/1 var(--d);font-stretch:130%;text-transform:uppercase}
+.news .em{display:flex;justify-content:space-between;font-size:13px;border-bottom:1.5px solid var(--line);padding-bottom:8px;color:#7a6658}
+.news .em b{color:var(--ink);font-weight:600}
+
+/* ===== 2. Пробовали: плашка слипается с кирпичной панелью ===== */
+.plq{position:relative;background:var(--terra);margin:0 20px;border-radius:32px 0 32px 32px;padding:44px 24px 24px}
+.ph-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:240px 240px;gap:0}
+.tile{border-radius:28px;position:relative;overflow:hidden;padding:26px 28px;min-width:0}
+.ph-grid .big{grid-row:1/3;background:var(--white);display:flex;flex-direction:column;justify-content:space-between}
+.ph-grid .t{display:flex;flex-direction:column;justify-content:space-between;color:var(--white)}
+.ph-grid .t h3{font:680 20px/1.08 var(--d);font-stretch:130%;text-transform:uppercase}
+.ph-grid .t p{font-size:14.5px;margin-top:8px;opacity:.92}
+.ic{width:42px;height:42px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center}
+.ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* обычный ритм */
+.sec{padding:110px 20px 0;position:relative}
+.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:36px;padding:0 10px}
+.sh p{max-width:36ch;font-size:15px}
+
+/* 3. Miljö-панель со списком */
+.mpanel{background:var(--white);border-radius:28px;padding:44px 40px;border:1.5px solid var(--hair)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px;align-items:stretch}
+.mlist .r{display:grid;grid-template-columns:240px 1fr 30px;gap:18px;align-items:baseline;padding:20px 6px;border-bottom:1.5px solid var(--line)}
+.mlist .r:first-child{border-top:1.5px solid var(--line)}
+.mlist .r b{font:680 17px/1.1 var(--d);font-stretch:125%;text-transform:uppercase}
+.mlist .r span{font-size:15px}
+.mph{border-radius:24px;position:relative;overflow:hidden;min-height:300px}
+.mph .pill{position:absolute;right:16px;top:16px;z-index:3;display:flex;gap:10px;align-items:center;color:var(--white);font:600 14px/1 var(--t)}
+.mph .pill i{width:32px;height:32px;border-radius:50%;background:var(--white);color:var(--ink);display:grid;place-items:center;font-style:normal}
+
+/* 4. Miljö-карточки услуг */
+.cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.scard{border-radius:24px;overflow:hidden;display:flex;flex-direction:column;height:430px}
+.scard .hd{padding:22px 22px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;height:150px}
+.scard h3{font:680 18px/1.1 var(--d);font-stretch:125%;text-transform:uppercase}
+.scard p{padding:0 22px;font-size:14.5px;margin-top:-50px;height:60px}
+.scard .im{flex:1;margin:0;border-radius:24px 24px 0 0;position:relative;overflow:hidden}
+.scard .oic{width:52px;height:52px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;flex:none}
+.scard .oic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* 5. Inner Voice: ряд карточек (n) */
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ncard{height:300px;border-radius:12px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;color:var(--white);position:relative;overflow:hidden}
+.ncard .n{font:500 16px/1 var(--t)}
+.ncard h3{font:680 26px/1 var(--d);font-stretch:130%;text-transform:uppercase}
+.ncard p{font-size:15px;margin-top:10px}
+
+/* 6. Фотограф: список шагов */
+.steps{border-top:1.5px solid var(--hair)}
+.srow{display:grid;grid-template-columns:70px 1fr 330px 340px;gap:24px;align-items:center;padding:20px 10px;border-bottom:1.5px solid var(--hair);color:#B5A091}
+.srow .n{width:48px;height:30px;border-radius:999px;border:1.5px solid currentColor;display:grid;place-items:center;font:600 13px/1 var(--t)}
+.srow h3{font:640 24px/1.1 var(--d);font-stretch:120%;text-transform:uppercase}
+.srow p{font-size:15px}
+.srow.on{color:var(--ink)} .srow.on .n{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.srow .im{height:150px;border-radius:24px;position:relative;overflow:hidden}
+
+/* 7. Grape&Gold: вкладки + панель */
+.cen{text-align:center}
+.tabs{display:flex;gap:10px;justify-content:center;margin:30px 0 22px}
+.tab{height:48px;padding:0 24px;border-radius:12px;border:1.5px solid var(--line);display:flex;align-items:center;font:500 15px/1 var(--t)}
+.tab.on{background:var(--brown);color:var(--white);border-color:var(--brown)}
+.gpanel{background:var(--brown);color:var(--white);border-radius:28px;padding:34px;display:grid;grid-template-columns:1fr 560px;gap:40px;align-items:center}
+.gpanel .im{height:330px;border-radius:20px;position:relative;overflow:hidden}
+
+/* 8. Кейсы: слипшаяся сетка на тёмной плашке, наезжает на предыдущий фон */
+.cplq{background:var(--brown);border-radius:56px 56px 0 0;margin:110px 0 0;padding:70px 20px 140px;color:var(--white);position:relative}
+.cgrid{display:grid;grid-template-columns:1fr 1.4fr 1fr 1.4fr;grid-template-rows:250px 250px;gap:0}
+.cgrid .tile{padding:24px 26px}
+.cgrid .case{display:flex;flex-direction:column;justify-content:space-between}
+.cgrid .case h3{font:690 30px/1.02 var(--d);font-stretch:130%;text-transform:uppercase;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:0}
+.tags span{border-radius:999px;padding:14px 18px;font:600 14px/1 var(--t);background:var(--white);color:var(--ink)}
+.tags span+span{margin-left:-6px}
+.tags span:nth-child(2){background:var(--caramel)} .tags span:nth-child(3){background:var(--ink);color:var(--white)}
+
+/* 9. Отзыв (фотограф: текст со вставками) */
+.rev{background:var(--milk);border-radius:56px 56px 0 0;margin-top:-56px;padding:100px 20px 0;position:relative}
+.rq{font:600 44px/1.22 var(--t);letter-spacing:-.03em;text-align:center;max-width:1180px;margin:0 auto}
+.ring{display:inline-flex;align-items:center;gap:10px;border:2px solid var(--terra);border-radius:999px;padding:0 22px 2px 12px;color:var(--terra)}
+.ring i{width:34px;height:34px;border-radius:50%;background:var(--terra);display:inline-block}
+.inph{display:inline-block;width:110px;height:54px;border-radius:27px;vertical-align:middle;position:relative;overflow:hidden}
+.who{display:flex;justify-content:center;gap:14px;align-items:center;margin-top:30px;font-size:15px}
+
+/* 10. Форма (Enki: карточка + большая кнопка) */
+.fwrap{display:grid;grid-template-columns:1fr 560px;gap:24px;align-items:stretch}
+.fleft{background:var(--terra);color:var(--white);border-radius:32px;padding:44px;display:flex;flex-direction:column;justify-content:space-between;min-height:560px;position:relative}
+.fcard{background:var(--white);border-radius:32px;padding:36px;display:flex;flex-direction:column;gap:22px;border:1.5px solid var(--hair)}
+.fl2{display:flex;flex-direction:column;gap:8px}
+.fl2 label{font:600 11.5px/1 var(--t);letter-spacing:.1em;text-transform:uppercase;color:#8a7262}
+.fl2 .v{display:flex;justify-content:space-between;border-bottom:1.5px solid var(--line);padding-bottom:10px;font-size:18px;color:#a08b7c}
+.fl2 .v.fill{color:var(--ink)} .fl2.focus .v{border-bottom:2.5px solid var(--terra);color:var(--ink)} .fl2.err .v{border-bottom-color:#9A2A12;color:var(--ink)}
+.fl2 .e{font-size:13px;color:#9A2A12}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);display:flex;align-items:center;font:500 14px/1 var(--t)}
+.chip.on{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.ftr{background:var(--brown);color:var(--white);border-radius:56px 56px 0 0;margin-top:-80px;padding:150px 40px 40px}
+.ftr .big{font:690 64px/1 var(--d);font-stretch:132%;text-transform:uppercase;letter-spacing:-.03em}
+.ftr .r{display:flex;justify-content:space-between;margin-top:60px;font-size:14.5px;color:#EBC9B8}
+
+/* UI */
+.ui{padding:56px 40px 64px;display:flex;flex-direction:column;gap:40px}
+.pal{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.pal div{height:220px;border-radius:28px;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;font:500 13.5px/1.4 var(--t)}
+.pal b{font:680 18px/1.1 var(--d);font-stretch:130%;text-transform:uppercase;margin-bottom:6px}
+.urow{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:16px;align-items:start}
+.pnl{background:var(--white);border:1.5px solid var(--hair);border-radius:28px;padding:30px;display:flex;flex-direction:column;gap:18px}
+.spec{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:baseline}
+.spec small{font:600 11px/1.4 var(--t);letter-spacing:.08em;text-transform:uppercase;color:#8a7262}
+</style>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 64 64"><path d="M10 30l22-18 22 18v24H10z"/><path d="M26 54V40h12v14"/></symbol>
+    <symbol id="i-hands" viewBox="0 0 64 64"><path d="M8 40c6-2 12-2 16 2l8 6c2 2 1 5-2 5H18"/><path d="M8 48h10l14 6 22-10c2-1 2-4-1-5l-12 3"/><path d="M28 30a6 6 0 1 1 12 0c0 6-6 9-6 9s-6-3-6-9z"/></symbol>
+    <symbol id="i-child" viewBox="0 0 64 64"><circle cx="24" cy="18" r="7"/><path d="M12 54V40c0-7 5-12 12-12s12 5 12 12v14"/><circle cx="46" cy="32" r="5"/><path d="M38 54v-8c0-5 4-8 8-8s8 3 8 8v8"/></symbol>
+    <symbol id="i-car" viewBox="0 0 64 64"><path d="M8 40l5-14h38l5 14v10H8z"/><circle cx="20" cy="50" r="4"/><circle cx="44" cy="50" r="4"/><path d="M16 36h32"/></symbol>
+    <symbol id="i-pot" viewBox="0 0 64 64"><path d="M12 28h40v16a8 8 0 0 1-8 8H20a8 8 0 0 1-8-8z"/><path d="M6 28h52M24 20c0-4 4-4 4-8M36 20c0-4 4-4 4-8"/></symbol>
+    <symbol id="i-book" viewBox="0 0 64 64"><path d="M10 14h18a6 6 0 0 1 6 6v32a5 5 0 0 0-5-5H10z"/><path d="M54 14H36a6 6 0 0 0-6 6v32a5 5 0 0 1 5-5h19z"/></symbol>
+    <symbol id="i-door" viewBox="0 0 64 64"><path d="M16 56V10h32v46"/><path d="M8 56h48"/><circle cx="40" cy="34" r="2"/></symbol>
+    <symbol id="i-person" viewBox="0 0 64 64"><circle cx="32" cy="22" r="9"/><path d="M14 56c2-11 9-17 18-17s16 6 18 17"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 64 64"><path d="M12 24h32v14a12 12 0 0 1-12 12h-8a12 12 0 0 1-12-12z"/><path d="M44 28h4a6 6 0 0 1 0 12h-4M10 56h40"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 64 64"><path d="M8 46V18M8 38h48v8M56 46V30a6 6 0 0 0-6-6H26v14"/><circle cx="17" cy="30" r="5"/></symbol>
+    <symbol id="arrow" viewBox="0 0 48 48"><path d="M12 36L36 12M16 12h20v20"/></symbol>
+  </defs>
+</svg>
+
+<div class="board" id="landing">
+  <!-- ===== 1. HERO ===== -->
+  <section class="hero">
+    <div class="hl">
+      <div class="nav">
+        <span class="logo">ИКТ</span>
+        <div class="navp"><span>Кого подбираем</span><span>Как работаем</span><span>Кейсы</span><span>Отзывы</span><span>Контакты</span></div>
+        <div class="join" style="margin-left:auto"><span class="oc"><svg viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/></svg></span><span class="oc"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span><span class="oc"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg></span></div>
+      </div>
+      <h1 class="hh h1t"><span class="mk"><i></i><i></i><i></i></span>Домашний<br>персонал, который<br>остаётся в вашей<br>семье<span class="chip pp" style="--pt:#A9694A"><svg class="pic" style="--ps:30px" viewBox="0 0 64 64"><use href="#i-door"/></svg></span></h1>
+      <div class="slices sl">
+        <div class="s pp" style="width:210px;--pt:#9E5D40"><svg class="pic" viewBox="0 0 64 64"><use href="#i-hands"/></svg></div>
+        <div class="s pp" style="width:220px;--pt:#B07452"><svg class="pic" viewBox="0 0 64 64"><use href="#i-child"/></svg></div>
+        <div class="s pp" style="flex:1;--pt:#8E4E36"><svg class="pic" viewBox="0 0 64 64"><use href="#i-home"/></svg><div class="pc"><em>Плейсхолдер</em><span>Один кадр, нарезанный на сегменты: няня и ребёнок собирают конструктор на полу гостиной</span></div></div>
+        <div class="dots"><i></i><i style="background:#8A6A58"></i><i style="background:var(--caramel)"></i><i class="o"></i></div>
+      </div>
+      <div class="hb">
+        <div class="bigbtn bb"><span class="p">Рассказать, кого вы ищете</span><span class="c"><svg viewBox="0 0 48 48"><use href="#arrow"/></svg></span></div>
+        <p>Подбираем людей, которым можно доверить детей, быт и личное пространство. Приходим с проверенными кандидатами и честным разбором по каждому.</p>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <!-- предмет, выходящий за рамку: ключи от дома -->
+    <svg class="key" viewBox="0 0 330 640">
+      <defs>
+        <linearGradient id="kg" x1="0" x2="1"><stop offset="0" stop-color="#E9B97A"/><stop offset=".45" stop-color="#FCE2B4"/><stop offset=".7" stop-color="#D9A061"/><stop offset="1" stop-color="#A66A33"/></linearGradient>
+        <linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#7E3A20"/><stop offset=".5" stop-color="#C46C3D"/><stop offset="1" stop-color="#6B2A16"/></linearGradient>
+      </defs>
+      <!-- брелок (кожа) -->
+      <rect x="120" y="0" width="90" height="190" rx="45" fill="url(#rg)"/>
+      <rect x="132" y="12" width="66" height="166" rx="33" fill="none" stroke="#F3C99F" stroke-width="2" stroke-dasharray="6 6"/>
+      <text x="165" y="118" text-anchor="middle" font-family="Roboto Flex" font-stretch="140%" font-weight="800" font-size="20" fill="#FBE6CF">ИКТ</text>
+      <!-- кольцо -->
+      <circle cx="165" cy="232" r="44" fill="none" stroke="#D8A86C" stroke-width="9"/>
+      <circle cx="165" cy="232" r="44" fill="none" stroke="#FCE7C2" stroke-width="2" stroke-dasharray="40 240"/>
+      <!-- ключ -->
+      <g transform="translate(165 300)">
+        <circle cx="0" cy="40" r="58" fill="url(#kg)"/>
+        <circle cx="0" cy="40" r="22" fill="#C2461F"/>
+        <rect x="-16" y="94" width="32" height="250" rx="6" fill="url(#kg)"/>
+        <path d="M16 250h34v22h-14v18h22v24H16z" fill="url(#kg)"/>
+        <rect x="-4" y="110" width="8" height="220" rx="4" fill="#B9813F" opacity=".55"/>
+      </g>
+    </svg>
+    <span class="hotdot"></span><span class="hotline"></span>
+    <div class="hot"><span class="ph2 pp" style="--pt:#8E4E36"><svg class="pic" style="--ps:26px" viewBox="0 0 64 64"><use href="#i-door"/></svg></span><div><b>Ключи от дома</b><span>доверяем лично, не по базе</span></div></div>
+    <div class="news"><h4>Telegram<sup style="font-size:12px">®</sup></h4><p style="font-size:14px">Напишите, кого ищете, — ответим лично и без анкет.</p><div class="em"><b>@kateriniya</b><span>Написать →</span></div></div>
+
+    <!-- переход: кирпичная панель срастается со следующей плашкой -->
+    <span class="fl o-tl" style="--c:var(--terra);left:876px;top:824px"></span>
+  </section>
+  <span class="an" data-at=".h1t" data-pos="tl" data-dy="-48" data-dx="-16"><b>1</b><i>↑</i>Строки заголовка выезжают снизу по одной</span>
+  <span class="an" data-at=".key" data-pos="tl" data-dx="-120" data-dy="80"><b>2</b><i>↕</i>Ключи слегка качаются при движении курсора (±3°)</span>
+  <span class="an" data-at=".sl" data-pos="tl" data-dy="-6"><b>3</b><i>⇆</i>Сегменты фото раздвигаются при наведении; точки справа листают кадры</span>
+  <span class="an" data-at=".bb" data-pos="tl" data-dy="-50"><b>4</b><i>↗</i>Hover: пилюля заливается тёмным, стрелка поворачивается</span>
+
+  <!-- ===== 2. Пробовали (слипшаяся плашка №1) ===== -->
+  <section class="plq pq">
+    <div class="ph-grid">
+      <div class="tile big"><div><span class="lbl" style="color:var(--terra)">С чем приходят</span><h2 class="h2" style="margin-top:20px">К нам приходят, когда уже пробовали</h2></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:30px"><p style="font-size:16px;max-width:42ch">Через знакомых, объявления, другие агентства. Сначала выясняем, почему прошлые варианты не сложились.</p><span style="font-size:40px;line-height:1">→</span></div></div>
+      <div class="tile t" style="background:var(--brown)"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c1-3 3-4 5-4s4 1 5 4M11 19c1-3 3-4 5-4s4 1 5 4"/></svg></span><div><h3>Не сошлись характерами</h3><p>На собеседовании всё гладко, а в доме неуютно.</p></div></div>
+      <div class="tile t" style="background:var(--caramel);color:var(--ink)"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 18h16M7 18a5 5 0 0 1 10 0M12 4v4M5 8l2 2M19 8l-2 2"/></svg></span><div><h3>Не выдержала нагрузку</h3><p>Режим семьи интенсивнее, чем человек готов тянуть.</p></div></div>
+      <div class="tile pp" style="--pt:#7F3D27;padding:0"><svg class="pic" viewBox="0 0 64 64"><use href="#i-door"/></svg><div class="pc"><em>Плейсхолдер</em><span>Пустая прихожая: детская обувь, пальто на крючке</span></div></div>
+      <div class="tile t" style="background:var(--ink)"><span class="ic"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/></svg></span><div><h3>Ушла внезапно</h3><p>Без предупреждения — и всё сначала.</p></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".pq" data-pos="tr" data-dy="16" data-dx="-10"><b>5</b><i>⤓</i>Кирпичная панель первого экрана «перетекает» в плашку при прокрутке</span>
+
+  <!-- ===== 3. Почему не приживается (Miljö) ===== -->
+  <section class="sec">
+    <div class="mpanel">
+      <h2 class="h2" style="max-width:20ch">Почему человек не приживается</h2>
+      <div class="mgrid">
+        <div class="mlist">
+          <div class="r"><b>Размытый портрет</b><span>Ищут «хорошую помощницу», не описав ритм дома и правила семьи.</span><span>↗</span></div>
+          <div class="r"><b>Поверхностный отбор</b><span>Резюме и один разговор. Мотивация остаётся за кадром.</span><span>↗</span></div>
+          <div class="r"><b>Неясная роль</b><span>Не зафиксировано, что входит в обязанности и кто ставит задачи.</span><span>↗</span></div>
+        </div>
+        <div class="mph pp" style="--pt:#5E2A1C"><svg class="pic" viewBox="0 0 64 64"><use href="#i-book"/></svg><span class="pill">Разобраться в причинах <i>↗</i></span><div class="pc"><em>Плейсхолдер</em><span>Расписание семьи на холодильнике, список дел от руки — крупно</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. Больше, чем поиск по базе (Miljö: карточки услуг) ===== -->
+  <section class="sec">
+    <div class="sh"><h2 class="h2">Больше, чем<br>поиск по базе</h2><p>Разбираемся не только в людях, но и в том, как устроена работа в доме.</p></div>
+    <div class="cards4 c4">
+      <div class="scard" style="background:var(--terra);color:var(--white)"><div class="hd"><h3>Видим человека насквозь</h3><span class="oic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/></svg></span></div><p>Мотивация, устойчивость, риски, реальный срок.</p><div class="im pp" style="--pt:#8E4E36"><svg class="pic" viewBox="0 0 64 64"><use href="#i-person"/></svg><div class="pc"><em>Плейсхолдер</em><span>Портрет кандидата за столом, спокойный взгляд</span></div></div></div>
+      <div class="scard" style="background:var(--caramel)"><div class="hd"><h3>Ищем причину, а не симптом</h3><span class="oic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span></div><p>Портрет, условия или организация работы.</p><div class="im pp" style="--pt:#A0623F"><svg class="pic" viewBox="0 0 64 64"><use href="#i-book"/></svg><div class="pc"><em>Плейсхолдер</em><span>Записи консультанта после встречи с семьёй</span></div></div></div>
+      <div class="scard" style="background:var(--brown);color:var(--white)"><div class="hd"><h3>Настраиваем систему</h3><span class="oic"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span></div><p>Если дело в роли — сначала наводим порядок.</p><div class="im pp" style="--pt:#6E3322"><svg class="pic" viewBox="0 0 64 64"><use href="#i-home"/></svg><div class="pc"><em>Плейсхолдер</em><span>Кухня частного дома, порядок, рабочий момент</span></div></div></div>
+      <div class="scard" style="background:var(--white);border:1.5px solid var(--hair)"><div class="hd"><h3>Остаёмся рядом</h3><span class="oic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/></svg></span></div><p>Помогаем влиться в дом и подключаемся при сложностях.</p><div class="im pp" style="--pt:#B07452"><svg class="pic" viewBox="0 0 64 64"><use href="#i-hands"/></svg><div class="pc"><em>Плейсхолдер</em><span>Руки: помощница и хозяйка вместе разбирают покупки</span></div></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".c4" data-pos="tr" data-dy="-50"><b>6</b><i>⤒</i>Hover: фото внутри карточки поднимается на 12 px, иконка в круге заливается</span>
+
+  <!-- ===== 5. Подбор, внедрение, сопровождение (Inner Voice) ===== -->
+  <section class="sec">
+    <div class="sh"><h2 class="h2">Подбор, внедрение,<br>сопровождение</h2><p>Весь путь от первого разговора до уверенной работы человека в доме.</p></div>
+    <div class="row4">
+      <div class="ncard" style="background:var(--brown)"><span class="n">(1)</span><div><h3>Подбор</h3><p>Профиль позиции, поиск по рекомендациям и хантингу, собеседования и проверка.</p></div></div>
+      <div class="ncard" style="background:var(--caramel);color:var(--ink)"><span class="n">(2)</span><div><h3>Внедрение</h3><p>Первые дни рядом: обязанности, уклад семьи, порядок задач.</p></div></div>
+      <div class="ncard pp" style="--pt:#8E4E36"><svg class="pic" viewBox="0 0 64 64"><use href="#i-child"/></svg><span class="n" style="position:relative;z-index:2">( фото )</span><div class="pc"><em>Плейсхолдер</em><span>Первый день: няня знакомится с ребёнком, мама рядом</span></div></div>
+      <div class="ncard" style="background:var(--terra)"><span class="n">(3)</span><div><h3>Сопровождение</h3><p>На связи после выхода, донастраиваем правила в доме.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===== 6. Как мы работаем (фотограф: список шагов) ===== -->
+  <section class="sec">
+    <div class="sh"><h2 class="h2">Как мы работаем</h2><p>Пять шагов. На каждом вы знаете, что происходит.</p></div>
+    <div class="steps">
+      <div class="srow"><span class="n">01</span><h3>Разговор и диагностика</h3><p>Кого ищете и что уже пробовали.</p><span></span></div>
+      <div class="srow on s2"><span class="n">02</span><h3>Определяем, что чинить</h3><p>Причина в подборе — ищем. В устройстве роли — сначала наводим порядок.</p><div class="im pp" style="--pt:#8E4E36"><svg class="pic" style="--ps:44px" viewBox="0 0 64 64"><use href="#i-cup"/></svg><div class="pc"><em>Плейсхолдер</em><span>Встреча с семьёй на кухне</span></div></div></div>
+      <div class="srow"><span class="n">03</span><h3>Подборка</h3><p>Проверенные кандидаты с разбором.</p><span></span></div>
+      <div class="srow"><span class="n">04</span><h3>Выход</h3><p>Спокойно проходим первые недели.</p><span></span></div>
+      <div class="srow"><span class="n">05</span><h3>Дальше</h3><p>На связи, подключаемся при сложностях.</p><span></span></div>
+    </div>
+  </section>
+  <span class="an" data-at=".s2" data-pos="tr" data-dx="-370" data-dy="-26"><b>7</b><i>↕</i>Активный шаг темнеет при прокрутке, справа выезжает кадр</span>
+
+  <!-- ===== 7. Разбор кандидата (Grape&Gold: вкладки + панель) ===== -->
+  <section class="sec">
+    <div class="cen"><h2 class="h2">Разбор по каждому кандидату</h2></div>
+    <div class="tabs tb"><span class="tab on">Кто это</span><span class="tab">Что им движет</span><span class="tab">Где риски</span><span class="tab">Реальный горизонт</span><span class="tab">Наше мнение</span></div>
+    <div class="gpanel">
+      <div><span class="lbl" style="color:#EBC9B8">Кто это</span><p style="font:680 32px/1.1 var(--d);font-stretch:128%;text-transform:uppercase;margin-top:18px;letter-spacing:-.02em">Опыт и уровень задач, которые человек действительно вёл</p><p style="margin-top:20px;max-width:46ch;color:#EBC9B8">Остальные вкладки — мотивация, риски, горизонт и наше мнение. Решение остаётся за вами.</p></div>
+      <div class="im pp" style="--pt:#9E5D40"><svg class="pic" viewBox="0 0 64 64"><use href="#i-person"/></svg><div class="pc"><em>Плейсхолдер</em><span>Документальный портрет кандидата: собеседование в гостиной, через плечо консультанта</span></div></div>
+    </div>
+  </section>
+
+  <!-- ===== 8. Кейсы (слипшаяся плашка №2) ===== -->
+  <section class="cplq cp">
+    <div class="sh" style="padding:0 6px"><h2 class="h2">Кейсы</h2><p style="color:#EBC9B8">Две истории — разные задачи, один подход.</p></div>
+    <div class="cgrid">
+      <div class="tile" style="grid-column:1;grid-row:1;background:var(--ink);display:flex;flex-direction:column;justify-content:space-between"><span class="lbl" style="color:#EBC9B8">Кейс 01</span><span class="oc" style="border-color:var(--white)"><svg viewBox="0 0 48 48" style="width:22px;height:22px"><use href="#arrow"/></svg></span></div>
+      <div class="tile case" style="background:var(--terra);grid-column:2;grid-row:1/3"><span class="lbl">Преподаватели</span><h3>Преподаватели начальных классов для семьи в Дубае</h3><div class="tags"><span>Дубай</span><span>три месяца</span><span>заменили школу</span></div></div>
+      <div class="tile pp" style="grid-column:3;grid-row:1;--pt:#A0623F;padding:0"><svg class="pic" viewBox="0 0 64 64"><use href="#i-book"/></svg><div class="pc"><em>Плейсхолдер</em><span>Детская комната для занятий, тетради на столе</span></div></div>
+      <div class="tile case" style="background:var(--caramel);color:var(--ink);grid-column:4;grid-row:1/3"><span class="lbl">Няня</span><h3>Няня для грудного ребёнка</h3><div class="tags"><span style="background:var(--terra);color:var(--white)">Закрыто за 2–3 недели</span><span style="background:var(--white)">с первого кандидата</span><span>работает больше года</span></div></div>
+      <div class="tile pp" style="grid-column:1;grid-row:2;--pt:#8E4E36;padding:0"><svg class="pic" viewBox="0 0 64 64"><use href="#i-child"/></svg><div class="pc"><em>Плейсхолдер</em><span>Учитель и ребёнок за уроком</span></div></div>
+      <div class="tile pp" style="grid-column:3;grid-row:2;--pt:#B07452;padding:0"><svg class="pic" viewBox="0 0 64 64"><use href="#i-bed"/></svg><div class="pc"><em>Плейсхолдер</em><span>Детская кроватка, няня поправляет плед</span></div></div>
+    </div>
+  </section>
+  <span class="an" data-at=".cp" data-pos="tr" data-dy="20" data-dx="-20"><b>8</b><i>✦</i>Плитки кейсов сходятся без зазоров; плашки-итоги «подкатываются» друг к другу</span>
+
+  <!-- ===== 9. Отзыв (наезжает на кейсы) ===== -->
+  <section class="rev">
+    <p class="rq">«Она мне очень нравится. И психологически, и по навыкам — <span class="ring"><i></i>то, что я искала.</span> Мне очень <span class="inph pp" style="--pt:#9E5D40"><svg class="pic" style="--ps:26px" viewBox="0 0 64 64"><use href="#i-person"/></svg></span> комфортно с ней»</p>
+    <div class="who"><span class="lbl" style="color:var(--terra)">Отзыв клиентки</span><span>·</span><span>подбор помощницы в семью</span></div>
+  </section>
+
+  <!-- ===== 10. Форма + футер (слипшаяся плашка №3: футер заходит под форму) ===== -->
+  <section class="sec" style="position:relative;z-index:2">
+    <div class="fwrap">
+      <div class="fleft">
+        <div><span class="lbl" style="color:#FBE0CF">Заявка</span><h2 class="h2" style="margin-top:20px;font-size:58px">Расскажите, кого вы ищете и что уже пробовали</h2><p style="margin-top:22px;font-size:17px;max-width:40ch;color:#FBE0CF">За 20 минут станет понятно, что действительно нужно сделать.</p></div>
+        <div class="bigbtn" style="color:var(--white)"><span class="p" style="border-color:var(--white);height:88px;padding:0 40px;font-size:17px">Telegram @kateriniya</span><span class="c" style="border-color:var(--white);width:88px;height:88px"><svg viewBox="0 0 48 48"><use href="#arrow"/></svg></span></div>
+      </div>
+      <div class="fcard fc">
+        <div class="fl2"><label>Кого ищете</label><div class="chips"><span class="chip on">Няня</span><span class="chip">Гувернантка</span><span class="chip">Домработница</span><span class="chip">Повар</span><span class="chip">Водитель</span><span class="chip">Сиделка</span><span class="chip">Управляющий</span></div></div>
+        <div class="fl2"><label>Имя</label><div class="v fill">Анна</div></div>
+        <div class="fl2 focus"><label>Телефон или Telegram</label><div class="v">+7 ___ ___ __ __<b style="color:var(--ink)">Ввод</b></div></div>
+        <div class="fl2"><label>Что уже пробовали</label><div class="v">Коротко, своими словами</div></div>
+        <div class="bigbtn fill"><span class="p" style="height:76px;padding:0 34px;font-size:15px">Отправить заявку</span><span class="c" style="width:76px;height:76px"><svg viewBox="0 0 48 48" style="width:32px;height:32px"><use href="#arrow"/></svg></span></div>
+      </div>
+    </div>
+  </section>
+  <span class="an" data-at=".fc" data-pos="tr" data-dy="-48"><b>9</b><i>●</i>Фокус: линия поля становится терракотовой; футер «подныривает» под форму</span>
+  <footer class="ftr">
+    <p class="big">Находим людей,<br>которые остаются</p>
+    <div class="r"><span>ИКТ · Институт кадровых решений</span><span>Telegram @kateriniya</span><span>Политика конфиденциальности</span></div>
+  </footer>
+</div>
+
+<!-- ===== UI ===== -->
+<div class="board ui" id="ui">
+  <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:end">
+    <div><span class="lbl" style="color:var(--terra)">ИКТ · домашний персонал · UI-лист</span><h1 class="W" style="font-size:76px;line-height:.96;margin-top:16px">Ключи<br>от дома</h1></div>
+    <p style="font-size:18px">Конструкция по референсам: светлая панель + большая кирпичная панель с предметом, выходящим за рамку; контурные пилюли и круги, слипшиеся в навигацию и кнопки; плотные широкие капители. Слипшиеся плашки — только в трёх местах, остальные секции — отдельные карточки с воздухом.</p>
+  </div>
+  <div class="pal">
+    <div style="background:var(--milk);border:1.5px solid var(--hair)"><b>Тёплое молоко</b>#F4ECE1 · фон (+ #FBF7F1 карточки)</div>
+    <div style="background:var(--terra);color:var(--white)"><b>Терракота</b>#C2461F · главный цвет, большие панели</div>
+    <div style="background:var(--brown);color:var(--white)"><b>Красно-коричневый</b>#6B1F12 · кейсы, футер</div>
+    <div style="background:var(--caramel)"><b>Карамель</b>#D98A45 · карточки, плашки</div>
+    <div style="background:var(--ink);color:var(--white)"><b>Тёмный орех</b>#1E1410 · текст, кнопки</div>
+  </div>
+  <div class="urow">
+    <div class="pnl">
+      <span class="lbl" style="color:var(--terra)">Шрифты</span>
+      <div class="spec"><small>Roboto Flex · wdth 132 · 690 · caps<br>H1 63 / H2 52</small><span class="W" style="font-size:46px;line-height:.98">Остаётся в семье</span></div>
+      <div class="spec"><small>Roboto Flex · wdth 125 · 640 · caps<br>карточки 18–26</small><span class="W" style="font-size:22px;font-stretch:125%">Не сошлись характерами</span></div>
+      <div class="spec"><small>Inter Tight 600<br>цитата 44</small><span style="font:600 28px/1.2 var(--t);letter-spacing:-.03em">Мне очень комфортно с ней</span></div>
+      <div class="spec"><small>Inter Tight 400–500<br>текст 15–17</small><span>Подбираем людей, которым можно доверить детей, быт и личное пространство.</span></div>
+      <p style="font-size:13px;color:#8a7262">Рукописный шрифт не используется: без него уверенность макета выше.</p>
+    </div>
+    <div class="pnl">
+      <span class="lbl" style="color:var(--terra)">Кнопки и навигация</span>
+      <div class="bigbtn"><span class="p" style="height:76px;padding:0 30px;font-size:14px">Основная</span><span class="c" style="width:76px;height:76px"><svg viewBox="0 0 48 48" style="width:30px;height:30px"><use href="#arrow"/></svg></span></div>
+      <div class="bigbtn fill"><span class="p" style="height:76px;padding:0 30px;font-size:14px">Hover / залитая</span><span class="c" style="width:76px;height:76px;background:var(--terra);border-color:var(--terra);color:var(--white)"><svg viewBox="0 0 48 48" style="width:30px;height:30px;transform:rotate(45deg)"><use href="#arrow"/></svg></span></div>
+      <div style="display:flex;gap:10px;align-items:center"><span class="dbtn">Малая <i>↗</i></span><span class="op" style="height:44px;opacity:.4">Неактивна</span></div>
+      <div class="join"><span class="oc" style="width:46px;height:46px;font:800 11px/1 var(--d)">ИКТ</span><span class="op" style="height:46px">Навигация</span><span class="oc" style="width:46px;height:46px"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg></span></div>
+      <div style="display:flex;gap:8px"><span class="tab on" style="height:40px">Вкладка</span><span class="tab" style="height:40px">Вкладка</span></div>
+    </div>
+    <div class="pnl" style="background:var(--white)">
+      <span class="lbl" style="color:var(--terra)">Поля формы</span>
+      <div class="fl2"><label>По умолчанию</label><div class="v">Имя</div></div>
+      <div class="fl2 focus"><label>Фокус</label><div class="v">Анна</div></div>
+      <div class="fl2"><label>Заполнено</label><div class="v fill">@anna_home</div></div>
+      <div class="fl2 err"><label>Ошибка</label><div class="v">+7 999</div><span class="e">Проверьте номер: не хватает цифр</span></div>
+      <div class="chips"><span class="chip on">Выбрано</span><span class="chip">Вариант</span></div>
+    </div>
+  </div>
+  <div class="urow" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="scard" style="background:var(--terra);color:var(--white);height:300px"><div class="hd" style="height:120px"><h3>Карточка услуги</h3><span class="oic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span></div><div class="im pp" style="--pt:#8E4E36"><svg class="pic" viewBox="0 0 64 64"><use href="#i-person"/></svg></div></div>
+    <div class="ncard" style="background:var(--brown);height:300px"><span class="n">(1)</span><div><h3>Карточка (n)</h3><p>Радиус 12, отступ 14</p></div></div>
+    <div style="background:var(--terra);border-radius:28px;padding:16px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:134px 134px">
+      <div class="tile" style="background:var(--white);grid-row:1/3;padding:16px"><span class="lbl" style="color:var(--terra)">Слипшиеся</span></div>
+      <div class="tile" style="background:var(--brown)"></div><div class="tile" style="background:var(--caramel)"></div>
+    </div>
+  </div>
+</div>
+</body></html>

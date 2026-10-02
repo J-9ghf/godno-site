@@ -111,3 +111,7 @@ public/media/              hero.webm / hero.mp4 (без звука), hero-poster
 
 `concepts/v3/` — A «Мозаика» и B «Слои», по три PNG 1440 px (первый экран, вся страница, UI-лист).
 Исходники и рендер — `concepts/v3/src/` (`node render.js c5` / `c6`).
+
+### Концепция v4 (одна, по конструкции референсов)
+
+`concepts/v4/` — 1-hero.png, 2-page.png, 3-ui.png (1440 px). Исходник и рендер — `concepts/v4/src/` (`node render.js c7`).

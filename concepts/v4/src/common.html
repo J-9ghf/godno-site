@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<style>
+@font-face {
+  font-family: 'Geologica';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: block;
+  src: url(fonts/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWHllEP2A.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Geologica';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: block;
+  src: url(fonts/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWF1lEP2A.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Geologica';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: block;
+  src: url(fonts/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWE1lE.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-display: block;
+  src: url(fonts/NaNeepOXO_NexZs0b5QrzlOHb8wCikXpYqmZsWI-__OGbt8jZktqc2V3Zs0KvDLdBP8SBZtOs2IifRuUZQMsPJtUsR4DEK6cULNeUx9XgTnH37Ha_FIAp4Fm0PP1hw45DntW2x0wZGzhPmr1YNMYKYn9_1IQXGwJAiUJVUMdN5YUW4O8HtSoXjC79QRyaLshNDUf9-wmF9lp.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-display: block;
+  src: url(fonts/NaNeepOXO_NexZs0b5QrzlOHb8wCikXpYqmZsWI-__OGbt8jZktqc2V3Zs0KvDLdBP8SBZtOs2IifRuUZQMsPJtUsR4DEK6cULNeUx9XgTnH37Ha_FIAp4Fm0PP1hw45DntW2x0wZGzhPmr1YNMYKYn9_1IQXGwJAiUJVUMdN5YUW4O8HtSoXjC79QRyaLshNDUf9-UmF9lp.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-display: block;
+  src: url(fonts/NaNeepOXO_NexZs0b5QrzlOHb8wCikXpYqmZsWI-__OGbt8jZktqc2V3Zs0KvDLdBP8SBZtOs2IifRuUZQMsPJtUsR4DEK6cULNeUx9XgTnH37Ha_FIAp4Fm0PP1hw45DntW2x0wZGzhPmr1YNMYKYn9_1IQXGwJAiUJVUMdN5YUW4O8HtSoXjC79QRyaLshNDUf9-EmFw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Extra Condensed';
+  font-style: normal;
+  font-weight: 500 900;
+  font-display: block;
+  src: url(fonts/raxoHjafvdAIOju4GcIfJH0i7zi50X3zRtuLNiMS0fSjJk5kkw.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Extra Condensed';
+  font-style: normal;
+  font-weight: 500 900;
+  font-display: block;
+  src: url(fonts/raxoHjafvdAIOju4GcIfJH0i7zi50X3zRtuLNiMS0fSqJk5kkw.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Extra Condensed';
+  font-style: normal;
+  font-weight: 500 900;
+  font-display: block;
+  src: url(fonts/raxoHjafvdAIOju4GcIfJH0i7zi50X3zRtuLNiMS0fSuJk4.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Ysabeau';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: block;
+  src: url(fonts/kmK_ZqEiBAXLcnuMlD9V3Q7dmuQ.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Ysabeau';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: block;
+  src: url(fonts/kmK_ZqEiBAXLcnuMlD9V1A7dmuQ.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Ysabeau';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: block;
+  src: url(fonts/kmK_ZqEiBAXLcnuMlD9V0A7d.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Ysabeau';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: block;
+  src: url(fonts/kmK9ZqEiBAXLcnuMlDdl0hbZ.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Ysabeau';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: block;
+  src: url(fonts/kmK9ZqEiBAXLcnuMlD5l0hbZ.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Ysabeau';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: block;
+  src: url(fonts/kmK9ZqEiBAXLcnuMlDpl0g.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+/* Общее для всех трёх макетов: холст 1440, плейсхолдеры фото, пометки анимаций (розовые — не часть дизайна) */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{width:1440px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{max-width:100%}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:inherit}
+.board{position:relative;width:1440px;overflow:hidden}
+
+/* ---------- Пометки анимаций ---------- */
+.an{position:absolute;z-index:30;display:inline-flex;align-items:center;gap:7px;background:#FF3D7F;color:#fff;font:600 12.5px/1.25 'Geologica',sans-serif;padding:6px 11px 6px 7px;border-radius:4px;box-shadow:0 6px 18px -8px rgba(0,0,0,.5);white-space:nowrap;letter-spacing:0}
+.an b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#fff;color:#FF3D7F;font-size:11px;font-weight:800;flex:none}
+.an i{font-style:normal;font-size:15px;line-height:1}
+.mv{outline:2px dashed #FF3D7F;outline-offset:6px}
+.arrow{position:absolute;z-index:29;height:0;border-top:2px dashed #FF3D7F;transform-origin:0 0}
+.arrow::after{content:"";position:absolute;right:-2px;top:-7px;border:6px solid transparent;border-left:9px solid #FF3D7F}
+
+/* ---------- Плейсхолдеры фото ---------- */
+.ph{position:relative;overflow:hidden;isolation:isolate;background:var(--ph-m)}
+.ph::before{content:"";position:absolute;inset:-6%;background:var(--scene);filter:blur(var(--blur,6px)) saturate(var(--sat,1)) contrast(var(--con,1));z-index:-3}
+.ph::after{content:"";position:absolute;inset:0;z-index:-1;opacity:var(--grain,.6);mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .25 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.ph .cap{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;font:500 11.5px/1.35 'Geologica',sans-serif;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.55)}
+.ph .cap em{display:inline-block;font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:rgba(0,0,0,.45);padding:3px 6px;border-radius:2px;margin-bottom:5px;text-shadow:none}
+.ph .cap span{display:block}
+.ph .sun{position:absolute;z-index:-2;background:var(--ph-w);filter:blur(16px);opacity:.7}
+
+.s-window{--scene:radial-gradient(ellipse 22% 40% at 72% 34%,var(--ph-w) 0 35%,transparent 75%),linear-gradient(90deg,transparent 58%,color-mix(in srgb,var(--ph-w) 70%,transparent) 61% 83%,transparent 86%),radial-gradient(ellipse 55% 28% at 64% 86%,color-mix(in srgb,var(--ph-w) 60%,transparent) 0,transparent 70%),radial-gradient(ellipse 16% 26% at 32% 64%,var(--ph-d) 0 40%,transparent 80%),linear-gradient(180deg,var(--ph-l) 0,var(--ph-m) 66%,var(--ph-d) 66.5%,var(--ph-dd) 100%)}
+.s-portrait{--scene:radial-gradient(ellipse 11% 15% at 44% 34%,var(--ph-d) 0 50%,transparent 100%),radial-gradient(ellipse 28% 34% at 46% 82%,var(--ph-d) 0 55%,transparent 100%),radial-gradient(ellipse 7% 9% at 66% 60%,var(--ph-d) 0 45%,transparent 100%),radial-gradient(ellipse 14% 18% at 67% 88%,var(--ph-d) 0 50%,transparent 100%),radial-gradient(ellipse 45% 70% at 88% 18%,var(--ph-w) 0,transparent 70%),linear-gradient(160deg,var(--ph-l),var(--ph-m) 70%,var(--ph-d))}
+.s-table{--scene:radial-gradient(ellipse 6% 9% at 28% 58%,var(--ph-d) 0 50%,transparent 100%),radial-gradient(ellipse 20% 6% at 60% 64%,var(--ph-w) 0 60%,transparent 100%),radial-gradient(ellipse 12% 4% at 78% 70%,var(--ph-d) 0 40%,transparent 100%),radial-gradient(ellipse 60% 50% at 10% 0%,color-mix(in srgb,var(--ph-w) 80%,transparent) 0,transparent 70%),linear-gradient(180deg,var(--ph-l) 0 50%,var(--ph-m) 50.5% 100%)}
+.s-hall{--scene:radial-gradient(ellipse 14% 30% at 50% 46%,var(--ph-w) 0 40%,transparent 90%),linear-gradient(90deg,var(--ph-dd) 0 14%,var(--ph-d) 14% 34%,var(--ph-m) 34% 42%,var(--ph-l) 42% 58%,var(--ph-m) 58% 66%,var(--ph-d) 66% 86%,var(--ph-dd) 86%),var(--ph-m)}
+.s-blinds{--scene:repeating-linear-gradient(118deg,transparent 0 34px,color-mix(in srgb,var(--ph-dd) 22%,transparent) 34px 58px),radial-gradient(ellipse 18% 12% at 40% 60%,var(--ph-d) 0 50%,transparent 100%),radial-gradient(ellipse 60% 60% at 70% 30%,var(--ph-w) 0,transparent 70%),linear-gradient(200deg,var(--ph-l),var(--ph-m))}
+.s-hands{--scene:radial-gradient(ellipse 16% 10% at 38% 56%,var(--ph-s) 0 55%,transparent 100%),radial-gradient(ellipse 14% 9% at 58% 60%,var(--ph-s) 0 55%,transparent 100%),radial-gradient(ellipse 34% 12% at 50% 66%,var(--ph-w) 0 50%,transparent 100%),radial-gradient(ellipse 70% 50% at 50% 0%,color-mix(in srgb,var(--ph-w) 60%,transparent) 0,transparent 70%),linear-gradient(180deg,var(--ph-m),var(--ph-d))}
+.s-car{--scene:radial-gradient(ellipse 40% 14% at 50% 70%,var(--ph-dd) 0 55%,transparent 100%),radial-gradient(ellipse 8% 22% at 76% 52%,var(--ph-d) 0 50%,transparent 100%),linear-gradient(180deg,var(--ph-l) 0 45%,var(--ph-m) 45% 72%,var(--ph-d) 72%)}
+.s-care{--scene:radial-gradient(ellipse 12% 15% at 34% 40%,var(--ph-d) 0 50%,transparent 100%),radial-gradient(ellipse 22% 26% at 36% 80%,var(--ph-d) 0 55%,transparent 100%),radial-gradient(ellipse 30% 14% at 66% 74%,var(--ph-w) 0 50%,transparent 100%),radial-gradient(ellipse 50% 60% at 90% 10%,var(--ph-w) 0,transparent 70%),linear-gradient(170deg,var(--ph-l),var(--ph-m))}
+.s-keys{--scene:radial-gradient(ellipse 5% 3% at 46% 60%,var(--ph-dd) 0 60%,transparent 100%),radial-gradient(ellipse 3% 5% at 52% 56%,var(--ph-d) 0 60%,transparent 100%),radial-gradient(ellipse 40% 20% at 50% 62%,var(--ph-l) 0 60%,transparent 100%),linear-gradient(180deg,var(--ph-m) 0 52%,var(--ph-d) 52%)}
+</style>
