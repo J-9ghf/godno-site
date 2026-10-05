@@ -11,7 +11,8 @@ const btnId = 'about-more-btn';
   <div class="container">
     <SectionTag num="02" label="О нас" aside="Институт кадровых решений" />
 
-    <!-- Компьютер: фото с подписью слева, текст блока справа. Планшет и телефон: всё друг под другом -->
+    <!-- Компьютер: заголовок, тезисы в три колонки и кнопка слева, фото с подписью справа.
+         Планшет и телефон: заголовок, компактное фото с подписью сбоку, тезисы друг под другом -->
     <div class="about__layout">
     <h2 class="about__title h2" id="about-title" data-reveal>{about.title}</h2>
 
@@ -31,8 +32,8 @@ const btnId = 'about-more-btn';
       </figcaption>
     </figure>
 
-    <!-- Три тезиса и ключевой факт -->
-    <ul class="about__cards">
+    <!-- Три тезиса; факт про гарантию — строкой в первом -->
+    <ol class="about__cards">
       {
         about.theses.map((t, i) => (
           <li class="about__card" data-reveal style={`--d: ${i * 90}`}>
@@ -41,14 +42,16 @@ const btnId = 'about-more-btn';
               {String(i + 1).padStart(2, '0')}
             </span>
             <p class="about__thesis">{t}</p>
+            {i === 0 && (
+              <p class="about__guarantee">
+                <span class="node" aria-hidden="true" />
+                {about.guarantee}
+              </p>
+            )}
           </li>
         ))
       }
-      <li class="about__fact" data-reveal style="--d: 270">
-        <span class="about__fact-value num">0</span>
-        <span class="about__fact-caption eyebrow">замен по гарантии за 1 год</span>
-      </li>
-    </ul>
+    </ol>
 
     <!-- Полный утверждённый текст блока — по кнопке -->
     <div class="about__more" data-accordion>
@@ -72,10 +75,11 @@ const btnId = 'about-more-btn';
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-template-areas:
-      'ph ph ph ph ti ti ti ti ti ti ti ti'
-      'ph ph ph ph ca ca ca ca ca ca ca ca'
-      'ph ph ph ph mo mo mo mo mo mo mo mo';
+      'ti ti ti ti ti ti ti ti ph ph ph ph'
+      'ca ca ca ca ca ca ca ca ph ph ph ph'
+      'mo mo mo mo mo mo mo mo ph ph ph ph';
     grid-template-rows: auto auto 1fr;
+    align-items: start;
     column-gap: var(--gutter);
     row-gap: clamp(2rem, 4vw, 3rem);
     margin-top: clamp(3rem, 6vw, 5rem);
@@ -83,13 +87,13 @@ const btnId = 'about-more-btn';
 
   .about__title {
     grid-area: ti;
-    max-width: 16ch;
+    max-width: 14ch;
+    font-size: var(--fs-display);
   }
 
   /* Фото руководителя с подписью */
   .about__founder {
     grid-area: ph;
-    align-self: start;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -122,24 +126,22 @@ const btnId = 'about-more-btn';
     color: var(--c-slate);
   }
 
-  /* Карточки: 3 тезиса + факт, сетка 2×2 */
+  /* Тезисы: три карточки в ряд */
   .about__cards {
     grid-area: ca;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--gutter);
-  }
-
-  .about__card,
-  .about__fact {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-    min-height: 12rem;
-    padding: clamp(1.5rem, 2vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .about__card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: clamp(1.25rem, 2vw, 1.75rem);
     background: var(--c-white);
   }
 
@@ -151,8 +153,6 @@ const btnId = 'about-more-btn';
   }
 
   .about__thesis {
-    margin-top: auto;
-    max-width: 18ch;
     font-size: var(--fs-h4);
     font-weight: 700;
     line-height: 1.3;
@@ -161,23 +161,19 @@ const btnId = 'about-more-btn';
     text-wrap: balance;
   }
 
-  /* Цифра на цветовом поле */
-  .about__fact {
-    justify-content: space-between;
-    background: var(--c-mist);
-  }
-
-  .about__fact-value {
-    font-size: clamp(4.5rem, 3rem + 4vw, 7.5rem);
+  /* Факт про гарантию внутри первого тезиса */
+  .about__guarantee {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.625rem;
+    margin-top: -0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgb(var(--shade) / 0.14);
+    font-size: var(--fs-small);
     font-weight: 700;
-    line-height: 0.78;
-    letter-spacing: -0.06em;
-    color: var(--c-navy);
-  }
-
-  .about__fact-caption {
-    max-width: 16ch;
-    color: var(--c-slate);
+    line-height: 1.4;
+    color: var(--c-accent);
   }
 
   /* Полный текст — раскрывается */
@@ -265,7 +261,7 @@ const btnId = 'about-more-btn';
     }
   }
 
-  /* Планшет и телефон: заголовок, фото с подписью, карточки, кнопка */
+  /* Планшет и телефон: заголовок, фото с подписью сбоку, тезисы, кнопка */
   @media (max-width: 960px) {
     .about__layout {
       grid-template-columns: minmax(0, 1fr);
@@ -273,47 +269,39 @@ const btnId = 'about-more-btn';
       grid-template-rows: auto;
     }
 
-    /* На планшете фото на всю ширину, кадр 4:3 — лицо целиком */
+    .about__title {
+      font-size: var(--fs-h2);
+    }
+
+    .about__founder {
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 1.25rem;
+    }
+
     .about__founder-photo {
-      aspect-ratio: 4 / 3;
-      object-position: 50% 22%;
+      flex: none;
+      width: 13rem;
     }
   }
 
+  /* Телефон: компактное фото (кадр 4:5 целиком), тезисы в одну колонку */
   @media (max-width: 640px) {
-    /* Телефон: компактное фото (кадр 4:5 целиком) и подпись справа от него */
     .about__founder {
-      flex-direction: row;
       align-items: center;
       gap: 1rem;
     }
 
     .about__founder-photo {
-      flex: none;
       width: clamp(7rem, 34vw, 9rem);
-      aspect-ratio: 4 / 5;
-      object-position: 50% 50%;
     }
 
     .about__cards {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .about__card,
-    .about__fact {
-      min-height: 0;
-      gap: 1.25rem;
-    }
-
-    /* На телефоне факт — первым */
-    .about__fact {
-      order: -1;
-      flex-direction: row;
-      align-items: flex-end;
-    }
-
-    .about__fact-caption {
-      text-align: right;
+    .about__card {
+      gap: 1rem;
     }
   }
 </style>
