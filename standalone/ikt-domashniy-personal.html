@@ -116,7 +116,7 @@ em{font-style:italic}
 .h1 .ln>span{display:inline-block}
 .hero-side{display:grid;gap:20px;padding-bottom:.6em;justify-items:start}
 .hero-side p{color:var(--muted);font-size:15.5px;line-height:1.6;max-width:36ch}
-.hero-shot{position:relative;margin:clamp(26px,3vw,44px) 0 0;height:min(calc(100vh - 230px),780px);min-height:440px;border-radius:14px;overflow:hidden;background:var(--sage)}
+.hero-shot{position:relative;margin:clamp(26px,3vw,44px) 0 0;height:min(calc(100vh - 230px),780px);min-height:440px;border-radius:0;overflow:hidden;background:var(--sage)}
 .hero-shot img{position:absolute;inset:-4% 0;width:100%;height:108%;object-fit:cover;object-position:52% 62%;will-change:transform;transform:scale(1.02);transition:transform 2.4s var(--ease)}
 .anim .hero-shot img{transform:scale(1.08)}
 .anim.ready .hero-shot img{transform:scale(1.02)}
@@ -146,7 +146,7 @@ em{font-style:italic}
 .role-list button[aria-pressed="true"]{color:var(--forest)}
 .role-list:not(.right) button[aria-pressed="true"]{padding-left:12px}
 .role-list.right button[aria-pressed="true"]{padding-right:12px}
-.role-photo{aspect-ratio:4/5;width:100%}
+.role-photo{aspect-ratio:4/5;width:100%;border-radius:999px 999px 0 0}
 .role-photo .layer{opacity:0}
 .role-photo .layer.on{opacity:1}
 .role-note{text-align:center;margin-top:22px;color:var(--muted);font-size:14px;min-height:1.6em}
@@ -189,7 +189,7 @@ em{font-style:italic}
 .more-items .mark{width:34px;height:34px;color:var(--herb)}
 .more-items h3{font-size:clamp(19px,1.6vw,23px);line-height:1.2;font-weight:500}
 .more-items p{color:var(--muted);font-size:15.5px}
-.more-small{grid-column:4/7;grid-row:2;align-self:end;aspect-ratio:1;margin-right:12%;margin-bottom:-70px;z-index:2;box-shadow:0 0 0 10px var(--milk)}
+.more-small{border-radius:0;background:none;grid-column:4/7;grid-row:2;align-self:end;aspect-ratio:1;margin-right:12%;margin-bottom:-70px;z-index:2;box-shadow:0 0 0 10px var(--milk)}
 .more-small .in{--lp:10% 20%;--ls:120%}
 
 /* ---------- service (calm info) ---------- */
