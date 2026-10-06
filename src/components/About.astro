@@ -11,9 +11,31 @@ const btnId = 'about-more-btn';
   <div class="container">
     <SectionTag num="02" label="О нас" aside="Институт кадровых решений" />
 
-    <!-- Компьютер: заголовок, тезисы в три колонки и кнопка слева, фото с подписью справа.
-         Планшет и телефон: заголовок, компактное фото с подписью сбоку, тезисы друг под другом -->
+    <!-- Компьютер: слева тёмная колонка с цифрами рынка, справа заголовок, цитата руководителя, тезисы и кнопка.
+         Планшет и телефон: заголовок, цитата, цифры, тезисы -->
     <div class="about__layout">
+    <div class="about__market" data-reveal>
+      <p class="about__market-kicker eyebrow">{about.market.kicker}</p>
+      <ul class="about__stats">
+        {
+          about.market.items.map((m) => (
+            <li class="about__stat">
+              <span class="about__stat-val num">
+                {/* Невидимый итоговый текст держит ширину числа — знак и подпись не прыгают во время счёта */}
+                <span class="about__stat-size" aria-hidden="true">{m.text}</span>
+                <span class="about__stat-live" aria-hidden="true">
+                  {m.prefix}<span data-count={m.value} data-decimals={m.decimals}>{m.text.replace(m.prefix, '').replace(m.suffix, '')}</span>{m.suffix}
+                </span>
+                <span class="visually-hidden">{m.text}</span>
+              </span>
+              <span class="about__stat-cap">{m.caption}</span>
+              <span class="about__stat-src">{m.source}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
     <h2 class="about__title h2" id="about-title" data-reveal>{about.title}</h2>
 
     <figure class="about__founder" data-reveal>
@@ -27,27 +49,30 @@ const btnId = 'about-more-btn';
         decoding="async"
       />
       <figcaption class="about__founder-cap">
+        <blockquote class="about__quote">«{about.quote}»</blockquote>
         <span class="about__founder-name">{about.founder.name}</span>
         <span class="about__founder-role">{about.founder.role}</span>
       </figcaption>
     </figure>
 
     <!-- Три тезиса; факт про гарантию — строкой в первом -->
-    <ol class="about__cards">
+    <ol class="about__theses">
       {
         about.theses.map((t, i) => (
-          <li class="about__card" data-reveal style={`--d: ${i * 90}`}>
-            <span class="about__card-num eyebrow num">
+          <li class="about__thesis-item">
+            <span class="about__thesis-num eyebrow num">
               <span class="node" aria-hidden="true" />
               {String(i + 1).padStart(2, '0')}
             </span>
-            <p class="about__thesis">{t}</p>
-            {i === 0 && (
-              <p class="about__guarantee">
-                <span class="node" aria-hidden="true" />
-                {about.guarantee}
-              </p>
-            )}
+            <div>
+              <p class="about__thesis">{t}</p>
+              {i === 0 && (
+                <p class="about__guarantee">
+                  <span class="node" aria-hidden="true" />
+                  {about.guarantee}
+                </p>
+              )}
+            </div>
           </li>
         ))
       }
@@ -75,10 +100,11 @@ const btnId = 'about-more-btn';
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-template-areas:
-      'ti ti ti ti ti ti ti ti ph ph ph ph'
-      'ca ca ca ca ca ca ca ca ph ph ph ph'
-      'mo mo mo mo mo mo mo mo ph ph ph ph';
-    grid-template-rows: auto auto 1fr;
+      'ma ma ma ma ma ti ti ti ti ti ti ti'
+      'ma ma ma ma ma fo fo fo fo fo fo fo'
+      'ma ma ma ma ma li li li li li li li'
+      'ma ma ma ma ma mo mo mo mo mo mo mo';
+    grid-template-rows: auto auto auto 1fr;
     align-items: start;
     column-gap: var(--gutter);
     row-gap: clamp(2rem, 4vw, 3rem);
@@ -87,16 +113,81 @@ const btnId = 'about-more-btn';
 
   .about__title {
     grid-area: ti;
-    max-width: 14ch;
-    font-size: var(--fs-display);
+    max-width: 16ch;
   }
 
-  /* Фото руководителя с подписью */
-  .about__founder {
-    grid-area: ph;
+  /* Цифры рынка труда */
+  .about__market {
+    grid-area: ma;
+    align-self: stretch;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    background: var(--c-navy);
+    color: var(--c-white);
+  }
+
+  .about__market-kicker {
+    color: var(--c-accent-bright);
+  }
+
+  .about__stats {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(255 255 255 / 0.16);
+  }
+
+  .about__stat-val {
+    display: inline-grid;
+    justify-self: start;
+    align-self: flex-start;
+    font-size: clamp(2.5rem, 1.6rem + 2.6vw, 4rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .about__stat-size,
+  .about__stat-live {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+  }
+
+  .about__stat-size {
+    visibility: hidden;
+  }
+
+  .about__stat-cap {
+    font-size: var(--fs-small);
+    color: rgb(255 255 255 / 0.8);
+  }
+
+  .about__stat-src {
+    font-size: var(--fs-meta);
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  /* Руководитель: маленькое фото и цитата */
+  .about__founder {
+    grid-area: fo;
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
     margin: 0;
   }
 
@@ -109,43 +200,50 @@ const btnId = 'about-more-btn';
     background: var(--c-mist);
   }
 
+  .about__founder-cap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .about__quote {
+    margin: 0 0 0.75rem;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--c-ink);
+  }
+
   .about__founder-name {
-    display: block;
-    font-size: var(--fs-h4);
+    font-size: var(--fs-small);
     font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.015em;
     color: var(--c-ink);
   }
 
   .about__founder-role {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: var(--fs-small);
-    font-weight: 500;
+    font-size: var(--fs-meta);
     color: var(--c-slate);
   }
 
-  /* Тезисы: три карточки в ряд */
-  .about__cards {
-    grid-area: ca;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--gutter);
+  /* Тезисы списком с линиями */
+  .about__theses {
+    grid-area: li;
     margin: 0;
     padding: 0;
     list-style: none;
+    border-bottom: 1px solid rgb(var(--shade) / 0.14);
   }
 
-  .about__card {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-    padding: clamp(1.25rem, 2vw, 1.75rem);
-    background: var(--c-white);
+  .about__thesis-item {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    align-items: baseline;
+    padding: 1.125rem 0;
+    border-top: 1px solid rgb(var(--shade) / 0.14);
   }
 
-  .about__card-num {
+  .about__thesis-num {
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
@@ -158,21 +256,16 @@ const btnId = 'about-more-btn';
     line-height: 1.3;
     letter-spacing: -0.015em;
     color: var(--c-ink);
-    text-wrap: balance;
   }
 
-  /* Факт про гарантию внутри первого тезиса */
   .about__guarantee {
     display: grid;
     grid-template-columns: 8px minmax(0, 1fr);
     align-items: baseline;
     gap: 0.625rem;
-    margin-top: -0.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgb(var(--shade) / 0.14);
+    margin-top: 0.5rem;
     font-size: var(--fs-small);
     font-weight: 700;
-    line-height: 1.4;
     color: var(--c-accent);
   }
 
@@ -261,47 +354,27 @@ const btnId = 'about-more-btn';
     }
   }
 
-  /* Планшет и телефон: заголовок, фото с подписью сбоку, тезисы, кнопка */
+  /* Планшет и телефон: заголовок, цитата, цифры, тезисы, кнопка */
   @media (max-width: 960px) {
     .about__layout {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: 'ti' 'ph' 'ca' 'mo';
+      grid-template-areas: 'ti' 'fo' 'ma' 'li' 'mo';
       grid-template-rows: auto;
-    }
-
-    .about__title {
-      font-size: var(--fs-h2);
-    }
-
-    .about__founder {
-      flex-direction: row;
-      align-items: flex-end;
-      gap: 1.25rem;
-    }
-
-    .about__founder-photo {
-      flex: none;
-      width: 13rem;
     }
   }
 
-  /* Телефон: компактное фото (кадр 4:5 целиком), тезисы в одну колонку */
   @media (max-width: 640px) {
     .about__founder {
-      align-items: center;
+      grid-template-columns: 5.5rem minmax(0, 1fr);
       gap: 1rem;
     }
 
-    .about__founder-photo {
-      width: clamp(7rem, 34vw, 9rem);
+    .about__quote {
+      font-size: var(--fs-body);
     }
 
-    .about__cards {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .about__card {
-      gap: 1rem;
+    .about__thesis-item {
+      grid-template-columns: 3.25rem minmax(0, 1fr);
     }
   }
 </style>

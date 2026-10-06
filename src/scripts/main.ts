@@ -166,6 +166,45 @@ function initProcess() {
   setCurrent(1);
 }
 
+/* ── Счётчики: число набегает от нуля один раз, когда появляется на экране ── */
+function initCounters() {
+  const els = [...document.querySelectorAll<HTMLElement>('[data-count]')];
+  // «Уменьшить движение» или старый браузер — итоговые числа уже стоят в разметке
+  if (!els.length || reduceMotion || !('IntersectionObserver' in window)) return;
+
+  const DURATION = 1800;
+  const format = (v: number, d: number) => v.toFixed(d).replace('.', ',');
+  const run = (el: HTMLElement) => {
+    const target = Number(el.dataset.count);
+    const decimals = Number(el.dataset.decimals || 0);
+    let start: number | null = null;
+    const step = (ts: number) => {
+      if (start === null) start = ts;
+      const p = Math.min(1, (ts - start) / DURATION);
+      const eased = 1 - Math.pow(1 - p, 3); // плавное замедление к концу
+      el.textContent = format(target * eased, decimals);
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = format(target, decimals);
+    };
+    requestAnimationFrame(step);
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        run(e.target as HTMLElement);
+      }
+    },
+    { threshold: 0.6 },
+  );
+  els.forEach((el) => {
+    el.textContent = format(0, Number(el.dataset.decimals || 0));
+    io.observe(el);
+  });
+}
+
 /* ── Form: пока только интерфейс — данные никуда не отправляются ── */
 function initForm() {
   const form = document.querySelector<HTMLFormElement>('[data-form]');
@@ -222,3 +261,4 @@ initVideo();
 initHeaderState();
 initProcess();
 initForm();
+initCounters();
