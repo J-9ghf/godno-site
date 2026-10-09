@@ -18,6 +18,15 @@ const schema = z.object({
   SMTP_PASSWORD: z.string().optional(),
   SESSION_IDLE_MINUTES: z.coerce.number().int().positive().default(30),
   SESSION_MAX_HOURS: z.coerce.number().int().positive().default(12),
+  // Секрет для подписи служебных токенов форм (не меньше 32 символов). В разработке есть запасной.
+  APP_SECRET: z.string().min(32).optional(),
+  CAPTCHA_PROVIDER: z.enum(['off', 'smartcaptcha']).default('off'),
+  SMARTCAPTCHA_CLIENT_KEY: z.string().optional(),
+  SMARTCAPTCHA_SERVER_KEY: z.string().optional(),
+  TELEGRAM_BOT_TOKEN: z.string().optional(),
+  TELEGRAM_TEAM_CHAT_ID: z.string().optional(),
+  // test — форма резюме показывает «тестовый режим» (до текста согласия от юриста); live — рабочий режим.
+  RESUME_FORM_MODE: z.enum(['test', 'live']).default('test'),
 });
 
 export type Env = z.infer<typeof schema>;
@@ -31,6 +40,9 @@ export function env(): Env {
   if (!parsed.success) {
     const fields = parsed.error.issues.map((i) => i.path.join('.')).join(', ');
     throw new Error(`Не заданы или неверны переменные окружения: ${fields}`);
+  }
+  if (process.env.NODE_ENV === 'production' && !parsed.data.APP_SECRET && process.env.NEXT_PHASE !== 'phase-production-build') {
+    throw new Error('Не задан APP_SECRET (не меньше 32 символов)');
   }
   cached = parsed.data;
   return cached;
