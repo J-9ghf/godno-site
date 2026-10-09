@@ -1,0 +1,30 @@
+# Локальный Supabase (supabase start). Для облачного проекта те же настройки
+# выставляются в панели Supabase: Authentication → Providers / Sign In.
+project_id = "ikr-platform"
+
+[api]
+schemas = ["public"]
+
+[db]
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+site_url = "http://localhost:3000"
+# Открытой регистрации нет: пользователи создаются только сервером по приглашению.
+enable_signup = false
+enable_anonymous_sign_ins = false
+minimum_password_length = 10
+# Сессия: короткий access-токен, автовыход по бездействию делает приложение.
+jwt_expiry = 1800
+
+[auth.email]
+enable_signup = false
+double_confirm_changes = true
+enable_confirmations = false
+
+[auth.rate_limit]
+sign_in_sign_ups = 30
