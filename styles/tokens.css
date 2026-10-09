@@ -1,0 +1,27 @@
+/*
+ * Дизайн-токены платформы. Меняются здесь — меняется весь интерфейс.
+ * Палитра и шрифт перенесены с текущего сайта: белый + чёрный, один акцент (синий), Manrope.
+ */
+:root {
+  --c-white: #ffffff;
+  --c-black: #0a0c11;
+  --c-ink-2: #3b4250;
+  --c-ink-3: #5b6476; /* подписи: контраст 5.9:1 на белом */
+  --c-blue: #1447e6;
+  --c-blue-dark: #0d34b0;
+  --c-blue-light: #eef3ff;
+  --c-soft: #f4f7fc;
+  --c-line: #e3e8f1;
+  --c-line-strong: #c8d1e0;
+  --c-danger: #b42318;
+  --c-danger-light: #fef3f2;
+  --c-success: #067647;
+  --c-success-light: #ecfdf3;
+
+  --font: 'Manrope Variable', 'Helvetica Neue', Arial, sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --shadow-panel: 0 1px 2px rgb(10 12 17 / 0.04), 0 24px 48px -32px rgb(20 50 120 / 0.18);
+}

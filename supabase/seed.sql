@@ -1,8 +1,9 @@
 -- Демо-данные. Только вымышленные люди и компании, почты на example.com.
 -- Запускается после миграций (supabase db reset или scripts/db/test.sh).
 --
--- Пользователи создаются в auth.users с фиксированными id и без пароля.
--- Пароли для входа задаёт отдельный скрипт этапа 2 через admin API.
+-- Пользователи создаются прямо в auth.users с фиксированными id и общим демо-паролем
+-- IkrDemo-2026! (только для локальной разработки и демо-проекта; в рабочей базе демо-данных нет).
+-- Служебные строковые поля Auth заполняются '' — с NULL сервис Auth не может прочитать пользователя.
 --
 --   admin    a0000000-0000-4000-8000-000000000001  admin@example.com
 --   manager1 b0000000-0000-4000-8000-000000000001  manager1@example.com  → Альфа
@@ -11,13 +12,21 @@
 --   client A c1000000-0000-4000-8000-000000000002  alfa.hr@example.com
 --   client B c2000000-0000-4000-8000-000000000001  beta.lead@example.com (руководитель)
 
-insert into auth.users (id, email, aud, role, created_at, updated_at) values
-  ('a0000000-0000-4000-8000-000000000001', 'admin@example.com', 'authenticated', 'authenticated', now(), now()),
-  ('b0000000-0000-4000-8000-000000000001', 'manager1@example.com', 'authenticated', 'authenticated', now(), now()),
-  ('b0000000-0000-4000-8000-000000000002', 'manager2@example.com', 'authenticated', 'authenticated', now(), now()),
-  ('c1000000-0000-4000-8000-000000000001', 'alfa.lead@example.com', 'authenticated', 'authenticated', now(), now()),
-  ('c1000000-0000-4000-8000-000000000002', 'alfa.hr@example.com', 'authenticated', 'authenticated', now(), now()),
-  ('c2000000-0000-4000-8000-000000000001', 'beta.lead@example.com', 'authenticated', 'authenticated', now(), now())
+insert into auth.users (instance_id, id, email, aud, role, encrypted_password, email_confirmed_at,
+                        raw_app_meta_data, raw_user_meta_data, confirmation_token, recovery_token,
+                        email_change_token_new, email_change_token_current, email_change, phone_change,
+                        phone_change_token, reauthentication_token, created_at, updated_at)
+select '00000000-0000-0000-0000-000000000000', u.id::uuid, u.email, 'authenticated', 'authenticated',
+       extensions.crypt('IkrDemo-2026!', extensions.gen_salt('bf')), now(),
+       '{"provider": "email", "providers": ["email"]}'::jsonb, '{}'::jsonb, '', '', '', '', '', '', '', '', now(), now()
+from (values
+  ('a0000000-0000-4000-8000-000000000001', 'admin@example.com'),
+  ('b0000000-0000-4000-8000-000000000001', 'manager1@example.com'),
+  ('b0000000-0000-4000-8000-000000000002', 'manager2@example.com'),
+  ('c1000000-0000-4000-8000-000000000001', 'alfa.lead@example.com'),
+  ('c1000000-0000-4000-8000-000000000002', 'alfa.hr@example.com'),
+  ('c2000000-0000-4000-8000-000000000001', 'beta.lead@example.com')
+) as u (id, email)
 on conflict (id) do nothing;
 
 insert into public.companies (id, name, contact_name, contact_email, contact_phone) values

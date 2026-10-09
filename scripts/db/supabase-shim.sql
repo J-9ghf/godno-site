@@ -15,6 +15,9 @@ begin
   end if;
 end $$;
 
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
+
 create schema if not exists auth;
 create table if not exists auth.users (
   id uuid primary key,
@@ -26,6 +29,15 @@ create table if not exists auth.users (
   raw_app_meta_data jsonb default '{}'::jsonb,
   raw_user_meta_data jsonb default '{}'::jsonb,
   instance_id uuid,
+  confirmation_token text,
+  recovery_token text,
+  email_change_token_new text,
+  email_change_token_current text,
+  email_change text,
+  phone_change text,
+  phone_change_token text,
+  reauthentication_token text,
+  banned_until timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

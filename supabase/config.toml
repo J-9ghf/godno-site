@@ -22,7 +22,9 @@ minimum_password_length = 10
 jwt_expiry = 1800
 
 [auth.email]
-enable_signup = false
+# Внимание: здесь enable_signup = false выключает вход по почте целиком (проверено на CLI 2.120).
+# Регистрацию закрывает [auth] enable_signup = false выше.
+enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 

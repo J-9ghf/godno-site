@@ -1,0 +1,52 @@
+@import '@fontsource-variable/manrope/wght.css';
+@import 'tailwindcss';
+@import '../styles/tokens.css';
+
+/* Токены → утилиты Tailwind: bg-blue, text-ink-2, border-line, rounded-md и т. д. */
+@theme inline {
+  --color-white: var(--c-white);
+  --color-black: var(--c-black);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-blue: var(--c-blue);
+  --color-blue-dark: var(--c-blue-dark);
+  --color-blue-light: var(--c-blue-light);
+  --color-soft: var(--c-soft);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-danger: var(--c-danger);
+  --color-danger-light: var(--c-danger-light);
+  --color-success: var(--c-success);
+  --color-success-light: var(--c-success-light);
+  --font-sans: var(--font);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --shadow-panel: var(--shadow-panel);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--c-white);
+  color: var(--c-black);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Видимый фокус для клавиатуры на всех интерактивных элементах. */
+:focus-visible {
+  outline: 3px solid var(--c-blue);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

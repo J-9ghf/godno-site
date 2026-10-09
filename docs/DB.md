@@ -22,7 +22,7 @@ DB_ADMIN_URL=postgresql://postgres:postgres@localhost:5432/postgres npm run db:t
 
 Скрипт пересоздаёт базу `ikr_test`, ставит эмуляцию Supabase (`scripts/db/supabase-shim.sql`:
 роли `anon`/`authenticated`/`service_role`, таблицы `auth.users` и `storage.*`), применяет миграции,
-демо-данные и запускает тесты. С Supabase CLI то же самое: `supabase db reset && supabase test db`.
+демо-данные и запускает тесты (сейчас 145). С Supabase CLI то же самое: `supabase db reset && supabase test db`.
 
 ## Демо-пользователи
 
@@ -35,7 +35,7 @@ DB_ADMIN_URL=postgresql://postgres:postgres@localhost:5432/postgres npm run db:t
 | client | alfa.hr@example.com | Альфа |
 | client, руководитель | beta.lead@example.com | Бета |
 
-Пароли задаются на этапе 2 скриптом через admin API (в seed пользователей создаём без паролей).
+Пароль у всех демо-пользователей: `IkrDemo-2026!`. Админ входит с кодом из письма (см. `docs/AUTH.md`).
 
 ## Кто что видит
 
@@ -88,7 +88,7 @@ DB_ADMIN_URL=postgresql://postgres:postgres@localhost:5432/postgres npm run db:t
 ## Как проверить локально (настоящий Supabase в Docker)
 
 Проверено 9 октября 2026: Supabase CLI 2.120.0, образ `supabase/postgres:15.8.1.085`.
-Результат: миграции и демо-данные применились, `supabase test db` → 136 из 136.
+Результат: миграции и демо-данные применились, `supabase test db` → все тесты проходят (145 после этапа 2).
 
 ```bash
 npm install                       # ставит Supabase CLI локально (devDependency)
@@ -105,7 +105,14 @@ npx supabase stop                 # остановить
 - Если порт 54321/54322 занят, поменяйте `[api] port` и `[db] port` в `config.toml` локально и не коммитьте.
 - Если Docker Hub отвечает 429 или ECR недоступен: `SUPABASE_INTERNAL_IMAGE_REGISTRY=docker.io npx supabase start`.
 
-Отличия от эмуляции на обычном PostgreSQL не обнаружены. Важное отличие среды: в Supabase
+Что отличалось от эмуляции:
+- **`[auth.email] enable_signup = false` выключает вход по почте целиком** («Email logins are disabled»).
+  Регистрацию закрывает только `[auth] enable_signup = false`, а `[auth.email] enable_signup` должен быть `true`.
+  Эмуляция Auth не содержит, поэтому найти это можно было только на настоящем Supabase. Исправлено.
+- Сервис Auth не читает пользователей, у которых служебные строковые поля (`confirmation_token` и т. п.)
+  равны NULL. Это известная особенность GoTrue. Поэтому `seed.sql` заполняет их `''` (эмуляция дополнена
+  этими полями); вход демо-пользователей на настоящем Supabase проверен.
+- Схема базы и RLS вели себя одинаково. Важное отличие среды: в Supabase
 миграции выполняет роль `postgres` без прав суперпользователя. Тесты прошли и в этом режиме,
 значит, правила не опираются на права суперпользователя.
 

@@ -3,7 +3,30 @@ begin;
 \ir helpers/auth.psql
 select no_plan();
 
+-- Админ без второго шага не получает ничего.
+select tests.act_as('a0000000-0000-4000-8000-000000000001', '5e550000-0000-4000-8000-000000000001');
+select is((select count(*)::int from companies), 0, 'Админ без подтверждения кодом не видит компании');
+select is((select count(*)::int from candidates), 0, 'Админ без подтверждения кодом не видит пул');
+select is((select role from my_access()), null, 'my_access: у неподтверждённого админа роли нет');
+select tests.as_owner();
 select tests.act_as('a0000000-0000-4000-8000-000000000001');
+select is((select count(*)::int from companies), 0, 'Админ без session_id в токене не видит компании');
+
+-- Чужая подтверждённая сессия не подходит.
+select tests.as_owner();
+select tests.verify_session('a0000000-0000-4000-8000-000000000001', '5e550000-0000-4000-8000-000000000001');
+update verified_sessions set expires_at = now() - interval '1 minute'
+ where session_id = '5e550000-0000-4000-8000-000000000001';
+select tests.act_as('a0000000-0000-4000-8000-000000000001', '5e550000-0000-4000-8000-000000000001');
+select is((select count(*)::int from companies), 0, 'Истёкшая подтверждённая сессия не даёт прав');
+
+select tests.as_owner();
+update verified_sessions set expires_at = now() + interval '1 hour'
+ where session_id = '5e550000-0000-4000-8000-000000000001';
+select tests.act_as('a0000000-0000-4000-8000-000000000001', '5e550000-0000-4000-8000-000000000001');
+select is((select role::text from my_access()), 'admin', 'my_access: подтверждённый админ');
+select throws_ok($$ select * from verified_sessions $$, '42501', null, 'Таблица подтверждённых сессий закрыта даже для админа');
+select throws_ok($$ select * from auth_tokens $$, '42501', null, 'Одноразовые коды закрыты для всех пользователей');
 select is((select count(*)::int from companies), 2, 'Админ видит все компании');
 select is((select count(*)::int from requests), 4, 'Админ видит все заявки, включая входящие');
 select is((select count(*)::int from candidates), 10, 'Админ видит весь пул');
@@ -29,6 +52,11 @@ select throws_ok($$ insert into candidates (full_name, phone, source, consent_at
   '42501', null, 'Аноним не пишет в пул напрямую (формы пишет сервер)');
 
 -- Вошедший без профиля (например, удалённый) не видит ничего.
+select tests.as_owner();
+select tests.act_as('c1000000-0000-4000-8000-000000000002');
+select results_eq($$ select role::text, company_name, is_company_lead from my_access() $$,
+  $$ values ('client', 'Демо-компания «Альфа»', false) $$, 'my_access: клиент получает свою роль и компанию');
+
 select tests.as_owner();
 select tests.act_as('99999999-0000-4000-8000-000000000000');
 select is((select count(*)::int from companies), 0, 'Пользователь без профиля не видит компаний');

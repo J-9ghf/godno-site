@@ -4,12 +4,14 @@ create extension if not exists pgtap;
 create schema if not exists tests;
 grant usage on schema tests to public;
 
-create or replace function tests.act_as(p_uid uuid)
+-- p_session — id сессии из JWT (нужен админу: права есть только у подтверждённой кодом сессии).
+create or replace function tests.act_as(p_uid uuid, p_session uuid default null)
 returns void
 language plpgsql
 as $$
 begin
-  perform set_config('request.jwt.claims', json_build_object('sub', p_uid, 'role', 'authenticated')::text, true);
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', p_uid, 'role', 'authenticated', 'session_id', p_session)::text, true);
   execute 'set local role authenticated';
 end;
 $$;
@@ -43,6 +45,15 @@ begin
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
 end;
+$$;
+
+-- Подтвердить сессию админа (то, что делает сервер после проверки кода).
+create or replace function tests.verify_session(p_uid uuid, p_session uuid)
+returns void
+language sql
+as $$
+  insert into public.verified_sessions (session_id, user_id) values (p_session, p_uid)
+  on conflict (session_id) do nothing;
 $$;
 
 grant execute on all functions in schema tests to public;
