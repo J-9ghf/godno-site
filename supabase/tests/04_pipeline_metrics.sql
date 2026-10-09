@@ -20,7 +20,7 @@ select results_eq(
   'Альфа: время до первого кандидата 5 дней, срок закрытия 17 дней');
 select results_eq(
   $$ select reason, count from v_rejection_reasons $$,
-  $$ values ('Не подходят зарплатные ожидания', 2) $$,
+  $$ values ('Ожидания по зарплате', 2) $$,
   'Альфа: причины отказов сгруппированы');
 select results_eq(
   $$ select status::text, in_guarantee from v_request_metrics where request_id = 'a1000000-0000-4000-8000-000000000002' $$,
@@ -51,7 +51,7 @@ select throws_ok($$ select client_decide('ac000000-0000-4000-8000-000000000005',
   'P0001', null, 'Нельзя вернуть кандидата с оффера на «Интересен»');
 select lives_ok(
   $$ select client_decide('ac000000-0000-4000-8000-000000000001', 'rejected',
-       (select id from rejection_reasons where label = 'Не подходит опыт'), 'Мало опыта в B2B') $$,
+       (select id from rejection_reasons where label = 'Недостаточно опыта'), 'Мало опыта в B2B') $$,
   'Отказ с причиной принимается');
 select results_eq(
   $$ select stage::text, rejection_comment from request_candidates where id = 'ac000000-0000-4000-8000-000000000001' $$,

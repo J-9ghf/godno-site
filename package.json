@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "supabase": "^2.120.0",
     "typescript": "^6.0.3"
   }
 }

@@ -85,9 +85,39 @@ DB_ADMIN_URL=postgresql://postgres:postgres@localhost:5432/postgres npm run db:t
   `profiles.id → auth.users.id` и вставка бакетов в `storage.buckets`.
 - Действия сервера под `service_role` подписываются автором через `set local app.actor_id = '<uuid>'`.
 
-## Что нужно включить в облачном Supabase руками
+## Как проверить локально (настоящий Supabase в Docker)
+
+Проверено 9 октября 2026: Supabase CLI 2.120.0, образ `supabase/postgres:15.8.1.085`.
+Результат: миграции и демо-данные применились, `supabase test db` → 136 из 136.
+
+```bash
+npm install                       # ставит Supabase CLI локально (devDependency)
+npx supabase start                # поднимает Postgres, Auth, REST, Storage; заодно проверяет config.toml
+npx supabase db reset             # пересоздаёт базу: миграции + supabase/seed.sql
+npx supabase test db              # pgTAP-тесты из supabase/tests
+npx supabase stop                 # остановить
+```
+
+- `supabase start` разбирает `supabase/config.toml` и падает при ошибке в нём, поэтому
+  успешный старт и есть проверка конфигурации.
+- Лишние сервисы можно не поднимать:
+  `npx supabase start -x studio,imgproxy,vector,logflare,edge-runtime,realtime,supavisor,postgres-meta`.
+- Если порт 54321/54322 занят, поменяйте `[api] port` и `[db] port` в `config.toml` локально и не коммитьте.
+- Если Docker Hub отвечает 429 или ECR недоступен: `SUPABASE_INTERNAL_IMAGE_REGISTRY=docker.io npx supabase start`.
+
+Отличия от эмуляции на обычном PostgreSQL не обнаружены. Важное отличие среды: в Supabase
+миграции выполняет роль `postgres` без прав суперпользователя. Тесты прошли и в этом режиме,
+значит, правила не опираются на права суперпользователя.
+
+### Облачный проект: что выставить руками
 
 Миграции не управляют настройками Auth в облаке. В панели проекта:
-- Authentication → Sign In / Providers → **Allow new users to sign up: выключить**;
-- Email → минимальная длина пароля 10;
-- Rate limits → ограничить попытки входа.
+- **Authentication → Sign In / Providers → Allow new users to sign up: выключить.**
+  Аккаунты создаёт только сервер по приглашению.
+- **Authentication → Sign In / Providers → Email:** Minimum password length = 10; Confirm email: выключить
+  (почту подтверждает переход по ссылке-приглашению).
+- **Authentication → Rate Limits:** Sign-ups and sign-ins — не больше 30 за 5 минут с одного IP;
+  Token refreshes — по умолчанию.
+- **Authentication → Sessions:** Access token expiry (JWT) = 1800 секунд.
+- **Authentication → URL Configuration:** Site URL = адрес приложения.
+- Демо-данные в облако: `psql "$SUPABASE_DB_URL" -f supabase/seed.sql` (один раз, только в демо-проект).

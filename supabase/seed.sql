@@ -103,7 +103,7 @@ where id in ('ac000000-0000-4000-8000-000000000003', 'ac000000-0000-4000-8000-00
              'ac000000-0000-4000-8000-000000000006');
 update public.request_candidates set stage = 'rejected', client_decision = 'rejected',
   client_decided_at = now(), client_decided_by = 'c1000000-0000-4000-8000-000000000001',
-  rejection_reason_id = (select id from public.rejection_reasons where label = 'Не подходят зарплатные ожидания')
+  rejection_reason_id = (select id from public.rejection_reasons where label = 'Ожидания по зарплате')
 where id in ('ac000000-0000-4000-8000-000000000004', 'ac000000-0000-4000-8000-000000000007');
 
 -- Менеджер: оффер и выход.
@@ -152,12 +152,6 @@ insert into public.documents (company_id, request_id, doc_type, title, status, a
   ('aa000000-0000-4000-8000-000000000001', 'a1000000-0000-4000-8000-000000000001', 'contract', 'Договор на подбор (демо)', 'signed', null),
   ('aa000000-0000-4000-8000-000000000001', 'a1000000-0000-4000-8000-000000000001', 'invoice', 'Счёт: предоплата 50% (демо)', 'paid', 75000),
   ('bb000000-0000-4000-8000-000000000001', 'b1000000-0000-4000-8000-000000000001', 'contract', 'Договор на подбор (демо)', 'sent', null);
-
--- Каталог услуг — демонстрационный, тексты и цены утверждает команда.
-insert into public.services (id, title, description, show_on_event, sort) values
-  ('5e000000-0000-4000-8000-000000000001', 'Обучение ассистента (демо)', 'Демо-описание услуги.', 'candidate_hired', 10),
-  ('5e000000-0000-4000-8000-000000000002', 'Консультация по требованиям и зарплатной вилке (демо)', 'Демо-описание услуги.', 'many_rejections', 20),
-  ('5e000000-0000-4000-8000-000000000003', 'Подбор ещё одного сотрудника (демо)', 'Демо-описание услуги.', 'vacancy_closed', 30);
 
 insert into public.service_requests (service_id, company_id, requested_by, status) values
   ('5e000000-0000-4000-8000-000000000001', 'aa000000-0000-4000-8000-000000000001', 'c1000000-0000-4000-8000-000000000001', 'new');
