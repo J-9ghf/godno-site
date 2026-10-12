@@ -1,0 +1,25 @@
+---
+// Временная страница кабинета: этап 5 — сервер, база и вход. Экраны кабинетов из демоверсии подключаются на этапе 6.
+import Base from '../layouts/Base.astro';
+const a = Astro.locals.actor!;
+const role = a.kind === 'admin' ? 'Администратор' : a.kind === 'client' ? 'Клиент' : 'Нет доступа';
+---
+<Base title="Кабинет">
+  <div class="wrap" style="padding-block:40px;display:grid;gap:20px;max-width:720px">
+    <span class="brand"><span class="logo" aria-hidden="true"><i class="l-ink"></i><i class="l-acc"></i></span><span class="brand-name">Институт кадровых решений</span></span>
+    <section class="panel" style="display:grid;gap:12px">
+      <h1 style="font-size:1.5rem">{a.name}</h1>
+      <dl class="kv"><dt>Почта</dt><dd>{a.email}</dd><dt>Роль</dt><dd>{role}</dd>
+        {a.memberships.length > 0 && <><dt>Компания</dt><dd>{a.memberships.map((m) => m.companyName).join(', ')}</dd></>}</dl>
+      {a.kind === 'none' && <div class="notice">Доступ к компании отозван или ещё не выдан. Напишите вашему менеджеру.</div>}
+      <p class="small muted">Экраны кабинета подключаются на следующем этапе. Данные уже доступны через защищённый API.</p>
+      <div><button class="btn btn-ghost btn-sm" id="logout" type="button">Выйти</button></div>
+    </section>
+  </div>
+</Base>
+<script>
+  document.getElementById('logout')?.addEventListener('click', async () => {
+    await fetch('/api/session/logout', { method: 'POST', credentials: 'same-origin' });
+    location.assign('/login');
+  });
+</script>

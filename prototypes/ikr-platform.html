@@ -1270,11 +1270,11 @@ const api = {
   },
   async signIn(email, password){
     if (Date.now() < loginGuard.lockUntil) throw new AccessError('Слишком много попыток. Вход заблокирован до ' + hhmm(new Date(loginGuard.lockUntil).toISOString()) + '.');
-    const u = T('profiles').find(x => x.email.toLowerCase() === String(email).toLowerCase());
-    if (u && u.is_active && password === 'demo-ikr-2026'){ loginGuard.fails = 0; return api.signInDemo(u.id); }
+    // В демоверсии вход по паролю отключён: паролей в коде нет, используйте кнопки демо-доступа
+    void email; void password;
     loginGuard.fails++;
     if (loginGuard.fails >= 5){ loginGuard.fails = 0; loginGuard.lockUntil = Date.now() + 15 * 60000; throw new AccessError('Слишком много попыток. Вход заблокирован на 15 минут.'); }
-    throw new AccessError('Неверная почта или пароль. Осталось попыток: ' + (5 - loginGuard.fails) + '.');
+    throw new AccessError('В демо-версии вход по паролю отключён. Воспользуйтесь кнопками демо-доступа ниже.');
   },
   restore(profileId){ const u = find('profiles', profileId); if (u && u.is_active) sessionId = u.id; return api.me(); },
   signOut(){ sessionId = null; },

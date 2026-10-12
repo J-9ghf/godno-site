@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthShell from '../components/AuthShell.astro';
+import { resolveActor } from '../lib/session';
+const actor = await resolveActor(Astro.request).catch(() => null);
+if (actor && actor.kind !== 'none') return Astro.redirect('/app');
+const reset = Astro.url.searchParams.get('reset') === '1';
+---
+<Base title="Вход">
+  <AuthShell>
+    <h1>Вход для клиентов</h1>
+    {reset && <div class="notice ok">Пароль изменён. Войдите с новым паролем.</div>}
+    <form id="loginForm" novalidate style="display:grid;gap:14px">
+      <div class="form-alert" hidden></div>
+      <div class="field"><label for="lg-email">Почта</label><input class="input" id="lg-email" name="email" type="email" autocomplete="username" placeholder="name@company.ru" /><span class="err" data-err="email"></span></div>
+      <div class="field"><label for="lg-pass">Пароль</label><input class="input" id="lg-pass" name="password" type="password" autocomplete="current-password" /><span class="err" data-err="password"></span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <a class="small" href="/forgot-password">Забыли пароль?</a>
+        <button class="btn btn-primary" type="submit">Войти</button>
+      </div>
+    </form>
+    <p class="login-note">Доступ только для клиентов. Нет доступа? Напишите вашему менеджеру или оставьте заявку на сайте.</p>
+  </AuthShell>
+</Base>
+<script>
+  import { bindForm, val } from '../scripts/forms';
+  const f = document.getElementById('loginForm') as HTMLFormElement;
+  bindForm(f, {
+    url: '/api/session/login',
+    collect: () => ({ email: val(f, 'email'), password: (f.elements.namedItem('password') as HTMLInputElement).value }),
+    validate: () => {
+      const e: Record<string, string> = {};
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val(f, 'email'))) e.email = 'Проверьте почту';
+      if (!(f.elements.namedItem('password') as HTMLInputElement).value) e.password = 'Введите пароль';
+      return e;
+    },
+  });
+</script>

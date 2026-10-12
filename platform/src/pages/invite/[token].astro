@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthShell from '../../components/AuthShell.astro';
+import { describeInvitation } from '../../lib/invitations';
+const token = String(Astro.params.token ?? '');
+const inv = await describeInvitation(token).catch(() => null);
+Astro.response.headers.set('Referrer-Policy', 'no-referrer');
+---
+<Base title="Приглашение">
+  <AuthShell>
+    {inv ? (
+      <>
+        <h1>Добро пожаловать</h1>
+        <p class="muted">Задайте имя и пароль для входа. Почта: <b style="color:var(--ink)">{inv.email}</b></p>
+        <form id="inviteForm" data-token={token} novalidate style="display:grid;gap:14px">
+          <div class="form-alert" hidden></div>
+          <div class="field"><label for="iv-name">Имя и фамилия</label><input class="input" id="iv-name" name="name" autocomplete="name" /><span class="err" data-err="name"></span></div>
+          <div class="field"><label for="iv-pass">Пароль</label><input class="input" id="iv-pass" name="password" type="password" autocomplete="new-password" /><span class="hint">Не короче 10 символов</span><span class="err" data-err="password"></span></div>
+          <div class="field"><label for="iv-pass2">Пароль ещё раз</label><input class="input" id="iv-pass2" name="password2" type="password" autocomplete="new-password" /><span class="err" data-err="password2"></span></div>
+          <button class="btn btn-primary" type="submit">Сохранить и войти</button>
+        </form>
+      </>
+    ) : (
+      <>
+        <h1>Ссылка недействительна</h1>
+        <p class="login-note">Ссылка устарела, уже использована или отозвана. Напишите вашему менеджеру: он отправит новое приглашение.</p>
+        <a class="btn btn-ghost" href="/login">Ко входу</a>
+      </>
+    )}
+  </AuthShell>
+</Base>
+<script>
+  import { bindForm, val } from '../../scripts/forms';
+  const f = document.getElementById('inviteForm') as HTMLFormElement | null;
+  if (f) {
+    const pw = (n: string) => (f.elements.namedItem(n) as HTMLInputElement).value;
+    bindForm(f, {
+      url: '/api/invitations/accept',
+      collect: () => ({ token: f.dataset.token, name: val(f, 'name'), password: pw('password') }),
+      validate: () => {
+        const e: Record<string, string> = {};
+        if (val(f, 'name').length < 2) e.name = 'Укажите имя';
+        if (pw('password').length < 10) e.password = 'Не короче 10 символов';
+        else if (pw('password') !== pw('password2')) e.password2 = 'Пароли не совпадают';
+        return e;
+      },
+      onSuccess: (d) => { if (d.message) alert(d.message); location.assign(d.redirect || '/app'); },
+    });
+  }
+</script>

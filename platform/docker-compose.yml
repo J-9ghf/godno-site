@@ -1,0 +1,24 @@
+# Локальное окружение для разработки на вашем компьютере: PostgreSQL, MinIO (S3), Mailpit (перехват писем).
+# ВНИМАНИЕ: файл не проверен — в среде разработки, где готовился этап 5, Docker не был запущен.
+# Пароли задаются в .env (DEV_DB_PASSWORD и др.), в файле их нет. Только для разработки, не для рабочего запуска.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD:?задайте DEV_DB_PASSWORD в .env}
+    ports: ["127.0.0.1:54329:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  minio:
+    image: minio/minio
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${DEV_S3_USER:?задайте DEV_S3_USER}
+      MINIO_ROOT_PASSWORD: ${DEV_S3_PASSWORD:?задайте DEV_S3_PASSWORD}
+    ports: ["127.0.0.1:9000:9000", "127.0.0.1:9001:9001"]
+    volumes: [s3data:/data]
+  mail:
+    image: axllent/mailpit
+    ports: ["127.0.0.1:1025:1025", "127.0.0.1:8025:8025"]
+volumes:
+  pgdata:
+  s3data:
