@@ -524,7 +524,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .demo-tag{font-size:.72rem;color:var(--faint)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-/* v2: интервью, сообщения, настройки */
+/* v2: интервью и настройки */
 .ivs{display:grid;gap:10px}
 .iv{display:grid;grid-template-columns:86px 1fr auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
 .iv > *{min-width:0}
@@ -536,23 +536,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .iv .actions{justify-content:flex-end}
 .iv-fb{margin-top:8px;font-size:.88rem;background:var(--surface-2);border-radius:10px;padding:8px 12px}
 @media (max-width:700px){.iv{grid-template-columns:64px 1fr}.iv .actions{grid-column:1/-1;justify-content:flex-start}}
-.msgs{display:grid;grid-template-columns:300px 1fr;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-height:520px;overflow:hidden}
-.msgs > *{min-width:0}
-.threads{border-right:1px solid var(--line);display:flex;flex-direction:column;max-height:640px;overflow-y:auto}
-.thread{display:grid;gap:2px;text-align:left;padding:12px 16px;border:0;border-bottom:1px solid var(--line);background:none;cursor:pointer}
-.thread:hover{background:var(--surface-2)}
-.thread.on{background:var(--accent-soft)}
-.thread b{font-size:.9rem}
-.thread span{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.conv{display:flex;flex-direction:column;min-height:520px}
-.conv-h{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.conv-b{flex:1;padding:18px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:480px;background:var(--bg)}
-.bub{max-width:78%;padding:10px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:.92rem;align-self:flex-start;overflow-wrap:anywhere}
-.bub.mine{align-self:flex-end;background:var(--accent-soft);border-color:transparent}
-.bub small{display:block;font-size:.72rem;color:var(--faint);margin-top:4px}
-.conv-f{display:flex;gap:10px;padding:12px;border-top:1px solid var(--line);align-items:flex-end}
-.conv-f .textarea{min-height:46px;flex:1}
-@media (max-width:820px){.msgs{grid-template-columns:1fr}.threads{border-right:0;border-bottom:1px solid var(--line);max-height:220px}}
 .set-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media (max-width:760px){.set-grid{grid-template-columns:1fr}}
 .rs-bar{display:grid;grid-template-columns:1fr 120px 28px;gap:10px;align-items:center;font-size:.86rem;padding:5px 0}
@@ -1103,16 +1086,6 @@ function seed(){
     I('i5','p10',-1,10,'Дома у семьи','Второй пробный день','Перенесено','u_m2'),
     I('i6','p12',9,11,'Дома у семьи','Пробный день','Проведено','u_c2',{ result:'Продолжаем', text:'Готовы сделать предложение.', by:'u_c2', at:daysAgo(9,18) }),
   ];
-  const M = (request_id, candidate_id, author_id, ago, h, text) => ({ id:uid('m'), company_id: request_id.startsWith('r') && ['r1','r2','r3'].includes(request_id) ? 'c1' : 'c2', request_id, candidate_id, author_id, text, created_at:daysAgo(ago, h, 15) });
-  const messages = [
-    M('r1',null,'u_m1',22,10,'Дмитрий, добрый день! Добавила первых кандидатов по ассистенту. По каждому есть разбор, у двоих видео-визитки.'),
-    M('r1',null,'u_c1',22,19,'Спасибо, посмотрю вечером.'),
-    M('r1','k1','u_c1',1,12,'Алина понравилась. Когда она готова выйти?'),
-    M('r1','k1','u_m1',1,13,'Через две недели после оффера: ей нужно передать дела на текущем месте.'),
-    M('r4',null,'u_m2',3,11,'Елена, добавил ещё одну няню, Ольгу. Она педагог, у неё хорошие рекомендации от двух семей.'),
-    M('r4','k10','u_c2',1,20,'Можно перенести второй пробный день на завтра?'),
-    M('r4','k10','u_m2',1,21,'Перенёс на завтра, 10:00. Наталья подтвердила.'),
-  ];
   const documents = [
     { id:'d1', company_id:'c1', request_id:null, type:'Договор', title:'Договор на подбор № 14/26', created_at:daysAgo(118), status:'Подписан', file_name:'Договор_14-26.pdf' },
     { id:'d2', company_id:'c1', request_id:'r1', type:'Счёт', title:'Счёт № 31, предоплата 50%: «Бизнес-ассистент собственника»', created_at:daysAgo(25), status:'Оплачен', file_name:'Счёт_31.pdf' },
@@ -1156,7 +1129,7 @@ function seed(){
   audit_log.push({ id:uid('e'), at:daysAgo(0,9,12), actor_id:'u_admin', company_id:null, kind:'login', action:'Вход в кабинет' });
   audit_log.push({ id:uid('e'), at:daysAgo(1,9,3), actor_id:'u_m1', company_id:null, kind:'login', action:'Вход в кабинет' });
   audit_log.sort((a, b) => a.at < b.at ? 1 : -1);
-  return { v:2, companies, profiles, invitations, requests, candidates, request_candidates, stage_history, interviews, documents, messages, services, service_requests, audit_log, settings };
+  return { v:2, companies, profiles, invitations, requests, candidates, request_candidates, stage_history, interviews, documents, services, service_requests, audit_log, settings };
 }
 
 /* ======================================================================
@@ -1169,7 +1142,7 @@ function seed(){
    не затрагивает интерфейс.
 
    1. Создать таблицы с теми же именами и полями, что в seed(): companies, profiles, invitations,
-      requests, candidates, request_candidates, stage_history, interviews, documents, messages,
+      requests, candidates, request_candidates, stage_history, interviews, documents,
       services, service_requests, audit_log, settings. Этапы: offered, interested, interview, offer, hired, rejected.
    2. Написать SupabaseAdapter с тем же интерфейсом, что LocalAdapter, и подставить его в `adapter`:
         load()                 → по каждой таблице supabase.from(t).select('*'); строки уже отфильтрованы RLS
@@ -1185,11 +1158,11 @@ function seed(){
       Проверки в api.* остаются первой линией и дают понятные сообщения.
    6. Показатели views.* перенести в SQL-представления (v_funnel, v_conversions, v_time_to_first,
       v_close_time, v_reject_reasons, v_guarantee); функции views.* оставить обёртками над select.
-   7. Realtime: подписка на request_candidates, stage_history, interviews, messages →
+   7. Realtime: подписка на request_candidates, stage_history, interviews →
       обновить кэш (adapter.load) → render(). Так решение клиента сразу появится у менеджера.
    ====================================================================== */
 const LocalAdapter = {
-  KEY:'ikr-platform-db-v2',
+  KEY:'ikr-platform-db-v3',
   async load(){ try { const d = JSON.parse(localStorage.getItem(this.KEY)); if (d && d.v === 2) return d; } catch (e) {} return seed(); },
   flush(db){ try { localStorage.setItem(this.KEY, JSON.stringify(db)); } catch (e) {} },
 };
@@ -1515,34 +1488,6 @@ const api = {
   async downloadDocument(id){ need(); const d = find('documents', id); assertCompany(d.company_id);
     return 'Файл «' + d.file_name + '» в демо-версии не скачивается. В рабочей версии он откроется из защищённого хранилища.'; },
 
-  /* ---------- сообщения ---------- */
-  getThreads({ company_id } = {}){
-    const u = need();
-    const reqs = api.getRequests({ company_id }).filter(r => r.status !== 'Отменена');
-    const out = [];
-    reqs.forEach(r => {
-      const msgs = T('messages').filter(m => m.request_id === r.id);
-      const general = msgs.filter(m => !m.candidate_id);
-      out.push({ request_id:r.id, candidate_id:null, title:r.title, subtitle:find('companies', r.company_id).name, last:general[general.length - 1] || null, count:general.length });
-      [...new Set(msgs.filter(m => m.candidate_id).map(m => m.candidate_id))].forEach(cid => {
-        const cm = msgs.filter(m => m.candidate_id === cid);
-        out.push({ request_id:r.id, candidate_id:cid, title:find('candidates', cid).full_name, subtitle:r.title + (u.role !== 'client' ? ' · ' + find('companies', r.company_id).name : ''), last:cm[cm.length - 1], count:cm.length });
-      });
-    });
-    return out.sort((a, b) => (b.last ? b.last.created_at : '0') > (a.last ? a.last.created_at : '0') ? 1 : -1).map(t => ({ ...t, last: t.last ? { ...t.last } : null }));
-  },
-  getMessages(request_id, candidate_id){
-    need(); const r = find('requests', request_id); assertCompany(r.company_id);
-    return T('messages').filter(m => m.request_id === request_id && (m.candidate_id || null) === (candidate_id || null)).slice().sort(byAt('created_at')).map(m => ({ ...m }));
-  },
-  async sendMessage({ request_id, candidate_id, text }){
-    const u = need(); const r = find('requests', request_id); assertCompany(r.company_id);
-    if (!String(text).trim()) throw new Error('Напишите сообщение');
-    if (candidate_id && !T('request_candidates').some(rc => rc.request_id === request_id && rc.candidate_id === candidate_id)) deny();
-    const m = await store.insert('messages', { id:uid('m'), company_id:r.company_id, request_id, candidate_id:candidate_id || null, author_id:u.id, text:String(text).trim(), created_at:nowISO() });
-    await audit('message', 'Сообщение · ' + r.title + (candidate_id ? ' · ' + find('candidates', candidate_id).full_name : ''), r.company_id); return m;
-  },
-
   /* ---------- услуги ---------- */
   getServices(){ const u = need(); return T('services').filter(s => u.role !== 'client' || s.is_visible).map(s => ({ ...s })); },
   getServiceRequests(){ need(); const s = companyScope(); return T('service_requests').filter(r => s.has(r.company_id)).map(r => ({ ...r })).sort((a, b) => a.created_at < b.created_at ? 1 : -1); },
@@ -1571,7 +1516,7 @@ const api = {
   },
   getFeed({ company_ids } = {}){
     need('admin','manager'); const s = companyScope();
-    const kinds = ['decision','replacement','service','lead','resume','interview','message'];
+    const kinds = ['decision','replacement','service','lead','resume','interview'];
     return T('audit_log').filter(e => kinds.includes(e.kind) && (e.company_id ? s.has(e.company_id) && (!company_ids || company_ids.has(e.company_id)) : ['lead','resume'].includes(e.kind))).slice(0, 10).map(e => ({ ...e }));
   },
   getCompanyHistory(cid){ need('admin','manager'); assertCompany(cid); return T('audit_log').filter(e => e.company_id === cid).map(e => ({ ...e })); },
@@ -1622,7 +1567,7 @@ const S = { view:'landing', section:'dash', params:{},
   dashF:{ period:'all', client:'all', manager:'all' }, clientQ:'', clientTab:'overview',
   leadTab:'inbound', leadSrc:'all', leadStatus:'all',
   pool:{ q:'', dir:'all', city:'all', status:'all' }, usersTab:'users', logF:{ user:'all', kind:'all', q:'' },
-  ivTab:'upcoming', ivClient:'all', docClient:'all', docStatus:'all', pipeClient:'all', pipeOpen:true, thread:null };
+  ivTab:'upcoming', ivClient:'all', docClient:'all', docStatus:'all', pipeClient:'all', pipeOpen:true };
 const SES_KEY = 'ikr-platform-session-v2';
 function saveSession(){ try { localStorage.setItem(SES_KEY, JSON.stringify({ userId:api.me()?.id || null, section:S.section, params:S.params, view:S.view })); } catch (e) {} }
 const ST = s => api.stageLabel(s);
@@ -1638,7 +1583,6 @@ const IC = {
   pool:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>',
   pipe:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/></svg>',
   iv:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
-  msg:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
   users:'<svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
   log:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   svc:'<svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>',
@@ -1659,15 +1603,15 @@ function navFor(u){
   if (u.role === 'client'){
     const waiting = api.getPipeline({ stage:'offered' }).length;
     const upcoming = api.getInterviews().filter(i => ['Назначено','Перенесено'].includes(i.status) && new Date(i.scheduled_at) > new Date()).length;
-    return [['dash','Дашборд','dash'],['cands','Мои кандидаты','cands',waiting],['reqs','Заявки','reqs'],['interviews','Интервью','iv',upcoming],['docs','Документы','docs'],['services','Услуги','services'],['messages','Сообщения','msg'],['profile','Профиль и коллеги','profile']];
+    return [['dash','Дашборд','dash'],['cands','Мои кандидаты','cands',waiting],['reqs','Заявки','reqs'],['interviews','Интервью','iv',upcoming],['docs','Документы','docs'],['services','Услуги','services'],['profile','Профиль и коллеги','profile']];
   }
   const newLeads = api.getInbound().filter(l => l.inbound_status === 'Новая').length;
   const newCands = api.getPool({ status:'Новый' }).length;
   const newSvc = api.getServiceRequests().filter(r => r.status === 'Новый').length;
-  if (u.role === 'manager') return [['dash','Дашборд','dash'],['clients','Мои клиенты','clients'],['leads','Входящие','reqs',newLeads],['pipeline','Кандидаты и этапы','pipe'],['pool','Пул кандидатов','pool',newCands],['interviews','Интервью','iv'],['docs','Документы','docs'],['messages','Сообщения','msg'],['catalog','Запросы услуг','svc',newSvc]];
-  return [['dash','Дашборд','dash'],['clients','Клиенты','clients'],['leads','Заявки','reqs',newLeads],['pool','Пул кандидатов','pool',newCands],['pipeline','Кандидаты по заявкам','pipe'],['interviews','Интервью','iv'],['docs','Документы и счета','docs'],['catalog','Каталог услуг','svc',newSvc],['messages','Сообщения','msg'],['users','Пользователи и доступы','users'],['log','Журнал действий','log'],['settings','Настройки','set']];
+  if (u.role === 'manager') return [['dash','Дашборд','dash'],['clients','Мои клиенты','clients'],['leads','Входящие','reqs',newLeads],['pipeline','Кандидаты и этапы','pipe'],['pool','Пул кандидатов','pool',newCands],['interviews','Интервью','iv'],['docs','Документы','docs'],['catalog','Запросы услуг','svc',newSvc]];
+  return [['dash','Дашборд','dash'],['clients','Клиенты','clients'],['leads','Заявки','reqs',newLeads],['pool','Пул кандидатов','pool',newCands],['pipeline','Кандидаты по заявкам','pipe'],['interviews','Интервью','iv'],['docs','Документы и счета','docs'],['catalog','Каталог услуг','svc',newSvc],['users','Пользователи и доступы','users'],['log','Журнал действий','log'],['settings','Настройки','set']];
 }
-const TITLES = { dash:'Дашборд', cands:'Мои кандидаты', reqs:'Заявки', interviews:'Интервью', docs:'Документы', services:'Услуги', messages:'Сообщения', profile:'Профиль и коллеги', clients:'Клиенты', client:'Карточка клиента', leads:'Заявки', pipeline:'Кандидаты по заявкам', pool:'Пул кандидатов', catalog:'Услуги', users:'Пользователи и доступы', log:'Журнал действий', settings:'Настройки' };
+const TITLES = { dash:'Дашборд', cands:'Мои кандидаты', reqs:'Заявки', interviews:'Интервью', docs:'Документы', services:'Услуги', profile:'Профиль и коллеги', clients:'Клиенты', client:'Карточка клиента', leads:'Заявки', pipeline:'Кандидаты по заявкам', pool:'Пул кандидатов', catalog:'Услуги', users:'Пользователи и доступы', log:'Журнал действий', settings:'Настройки' };
 
 function showView(v){
   S.view = v;
@@ -1682,7 +1626,7 @@ function go(section, params){
   if (section === 'client') S.clientTab = (params && params.tab) || 'overview';
   render(); window.scrollTo(0, 0); saveSession();
 }
-function resetUi(){ Object.assign(S, { section:'dash', params:{}, cmp:[], vac:'all', candView:'board', stageF:'all', periodF:'all', dashF:{ period:'all', client:'all', manager:'all' }, clientQ:'', pool:{ q:'', dir:'all', city:'all', status:'all' }, ivTab:'upcoming', ivClient:'all', docClient:'all', docStatus:'all', pipeClient:'all', thread:null, leadTab:'inbound' }); }
+function resetUi(){ Object.assign(S, { section:'dash', params:{}, cmp:[], vac:'all', candView:'board', stageF:'all', periodF:'all', dashF:{ period:'all', client:'all', manager:'all' }, clientQ:'', pool:{ q:'', dir:'all', city:'all', status:'all' }, ivTab:'upcoming', ivClient:'all', docClient:'all', docStatus:'all', pipeClient:'all', leadTab:'inbound' }); }
 async function login(id){
   try { await api.signInDemo(id); } catch (e){ toast(e.message); return; }
   resetUi(); showView('app'); render(); window.scrollTo(0, 0);
@@ -1710,11 +1654,10 @@ function render(){
       '<nav class="mob-nav" aria-label="Разделы кабинета">' + navBtns(false) + '</nav>' +
       '<div class="content" id="content">' + content + '</div>' +
     '</div></div>';
-  const cb = $('#conv-b'); if (cb) cb.scrollTop = cb.scrollHeight;
 }
 function renderSection(u){
   const s = S.section;
-  const common = { interviews:tInterviews, docs:tDocs, messages:tMessages };
+  const common = { interviews:tInterviews, docs:tDocs };
   if (u.role === 'client') return ({ dash:cDash, cands:cCands, reqs:cReqs, services:cServices, profile:cProfile, ...common }[s] || cDash)();
   const admin = { users:tUsers, log:tLog, settings:tSettings };
   const team = { dash:tDash, clients:tClients, client:tClient, leads:tLeads, pool:tPool, pipeline:tPipeline, catalog:tCatalog, ...common };
@@ -1820,7 +1763,7 @@ function cReqs(){
         (r.replacement ? pill('Замена запрошена ' + fmtD(r.replacement.requested_at), 'warn') : g.left > 0 ? '<button class="btn btn-ghost btn-sm" type="button" data-act="replace" data-id="' + r.id + '">Запросить замену</button>' : '') + '</div>' : '';
     return '<section class="panel req-card"><div class="req-top"><div><h3>' + esc(r.title) + '</h3><div class="small muted">' + esc(r.position) + ' · создана ' + fmtD(r.created_at) + ' · ' + age + '</div></div>' + pill(r.status, REQ_PILL[r.status]) + '</div>' +
       miniFunnel(f) + gHTML + (r.replacement ? '<div class="notice">Менеджер получил запрос на замену и свяжется с вами. Причина: ' + esc(r.replacement.reason) + '</div>' : '') +
-      '<div class="actions">' + (!closed ? '<button class="btn btn-soft btn-sm" type="button" data-act="toVac" data-id="' + r.id + '">Кандидаты по заявке</button>' : '') + '<button class="btn btn-ghost btn-sm" type="button" data-act="openThread" data-r="' + r.id + '">Переписка по заявке</button>' + (f.waiting ? pill('ждут решения: ' + f.waiting, 'blue') : '') + '</div></section>';
+      '<div class="actions">' + (!closed ? '<button class="btn btn-soft btn-sm" type="button" data-act="toVac" data-id="' + r.id + '">Кандидаты по заявке</button>' : '') + (f.waiting ? pill('ждут решения: ' + f.waiting, 'blue') : '') + '</div></section>';
   }).join('');
 }
 function cServices(){
@@ -1867,7 +1810,7 @@ function tDash(){
     (u.role === 'admin' ? '<select class="select" id="df-manager" data-change="dashF" data-k="manager" aria-label="Менеджер">' + opt('all', 'Все менеджеры') + api.getManagers().map(x => opt(x.id, x.full_name, f.manager === x.id)).join('') + '</select>' : '<span class="small muted">Вы видите только назначенных вам клиентов: ' + api.getCompanies().map(c => esc(c.name)).join(', ') + '</span>') + '</div>';
   const kpi = (label, val, note, hl) => '<div class="kpi' + (hl ? ' hl' : '') + '"><span>' + label + '</span><b>' + val + '</b>' + (note ? '<em>' + note + '</em>' : '') + '</div>';
   const feed = api.getFeed({ company_ids:sc.ids });
-  const KIND = { decision:['Решение клиента','blue'], replacement:['Замена','warn'], service:['Услуга','ok'], lead:['Заявка',''], resume:['Резюме',''], interview:['Интервью','warn'], message:['Сообщение',''] };
+  const KIND = { decision:['Решение клиента','blue'], replacement:['Замена','warn'], service:['Услуга','ok'], lead:['Заявка',''], resume:['Резюме',''], interview:['Интервью','warn'] };
   return filters +
     '<div class="kpis k5">' + kpi('Новые заявки', leads.length, 'с сайта и из бота', true) + kpi('Заявки в работе', m.inWork, 'у клиентов') + kpi('Кандидатов в пуле', pool.length, pool.filter(c => c.pool_status === 'Новый').length + ' новых') + kpi('Предложено', m.offered, 'кандидатов') + kpi('Ждут решения клиента', m.waiting, 'на этапе «' + esc(ST('offered')) + '»') +
       kpi('Интервью', m.interview, m.offered ? Math.round(m.interview / m.offered * 100) + '% от предложенных' : '') + kpi('Офферы', m.offer, upcoming.length + ' интервью впереди') + kpi('Вышли на работу', m.hired, m.closeDays != null ? 'закрытие в среднем ' + dn(m.closeDays) : '') + kpi('До первого кандидата', m.firstDays != null ? m.firstDays + ' дн.' : '—', 'среднее по заявкам') + kpi('Выручка от допродаж', rub(revenue), 'оплаченные услуги') + '</div>' +
@@ -1900,7 +1843,7 @@ function reqBlock(r){
       const last = p.history[p.history.length - 1], cd = p.history.filter(h => h.changed_by && h.changed_by.startsWith('u_c')).pop();
       return '<tr><td><b>' + esc(p.candidate.full_name) + '</b><div class="tiny muted">' + p.candidate.age + ' · ' + esc(p.candidate.city) + '</div></td><td>' + stageSelect(p, 'ps-' + p.id) + (p.stage === 'rejected' && p.reject_reason ? '<div class="tiny muted" style="margin-top:4px">' + esc(p.reject_reason) + '</div>' : '') + '</td><td>' + (cd ? '<span class="small">' + esc(ST(cd.stage)) + ' · ' + fmtRel(cd.changed_at) + '</span>' : '<span class="small muted">ждём</span>') + '</td><td class="small">' + fmtRel(last.changed_at) + ' · ' + esc(api.profileName(last.changed_by)) + '</td><td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost btn-sm" type="button" data-act="openP" data-id="' + p.id + '">Карточка</button></td></tr>'; }).join('') + '</tbody></table></div>'
       : emptyHTML('Кандидатов пока нет', 'Предложите первого кандидата из пула.')) +
-    (!['Закрыта','Отменена'].includes(r.status) ? '<div class="actions"><button class="btn btn-soft btn-sm" type="button" data-act="proposeTo" data-id="' + r.id + '">Предложить кандидата из пула</button><button class="btn btn-ghost btn-sm" type="button" data-act="openThread" data-r="' + r.id + '">Переписка</button>' + (u.role === 'manager' ? '<span class="small muted">Решения «' + esc(ST('interested')) + '» и «' + esc(ST('interview')) + '» принимает клиент</span>' : '') + '</div>' : '') +
+    (!['Закрыта','Отменена'].includes(r.status) ? '<div class="actions"><button class="btn btn-soft btn-sm" type="button" data-act="proposeTo" data-id="' + r.id + '">Предложить кандидата из пула</button>' + (u.role === 'manager' ? '<span class="small muted">Решения «' + esc(ST('interested')) + '» и «' + esc(ST('interview')) + '» принимает клиент</span>' : '') + '</div>' : '') +
     '</section>';
 }
 function tPipeline(){
@@ -1916,7 +1859,7 @@ function tPipeline(){
 function tClient(){
   const c = api.getCompany(S.params.id); // проверка доступа внутри слоя данных
   const reqs = api.getRequests({ company_id:c.id }), rows = api.getPipeline({ company_id:c.id }), m = views.summary(reqs, rows), u = api.me();
-  const tabs = [['overview','Обзор'],['reqs','Заявки и кандидаты'],['interviews','Интервью'],['docs','Документы'],['messages','Сообщения'],['history','История']];
+  const tabs = [['overview','Обзор'],['reqs','Заявки и кандидаты'],['interviews','Интервью'],['docs','Документы'],['history','История']];
   const tab = S.clientTab;
   let body = '';
   if (tab === 'overview'){
@@ -1932,9 +1875,6 @@ function tClient(){
     body = interviewList(api.getInterviews({ company_id:c.id }), true);
   } else if (tab === 'docs'){
     body = '<div class="toolbar"><button class="btn btn-primary btn-sm" type="button" data-act="addDoc" data-id="' + c.id + '">Добавить документ</button></div>' + docsTable(api.getDocuments({ company_id:c.id }), true);
-  } else if (tab === 'messages'){
-    const th = api.getThreads({ company_id:c.id });
-    body = '<div class="panel"><div class="list">' + th.map(t => '<div class="li"><div class="li-main"><b>' + esc(t.title) + '</b><span>' + (t.last ? esc(api.profileName(t.last.author_id)) + ': ' + esc(t.last.text) : 'Сообщений пока нет') + '</span></div><button class="btn btn-soft btn-sm" type="button" data-act="openThread" data-r="' + t.request_id + '" data-c="' + (t.candidate_id || '') + '">Открыть</button></div>').join('') + '</div></div>';
   } else {
     const ev = api.getCompanyHistory(c.id);
     body = ev.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Когда</th><th>Кто</th><th>Что</th></tr></thead><tbody>' + ev.map(e => '<tr><td style="white-space:nowrap">' + fmtDT(e.at) + '</td><td>' + esc(api.profileName(e.actor_id)) + '</td><td>' + esc(e.action) + '</td></tr>').join('') + '</tbody></table></div>' : '<div class="panel">' + emptyHTML('Истории пока нет', '') + '</div>';
@@ -1988,7 +1928,6 @@ const MATRIX = [
   ['Принимать заявки из бота и с сайта','Нет','Да','Да'],
   ['Дашборд','Свой','По своим клиентам','По всем клиентам'],
   ['Документы и счета','Свои: просмотр, подпись','Своих клиентов','Все'],
-  ['Сообщения','По своим заявкам','По своим клиентам','Все'],
   ['Приглашать пользователей','Коллег (руководитель)','Нет','Да'],
   ['Каталог услуг','Просмотр, запрос','Просмотр','Редактирование'],
   ['Настройки и журнал действий','Нет','Нет','Да'],
@@ -2018,7 +1957,7 @@ function tUsers(){
     return '<tr><td><b>' + esc(x.full_name) + '</b><div class="tiny muted">' + esc(x.email) + '</div></td><td>' + pill(ROLE_NAME[x.role], x.role === 'admin' ? 'warn plain' : x.role === 'manager' ? 'blue plain' : 'plain') + '</td><td>' + scope + '</td><td class="small">' + (ll ? fmtRel(ll) : '—') + '</td><td>' + (x.id === me.id ? '<span class="small muted">это вы</span>' : '<label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" class="toggle" id="ua-' + x.id + '" data-change="userActive" data-id="' + x.id + '" ' + (x.is_active ? 'checked' : '') + '><span class="small">' + (x.is_active ? 'Активен' : 'Отключён') + '</span></label>') + '</td></tr>'; }).join('') + '</tbody></table></div>' +
     '<p class="small muted">Менеджеров к клиентам привязывают в карточке клиента. Отключённый пользователь не сможет войти.</p>';
 }
-const KIND_NAME = { decision:'Решение клиента', stage:'Смена этапа', login:'Вход', lead:'Заявка', resume:'Резюме', user:'Пользователи', service:'Услуги', replacement:'Замена', doc:'Документы', request:'Заявка клиента', candidate:'Кандидаты', interview:'Интервью', message:'Сообщения', settings:'Настройки' };
+const KIND_NAME = { decision:'Решение клиента', stage:'Смена этапа', login:'Вход', lead:'Заявка', resume:'Резюме', user:'Пользователи', service:'Услуги', replacement:'Замена', doc:'Документы', request:'Заявка клиента', candidate:'Кандидаты', interview:'Интервью', settings:'Настройки' };
 function tLog(){
   const f = S.logF;
   const ev = api.getAuditLog({ actor: f.user === 'all' ? '' : f.user, kind: f.kind === 'all' ? '' : f.kind, q:f.q });
@@ -2038,7 +1977,7 @@ function tSettings(){
     '<div class="actions"><button class="btn btn-primary" type="submit">Сохранить настройки</button><button class="btn btn-ghost" type="button" data-act="resetDemo">Сбросить демо-данные</button></div></form>';
 }
 
-/* ---------- общие разделы: интервью, документы, сообщения ---------- */
+/* ---------- общие разделы: интервью и документы ---------- */
 function interviewList(list, compact){
   if (!list.length) return '<div class="panel">' + emptyHTML('Интервью нет', 'Назначьте интервью кандидату, который вам интересен.') + '</div>';
   const u = api.me();
@@ -2088,24 +2027,6 @@ function tDocs(){
     '<select class="select" id="dc-status" data-change="docStatus2" aria-label="Статус">' + opt('all', 'Все статусы') + DOC_STATUSES.map(s => opt(s, s, S.docStatus === s)).join('') + '</select>' +
     '<button class="btn btn-primary btn-sm" style="margin-left:auto" type="button" data-act="addDoc">Добавить документ</button></div>' + docsTable(docs, true);
 }
-function tMessages(){
-  const u = api.me(), threads = api.getThreads();
-  if (!threads.length) return '<div class="panel">' + emptyHTML('Переписки пока нет', 'Темы появятся, когда будет заявка.') + '</div>';
-  if (!S.thread || !threads.some(t => t.request_id === S.thread.r && (t.candidate_id || '') === (S.thread.c || ''))){
-    if (S.thread){ try { api.getRequest(S.thread.r); } catch (e) { S.thread = null; } }
-    if (!S.thread) S.thread = { r:threads[0].request_id, c:threads[0].candidate_id || '' };
-  }
-  const t = S.thread, r = api.getRequest(t.r);
-  const msgs = api.getMessages(t.r, t.c || null);
-  const cand = t.c ? api.getPipeline({ request_id:t.r }).find(p => p.candidate_id === t.c) : null;
-  const shown = threads.slice();
-  if (!shown.some(x => x.request_id === t.r && (x.candidate_id || '') === (t.c || ''))) shown.unshift({ request_id:t.r, candidate_id:t.c, title:cand ? cand.candidate.full_name : r.title, subtitle:r.title, last:null, count:0 });
-  return '<div class="msgs"><div class="threads"><div style="padding:12px 16px;border-bottom:1px solid var(--line)"><button class="btn btn-soft btn-sm" type="button" data-act="newThread">Новая тема по кандидату</button></div>' + shown.map(x => '<button type="button" class="thread' + (x.request_id === t.r && (x.candidate_id || '') === (t.c || '') ? ' on' : '') + '" data-act="openThread" data-r="' + x.request_id + '" data-c="' + (x.candidate_id || '') + '"><b>' + esc(x.candidate_id ? x.title : 'Заявка: ' + x.title) + '</b><span>' + esc(x.candidate_id ? x.subtitle : x.subtitle) + '</span><span>' + (x.last ? esc(api.profileName(x.last.author_id).split(' ')[0]) + ': ' + esc(x.last.text) : 'Сообщений нет') + '</span></button>').join('') + '</div>' +
-    '<div class="conv"><div class="conv-h"><div><b>' + esc(cand ? cand.candidate.full_name : r.title) + '</b><div class="tiny muted">' + (cand ? 'Кандидат по заявке «' + esc(r.title) + '»' : 'Общая переписка по заявке') + (u.role !== 'client' ? ' · ' + esc(api.getCompany(r.company_id).name) : '') + '</div></div>' + (cand ? '<button class="btn btn-ghost btn-sm" type="button" data-act="openP" data-id="' + cand.id + '">Карточка кандидата</button>' : '') + '</div>' +
-    '<div class="conv-b" id="conv-b">' + (msgs.length ? msgs.map(m => '<div class="bub' + (m.author_id === u.id ? ' mine' : '') + '">' + esc(m.text) + '<small>' + esc(api.profileName(m.author_id)) + ' · ' + fmtRel(m.created_at) + '</small></div>').join('') : '<div class="empty" style="margin:auto">' + IC.msg.replace('<svg', '<svg style="width:40px;height:40px;stroke:var(--faint);fill:none;stroke-width:1.6"') + '<b>Сообщений пока нет</b><span class="small">Напишите первым: ' + (u.role === 'client' ? 'менеджер ответит в рабочее время.' : 'клиент увидит сообщение в кабинете.') + '</span></div>') + '</div>' +
-    '<form id="msgForm" class="conv-f" novalidate><label class="sr" for="msg-text">Сообщение</label><textarea class="textarea" id="msg-text" placeholder="Сообщение" rows="1"></textarea><button class="btn btn-primary" type="submit">Отправить</button></form></div></div>';
-}
-
 /* =================== МОДАЛЬНЫЕ ОКНА =================== */
 let lastFocus = null;
 function openModal(title, body, foot, size){
@@ -2135,7 +2056,7 @@ function openPlacement(id){
   const c = p.candidate, u = api.me();
   const ivs = api.getInterviews({ rc_id:p.id });
   const hist = '<ul class="hist">' + p.history.slice().reverse().map(h => '<li class="' + (h.stage === 'rejected' ? 'rej' : '') + '"><span style="color:var(--ink);font-size:.86rem"><b>' + esc(ST(h.stage)) + '</b>' + (h.reason ? ' · ' + esc(h.reason) : '') + '<br><span>' + esc(api.profileName(h.changed_by)) + '</span></span><span>' + fmtDT(h.changed_at) + '</span></li>').join('') + '</ul>';
-  let foot = '<button class="btn btn-ghost" type="button" data-act="openThread" data-r="' + p.request_id + '" data-c="' + p.candidate_id + '">Сообщения</button>';
+  let foot = '';
   if (u.role === 'client'){
     if (!api.stageCheck(p.id, 'interested')) foot += '<button class="btn btn-soft" type="button" data-act="decide" data-id="' + p.id + '" data-s="interested">' + esc(ST('interested')) + '</button>';
     if (!api.stageCheck(p.id, 'interview') || p.stage === 'interview') foot += '<button class="btn btn-primary" type="button" data-act="ivNew" data-rc="' + p.id + '">' + (p.stage === 'interview' ? 'Ещё интервью' : 'Назначить интервью') + '</button>';
@@ -2439,7 +2360,7 @@ const A = {
       '<button class="btn btn-ghost" type="button" data-act="closeModal">Отмена</button><button class="btn btn-primary" type="submit" form="docForm">Отправить клиенту</button>'); },
   usersTab(el){ S.usersTab = el.dataset.t; render(); },
   async revokeInv(el){ try { await run(() => api.revokeInvitation(el.dataset.id), 'Приглашение отозвано, ссылка больше не работает'); render(); } catch (e) {} },
-  async resetDemo(){ await api.resetDemo(); S.cmp = []; S.thread = null; toast('Демо-данные восстановлены'); if (S.view === 'app'){ if (!api.me()) logout(); else render(); } },
+  async resetDemo(){ await api.resetDemo(); S.cmp = []; toast('Демо-данные восстановлены'); if (S.view === 'app'){ if (!api.me()) logout(); else render(); } },
   ivTab(el){ S.ivTab = el.dataset.t; render(); },
   ivNew(el){ openSchedule(el.dataset.rc); },
   ivMove(el){ const i = api.getInterviews().find(x => x.id === el.dataset.id);
@@ -2452,10 +2373,6 @@ const A = {
     openModal('Обратная связь по интервью', '<p class="small muted">' + esc(i.rc.candidate.full_name) + ' · ' + fmtDT(i.scheduled_at) + '</p><form id="ivFbForm" data-id="' + i.id + '" novalidate style="display:grid;gap:14px"><div class="field"><label for="fb-result">Итог</label><select class="select" id="fb-result">' + opt('', 'Выберите') + ['Продолжаем','Нужно ещё одно интервью','Не подходит'].map(x => opt(x, x)).join('') + '</select><span class="err" id="fb-result-err"></span></div><div class="field"><label for="fb-text">Комментарий</label><textarea class="textarea" id="fb-text" placeholder="Что понравилось, что смутило"></textarea><span class="err" id="fb-text-err"></span></div>' +
       (api.me().role === 'client' ? '<p class="small muted">Если кандидат не подходит, после отзыва откроется форма отказа.</p>' : '') + '</form>',
       '<button class="btn btn-ghost" type="button" data-act="closeModal">Отмена</button><button class="btn btn-primary" type="submit" form="ivFbForm">Сохранить</button>'); },
-  openThread(el){ closeModal(); S.thread = { r:el.dataset.r, c:el.dataset.c || '' }; go('messages'); },
-  newThread(){ const list = api.getPipeline().filter(p => p.stage !== 'rejected');
-    openModal('Новая тема по кандидату', list.length ? '<form id="threadForm" novalidate><div class="field"><label for="th-rc">Кандидат</label><select class="select" id="th-rc">' + opt('', 'Выберите кандидата') + list.map(p => opt(p.id, p.candidate.full_name + ' · ' + p.request.title)).join('') + '</select><span class="err" id="th-rc-err"></span></div></form>' : emptyHTML('Кандидатов нет', 'Тема по кандидату появится, когда его предложат по заявке.'),
-      list.length ? '<button class="btn btn-ghost" type="button" data-act="closeModal">Отмена</button><button class="btn btn-primary" type="submit" form="threadForm">Открыть переписку</button>' : ''); },
   editService(el){ const s = el.dataset.id ? api.getServices().find(x => x.id === el.dataset.id) : { title:'', description:'', price_label:'', amount:'', is_visible:true };
     openModal(el.dataset.id ? 'Изменить услугу' : 'Новая услуга', '<form id="svcForm" data-id="' + (el.dataset.id || '') + '" novalidate class="fgrid"><div class="field full"><label for="sv-title">Название</label><input class="input" id="sv-title" value="' + esc(s.title) + '"><span class="err" id="sv-title-err"></span></div><div class="field full"><label for="sv-desc">Описание</label><textarea class="textarea" id="sv-desc">' + esc(s.description) + '</textarea></div><div class="field"><label for="sv-price">Цена для клиента</label><input class="input" id="sv-price" value="' + esc(s.price_label) + '" placeholder="от 30 000 ₽"></div><div class="field"><label for="sv-amount">Сумма для отчёта, ₽</label><input class="input" id="sv-amount" inputmode="numeric" value="' + esc(s.amount) + '"><span class="err" id="sv-amount-err"></span></div><label class="check full"><input type="checkbox" id="sv-vis" ' + (s.is_visible ? 'checked' : '') + '><span>Показывать клиентам</span></label></form>',
       '<button class="btn btn-ghost" type="button" data-act="closeModal">Отмена</button><button class="btn btn-primary" type="submit" form="svcForm">Сохранить</button>'); },
@@ -2571,14 +2488,6 @@ const F = {
       if (result === 'Не подходит' && !api.stageCheck(iv.request_candidate_id, 'rejected')) openRejectForm(iv.request_candidate_id);
     } catch (e) {}
   },
-  async msgForm(){
-    const text = val('msg-text'); if (!text){ $('#msg-text').focus(); return; }
-    try { await run(() => api.sendMessage({ request_id:S.thread.r, candidate_id:S.thread.c || null, text })); render(); $('#msg-text')?.focus(); } catch (e) {}
-  },
-  threadForm(){
-    const id = val('th-rc'); if (!applyErrors('th', { rc: id ? '' : 'Выберите кандидата' })) return;
-    const p = api.getRequestCandidate(id); closeModal(); S.thread = { r:p.request_id, c:p.candidate_id }; render();
-  },
   async svcForm(form){
     const amount = val('sv-amount');
     if (!applyErrors('sv', { title: val('sv-title') ? '' : 'Укажите название', amount: !amount || /^\d+$/.test(amount.replace(/\s/g, '')) ? '' : 'Только цифры' })) return;
@@ -2602,7 +2511,6 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML) closeModal();
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.ccard[data-act]')){ e.preventDefault(); A.openP(e.target); }
-  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.id === 'msg-text'){ e.preventDefault(); F.msgForm(); }
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'rf-file'){ const f = e.target.files[0]; if (f) setResumeFile(f); return; }
