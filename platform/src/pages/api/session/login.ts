@@ -50,13 +50,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: nowLocked ? 'locked' : 'invalid', message: nowLocked ? LOCKED : GENERIC }, nowLocked ? 429 : 401);
     }
 
+    const data2fa = ((await res.clone().json().catch(() => ({}))) as { twoFactorRedirect?: boolean }).twoFactorRedirect === true;
     await withSystem(async (db) => {
       await clear(db, keys[0]);
       await db.query("select set_config('app.user_id', $1, true)", [pre.user.id]);
       await db.query('insert into user_security(user_id, last_login_at) values ($1, now()) on conflict (user_id) do update set last_login_at = now()', [pre.user.id]);
-      await audit(db, { actorId: pre.user.id, action: 'login.success', ip });
+      await audit(db, { actorId: pre.user.id, action: data2fa ? 'login.password_ok_2fa_pending' : 'login.success', ip });
     });
-    const out = json({ ok: true, redirect: '/app' });
+    // Если у пользователя включена 2FA, Better Auth не создаёт сессию, а выдаёт временный cookie второго шага
+    const data = await res.clone().json().catch(() => ({})) as { twoFactorRedirect?: boolean };
+    const out = data.twoFactorRedirect ? json({ ok: true, twoFactor: true }) : json({ ok: true, redirect: '/app' });
     for (const c of res.headers.getSetCookie()) out.headers.append('set-cookie', c);
     return out;
   } catch (e) {

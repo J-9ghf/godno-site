@@ -40,6 +40,7 @@ export default async function setup(project: TestProject) {
     DATABASE_URL: appUrl, BETTER_AUTH_SECRET: randomBytes(48).toString('base64'),
     TRUST_PROXY: 'true', MAIL_TRANSPORT: 'file', MAIL_DIR: join(tmp, 'mail'),
     STORAGE_DRIVER: 'local', STORAGE_LOCAL_DIR: join(tmp, 'files'),
+    FILE_SCAN_MODE: 'off', ADMIN_2FA_REQUIRED: 'true',
   };
   server = spawn('node', ['dist/server/entry.mjs'], { env, stdio: ['ignore', 'pipe', 'pipe'] });
   let log = '';
@@ -54,7 +55,7 @@ export default async function setup(project: TestProject) {
   project.provide('appUrl', appUrl);
   project.provide('mailDir', env.MAIL_DIR);
   project.provide('filesDir', env.STORAGE_LOCAL_DIR);
-  project.provide('serverEnv', JSON.stringify({ BASE_URL: baseUrl, DATABASE_URL: appUrl, BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET, MAIL_TRANSPORT: 'file', MAIL_DIR: env.MAIL_DIR }));
+  project.provide('serverEnv', JSON.stringify({ BASE_URL: baseUrl, DATABASE_URL: appUrl, BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET, MAIL_TRANSPORT: 'file', MAIL_DIR: env.MAIL_DIR, FILE_SCAN_MODE: 'off', STORAGE_LOCAL_DIR: env.STORAGE_LOCAL_DIR }));
   (globalThis as any).__serverLog = () => log;
 
   return async () => {

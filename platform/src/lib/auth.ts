@@ -1,6 +1,7 @@
 // Better Auth: вход по почте и паролю, сессии в базе, сброс пароля.
 // Открытая регистрация выключена: пользователи появляются только через приглашения (src/lib/invitations.ts).
 import { betterAuth } from 'better-auth';
+import { twoFactor } from 'better-auth/plugins';
 import { env } from './env';
 import { pool, withSystem } from './db';
 import { sendMail, templates } from './mailer';
@@ -53,6 +54,14 @@ function create() {
         '/sign-in/email': { window: 15 * 60, max: 30 },
       },
     },
+    // 2FA: приложение-аутентификатор (TOTP) и одноразовые резервные коды. «Доверенные устройства» не используются:
+    // флаг trustDevice удаляется из запросов (src/pages/api/auth/[...all].ts), срок доверия минимальный.
+    plugins: [twoFactor({
+      issuer: 'Кабинет ИКР',
+      twoFactorCookieMaxAge: 600,
+      trustDeviceMaxAge: 1,
+      backupCodeOptions: { amount: 10, length: 10, storeBackupCodes: 'encrypted' },
+    })],
     advanced: {
       cookiePrefix: 'ikr',
       useSecureCookies: e.BASE_URL.startsWith('https://'),

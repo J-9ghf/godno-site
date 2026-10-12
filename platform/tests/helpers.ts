@@ -2,7 +2,7 @@ import { inject } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { randomBytes, randomUUID } from 'node:crypto';
+import { createHmac, randomBytes, randomUUID } from 'node:crypto';
 import pg from 'pg';
 
 export const base = () => inject('baseUrl');
@@ -76,14 +76,41 @@ export async function asApp<T>(userId: string | null, fn: (c: pg.Client) => Prom
   } finally { await c.end(); }
 }
 
-let adminCache: { client: Client; email: string } | null = null;
-export async function admin() {
-  if (adminCache) return adminCache;
+// TOTP по RFC 6238 (SHA-1, 30 секунд, 6 цифр) — как в приложениях-аутентификаторах
+function base32(s: string) {
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = 0, val = 0; const out: number[] = [];
+  for (const c of s.replace(/=+$/, '').toUpperCase()) { val = (val << 5) | A.indexOf(c); bits += 5; if (bits >= 8) { out.push((val >>> (bits - 8)) & 255); bits -= 8; } }
+  return Buffer.from(out);
+}
+export function totp(secret: string, at = Date.now()) {
+  const buf = Buffer.alloc(8); buf.writeBigUInt64BE(BigInt(Math.floor(at / 30000)));
+  const h = createHmac('sha1', base32(secret)).update(buf).digest();
+  const o = h[h.length - 1] & 15;
+  return String((h.readUInt32BE(o) & 0x7fffffff) % 1_000_000).padStart(6, '0');
+}
+export const secretOf = (uri: string) => new URL(uri).searchParams.get('secret')!;
+
+// Включение 2FA для вошедшего пользователя: возвращает секрет и резервные коды
+export async function enable2fa(c: Client, password = PASSWORD) {
+  const en = await c.json('POST', '/api/auth/two-factor/enable', { password });
+  const secret = secretOf(en.totpURI);
+  await c.json('POST', '/api/auth/two-factor/verify-totp', { code: totp(secret) });
+  return { secret, backupCodes: en.backupCodes as string[] };
+}
+
+// Новый администратор: приглашение из консоли, пароль, обязательная 2FA
+export async function newAdmin() {
   const email = uniq('admin');
   execFileSync('npx', ['tsx', 'scripts/create-admin.ts', email], { env: { ...process.env, ...JSON.parse(inject('serverEnv')) }, stdio: 'pipe' });
   const client = new Client();
   await client.json('POST', '/api/invitations/accept', { token: tokenOf(lastLink(email, 'invite')), name: 'Админ Тестовый', password: PASSWORD });
-  adminCache = { client, email };
+  const tf = await enable2fa(client);
+  return { client, email, ...tf };
+}
+
+let adminCache: Awaited<ReturnType<typeof newAdmin>> | null = null;
+export async function admin() {
+  if (!adminCache) adminCache = await newAdmin();
   return adminCache;
 }
 

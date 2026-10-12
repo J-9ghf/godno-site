@@ -2,7 +2,7 @@
 import type { APIContext } from 'astro';
 import { z } from 'zod';
 import type { Actor } from './session';
-import { badRequest, forbidden, json, toResponse, unauthorized } from './errors';
+import { badRequest, forbidden, HttpError, json, toResponse, unauthorized } from './errors';
 
 // session — любой вошедший пользователь, даже если доступ к компаниям отозван
 type Role = 'admin' | 'client' | 'any' | 'session';
@@ -12,6 +12,7 @@ export function route(role: Role, fn: (ctx: APIContext, actor: Actor) => Promise
       const actor = ctx.locals.actor;
       if (!actor) throw unauthorized();
       if (role === 'admin' && actor.kind !== 'admin') throw forbidden();
+      if (role === 'admin' && actor.needs2fa) throw new HttpError(403, 'two_factor_required', 'Включите двухфакторную аутентификацию, чтобы работать в кабинете администратора');
       if (role === 'client' && actor.kind !== 'client') throw forbidden();
       if (role === 'any' && actor.kind === 'none') throw forbidden();
       const out = await fn(ctx, actor);

@@ -10,7 +10,7 @@ describe('Согласия', () => {
     const adm = w.adm;
     const n = await adm.json('POST', '/api/admin/candidates', { full_name: 'Безсогласия Тест', city: 'Тверь' });
     const app = await adm.json('POST', '/api/admin/applications', { vacancy_id: w.vA.id, candidate_id: n.id });
-    const r = await adm.post('/api/admin/presentations', { application_id: app.id, can_view_resume: true });
+    const r = await adm.post('/api/admin/presentations', { application_id: app.id });
     expect(r.status).toBe(409);
   });
 

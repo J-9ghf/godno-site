@@ -5,6 +5,7 @@ import { withUser, type Db } from '../db';
 import { audit } from '../audit';
 import { badRequest, conflict, notFound } from '../errors';
 import { adminStageError, CLIENT_DECISIONS, STAGES, type Stage } from '../stages';
+import { env } from '../env';
 
 const text = (max: number) => z.string().trim().max(max);
 const optText = (max: number) => text(max).optional().nullable().transform((v) => (v ? v : null));
@@ -118,7 +119,7 @@ export const getCandidate = (actor: string, id: string) => withUser(actor, async
                left join companies co on co.id = k.scope_company_id where k.candidate_id = $1 order by k.granted_at desc`, [id]),
     db.query(`select n.id, n.body, n.created_at, n.application_id, u.name as author from internal_notes n left join "user" u on u.id = n.author_id where n.candidate_id = $1 order by n.created_at desc`, [id]),
     db.query(`select a.id, a.stage, a.reject_reason, a.created_at, v.id as vacancy_id, v.title as vacancy_title, co.id as company_id, co.name as company_name,
-                     (select json_build_object('id', p.id, 'presented_at', p.presented_at, 'can_view_resume', p.can_view_resume, 'can_download_resume', p.can_download_resume,
+                     (select json_build_object('id', p.id, 'presented_at', p.presented_at, 'resume_file_id', p.resume_file_id, 'client_comment', p.client_comment, 'analysis', p.analysis, 'can_view_resume', p.can_view_resume, 'can_download_resume', p.can_download_resume,
                                                'can_view_video', p.can_view_video, 'can_view_contacts', p.can_view_contacts)
                         from presentations p where p.application_id = a.id and p.revoked_at is null) as presentation
                 from applications a join vacancies v on v.id = a.vacancy_id join companies co on co.id = v.company_id
@@ -265,11 +266,22 @@ export const presentationInput = z.object({
   consent_id: z.uuid().optional(),
   client_comment: optText(4000),
   analysis: z.object({ who: optText(2000), drive: optText(2000), risk: optText(2000), horizon: optText(200), opinion: optText(2000) }).partial().default({}),
+  resume_file_id: z.uuid().optional().nullable(),
   can_view_resume: z.boolean().default(false),
   can_download_resume: z.boolean().default(false),
   can_view_video: z.boolean().default(false),
   can_view_contacts: z.boolean().default(false),
-}).refine((p) => !p.can_download_resume || p.can_view_resume, { message: 'Скачивание возможно только вместе с просмотром', path: ['can_download_resume'] });
+}).refine((p) => !p.can_download_resume || p.can_view_resume, { message: 'Скачивание возможно только вместе с просмотром', path: ['can_download_resume'] })
+  .refine((p) => !p.can_view_resume || p.resume_file_id, { message: 'Выберите файл резюме, который увидит клиент', path: ['resume_file_id'] });
+
+// Файл резюме открывается клиенту только явным выбором. При включённой антивирусной проверке — только проверенный файл.
+async function assertShareableFile(db: Db, fileId: string | null | undefined) {
+  if (!fileId) return;
+  const f = await db.query('select scan_status, deleted_at from files where id = $1', [fileId]);
+  if (!f.rowCount || f.rows[0].deleted_at) throw notFound();
+  if (f.rows[0].scan_status === 'infected') throw conflict('Файл не прошёл антивирусную проверку');
+  if (env().FILE_SCAN_MODE === 'clamav' && f.rows[0].scan_status !== 'clean') throw conflict('Файл ещё не прошёл антивирусную проверку');
+}
 
 async function pickConsent(db: Db, applicationId: string, explicit?: string) {
   if (explicit) return explicit;
@@ -287,10 +299,11 @@ export const createPresentation = (actor: string, input: z.infer<typeof presenta
   if (!a.rowCount) throw notFound();
   if (['hired', 'rejected'].includes(a.rows[0].stage)) throw conflict('Кандидат уже вышел на работу или получил отказ по этой вакансии');
   const consentId = await pickConsent(db, input.application_id, input.consent_id);
+  await assertShareableFile(db, input.resume_file_id);
   const r = await db.query(
-    `insert into presentations(application_id, consent_id, presented_by, client_comment, analysis, can_view_resume, can_download_resume, can_view_video, can_view_contacts)
-     values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`,
-    [input.application_id, consentId, actor, input.client_comment, JSON.stringify(input.analysis ?? {}),
+    `insert into presentations(application_id, consent_id, presented_by, client_comment, analysis, resume_file_id, can_view_resume, can_download_resume, can_view_video, can_view_contacts)
+     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) returning *`,
+    [input.application_id, consentId, actor, input.client_comment, JSON.stringify(input.analysis ?? {}), input.resume_file_id ?? null,
      input.can_view_resume, input.can_download_resume, input.can_view_video, input.can_view_contacts]);
   if (['sourced', 'screening'].includes(a.rows[0].stage)) await db.query(`update applications set stage = 'offered' where id = $1`, [input.application_id]);
   await db.query(`update candidates set pool_status = 'offered' where id = $1 and pool_status in ('new','checked','reserve')`, [a.rows[0].candidate_id]);
@@ -302,19 +315,26 @@ export const createPresentation = (actor: string, input: z.infer<typeof presenta
 export const presentationPatch = z.object({
   client_comment: optText(4000).optional(),
   analysis: z.object({ who: optText(2000), drive: optText(2000), risk: optText(2000), horizon: optText(200), opinion: optText(2000) }).partial().optional(),
+  resume_file_id: z.uuid().nullable().optional(),
   can_view_resume: z.boolean().optional(), can_download_resume: z.boolean().optional(),
   can_view_video: z.boolean().optional(), can_view_contacts: z.boolean().optional(),
 });
 export const updatePresentation = (actor: string, id: string, input: z.infer<typeof presentationPatch>) => withUser(actor, async (db) => {
+  const cur = await db.query('select * from presentations where id = $1 and revoked_at is null for update', [id]);
+  if (!cur.rowCount) throw notFound();
+  const p = cur.rows[0];
+  const fileId = input.resume_file_id !== undefined ? input.resume_file_id : p.resume_file_id;
+  const canView = input.can_view_resume ?? p.can_view_resume;
+  if (canView && !fileId) throw badRequest('Выберите файл резюме, который увидит клиент', { resume_file_id: 'Выберите файл' });
+  if (input.resume_file_id !== undefined) await assertShareableFile(db, input.resume_file_id);
+  const canDownload = canView ? (input.can_download_resume ?? p.can_download_resume) : false;
   const r = await db.query(
     `update presentations set client_comment = coalesce($2, client_comment), analysis = coalesce($3, analysis),
-            can_view_resume = coalesce($4, can_view_resume),
-            can_download_resume = case when coalesce($4, can_view_resume) then coalesce($5, can_download_resume) else false end,
-            can_view_video = coalesce($6, can_view_video), can_view_contacts = coalesce($7, can_view_contacts)
-      where id = $1 and revoked_at is null returning *`,
-    [id, input.client_comment ?? null, input.analysis ? JSON.stringify(input.analysis) : null, input.can_view_resume ?? null,
-     input.can_download_resume ?? null, input.can_view_video ?? null, input.can_view_contacts ?? null]);
-  if (!r.rowCount) throw notFound();
+            resume_file_id = $4, can_view_resume = $5, can_download_resume = $6,
+            can_view_video = coalesce($7, can_view_video), can_view_contacts = coalesce($8, can_view_contacts)
+      where id = $1 returning *`,
+    [id, input.client_comment ?? null, input.analysis ? JSON.stringify(input.analysis) : null, fileId ?? null, canView, canDownload,
+     input.can_view_video ?? null, input.can_view_contacts ?? null]);
   await audit(db, { actorId: actor, action: 'presentation.updated', entityType: 'presentation', entityId: id, details: input as Record<string, unknown> });
   return r.rows[0];
 });
@@ -335,4 +355,21 @@ export const listAudit = (actor: string, f: { companyId?: string; action?: strin
 export const metrics = (actor: string, f: { companyId?: string; vacancyId?: string; from?: string; to?: string }) => withUser(actor, async (db) => {
   const r = await db.query('select metrics($1, $2, $3, $4) as m', [f.companyId ? [f.companyId] : null, f.vacancyId ?? null, f.from ?? null, f.to ?? null]);
   return r.rows[0].m;
+});
+
+// Сводка по каждой компании для таблицы на дашборде администратора (та же функция metrics, по одной компании)
+export const metricsByCompany = (actor: string, f: { from?: string; to?: string }) => withUser(actor, async (db) => (await db.query(
+  `select c.id, c.name, c.status, metrics(array[c.id], null, $1, $2) as m from companies c order by c.name`, [f.from ?? null, f.to ?? null])).rows);
+
+export const getVacancy = (actor: string, id: string) => withUser(actor, async (db) => {
+  const v = await db.query('select v.*, c.name as company_name from vacancies v join companies c on c.id = v.company_id where v.id = $1', [id]);
+  if (!v.rowCount) throw notFound();
+  const apps = await db.query(
+    `select a.id, a.stage, a.reject_reason, a.created_at, a.updated_at, c.id as candidate_id, c.full_name, c.city, c.birth_year,
+            (select json_build_object('id', p.id, 'presented_at', p.presented_at, 'resume_file_id', p.resume_file_id, 'can_view_resume', p.can_view_resume,
+                                      'can_download_resume', p.can_download_resume, 'can_view_video', p.can_view_video, 'can_view_contacts', p.can_view_contacts)
+               from presentations p where p.application_id = a.id and p.revoked_at is null) as presentation,
+            (select count(*) from client_feedback f where f.application_id = a.id)::int as feedback_count
+       from applications a join candidates c on c.id = a.candidate_id where a.vacancy_id = $1 order by a.created_at`, [id]);
+  return { ...v.rows[0], applications: apps.rows, metrics: (await db.query('select metrics(null, $1, null, null) as m', [id])).rows[0].m };
 });

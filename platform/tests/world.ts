@@ -29,9 +29,11 @@ export async function buildWorld(tag: string) {
   const cZ = await consent(Z);
   const cXvideo = await adm.json('POST', `/api/admin/candidates/${X.id}/consents`, { purpose: 'video_photo', consent_text_id: tVideo.id, granted_at: granted, method: 'paper' });
 
+  const resume: Record<string, string> = {};
   for (const c of [X, Y, Z]) {
     const r = await adm.upload(`/api/admin/candidates/${c.id}/files`, makePdf(c.full_name), 'resume.pdf');
     if (r.status !== 200) throw new Error('upload ' + (await r.text()));
+    resume[c.id] = (await r.json()).id;
   }
   await adm.json('POST', `/api/admin/candidates/${X.id}/links`, { kind: 'video', url: 'https://disk.yandex.ru/i/test-video-x', title: 'Видео-визитка' });
   await adm.json('POST', `/api/admin/candidates/${X.id}/notes`, { body: `ВНУТРЕННЯЯ-ЗАМЕТКА-${tag}` });
@@ -39,15 +41,15 @@ export async function buildWorld(tag: string) {
   const app = (v: any, c: any) => adm.json('POST', '/api/admin/applications', { vacancy_id: v.id, candidate_id: c.id });
   const aXA = await app(vA, X), aYA = await app(vA, Y), aXB = await app(vB, X), aZB = await app(vB, Z), aZA = await app(vA, Z);
   const present = (a: any, perms: object) => adm.json('POST', '/api/admin/presentations', { application_id: a.id, client_comment: `Комментарий ${tag}`, analysis: { who: 'Тест', opinion: 'Рекомендуем' }, ...perms });
-  const pXA = await present(aXA, { can_view_resume: true, can_download_resume: false });
-  const pYA = await present(aYA, { can_view_resume: true });
-  const pXB = await present(aXB, { can_view_resume: true, can_download_resume: true, can_view_video: true, can_view_contacts: true });
+  const pXA = await present(aXA, { can_view_resume: true, can_download_resume: false, resume_file_id: resume[X.id] });
+  const pYA = await present(aYA, { can_view_resume: true, resume_file_id: resume[Y.id] });
+  const pXB = await present(aXB, { can_view_resume: true, can_download_resume: true, can_view_video: true, can_view_contacts: true, resume_file_id: resume[X.id] });
   const pZB = await present(aZB, {});
 
   const a1 = await inviteClient(adm, A.id, 'owner');
   const a2 = await inviteClient(adm, A.id, 'viewer');
   const b1 = await inviteClient(adm, B.id, 'member');
-  return { adm, A, B, vA, vB, X, Y, Z, cX, cY, cZ, cXvideo, tTransfer, aXA, aYA, aXB, aZB, aZA, pXA, pYA, pXB, pZB, a1, a2, b1 };
+  return { adm, resume, A, B, vA, vB, X, Y, Z, cX, cY, cZ, cXvideo, tTransfer, aXA, aYA, aXB, aZB, aZA, pXA, pYA, pXB, pZB, a1, a2, b1 };
 }
 
 export const anon = () => new Client();

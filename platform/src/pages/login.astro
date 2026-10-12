@@ -19,6 +19,16 @@ const reset = Astro.url.searchParams.get('reset') === '1';
         <button class="btn btn-primary" type="submit">Войти</button>
       </div>
     </form>
+    <form id="tfaForm" novalidate style="display:grid;gap:14px" hidden>
+      <div class="notice">Введите код из приложения-аутентификатора. Код действует 30 секунд.</div>
+      <div class="form-alert" hidden></div>
+      <div class="field"><label for="tf-code" data-label>Код из приложения</label><input class="input" id="tf-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" /><span class="err" data-err="code"></span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" type="button" id="tfBackup">Нет доступа к приложению? Резервный код</button>
+        <button class="btn btn-primary" type="submit">Подтвердить</button>
+      </div>
+      <p class="small muted">Если нет ни приложения, ни резервных кодов, обратитесь к другому администратору: он сбросит двухфакторную аутентификацию после проверки вашей личности.</p>
+    </form>
     <p class="login-note">Доступ только для клиентов. Нет доступа? Напишите вашему менеджеру или оставьте заявку на сайте.</p>
   </AuthShell>
 </Base>
@@ -34,5 +44,29 @@ const reset = Astro.url.searchParams.get('reset') === '1';
       if (!(f.elements.namedItem('password') as HTMLInputElement).value) e.password = 'Введите пароль';
       return e;
     },
+    onSuccess: (data) => {
+      if (!data.twoFactor) { location.assign(data.redirect ?? '/app'); return; }
+      // Пароль верный, но у учётной записи включена 2FA: сессии ещё нет, нужен второй фактор
+      f.hidden = true; t.hidden = false; (t.elements.namedItem('code') as HTMLInputElement).focus();
+    },
+  });
+  const t = document.getElementById('tfaForm') as HTMLFormElement;
+  let backup = false;
+  document.getElementById('tfBackup')!.addEventListener('click', (e) => {
+    backup = !backup;
+    const input = t.elements.namedItem('code') as HTMLInputElement;
+    input.value = ''; input.maxLength = backup ? 32 : 6; input.inputMode = backup ? 'text' : 'numeric';
+    t.querySelector('[data-label]')!.textContent = backup ? 'Резервный код' : 'Код из приложения';
+    (e.currentTarget as HTMLElement).textContent = backup ? 'Ввести код из приложения' : 'Нет доступа к приложению? Резервный код';
+    input.focus();
+  });
+  bindForm(t, {
+    url: () => backup ? '/api/auth/two-factor/verify-backup-code' : '/api/auth/two-factor/verify-totp',
+    collect: () => ({ code: val(t, 'code').replace(/\s+/g, '') }),
+    validate: () => {
+      const c = val(t, 'code').replace(/\s+/g, '');
+      return (backup ? c.length >= 6 : /^\d{6}$/.test(c)) ? {} : { code: backup ? 'Введите резервный код' : 'Введите 6 цифр' };
+    },
+    onSuccess: () => location.assign('/app'),
   });
 </script>

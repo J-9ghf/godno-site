@@ -557,3 +557,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .rs-bar div{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
 .rs-bar i{display:block;height:100%;background:var(--bad)}
 .topbar .who .btn{flex:none}
+/* Просмотр PDF в карточке (pdf.js рисует страницы на canvas) */
+.pdf-view{display:grid;gap:14px;justify-items:center;max-height:72vh;overflow:auto;background:var(--surface-2);border-radius:12px;padding:14px}
+.pdf-page{position:relative;box-shadow:0 1px 4px rgba(0,0,0,.12);background:#fff;max-width:100%;overflow:hidden}
+.pdf-page canvas{display:block;max-width:100%;height:auto}
+.pdf-wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;user-select:none;font-weight:800;font-size:clamp(.8rem,2.2vw,1.2rem);color:rgba(30,40,60,.13);transform:rotate(-28deg);text-align:center;padding:0 10%}

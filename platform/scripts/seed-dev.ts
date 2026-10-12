@@ -24,7 +24,7 @@ await withUser(adminId, async (db) => {
       const k = await q(`insert into candidates(full_name, city, birth_year, experience_summary, created_by) values ($1, 'Москва', 1990, 'Вымышленный опыт для демо', $2) returning id`, [full, adminId]);
       const cons = await q(`insert into consents(candidate_id, purpose, consent_text_id, granted_at, method, recorded_by) values ($1, 'transfer_to_employer', $2, now() - interval '1 day', 'other', $3) returning id`, [k.id, t.id, adminId]);
       const a = await q('insert into applications(vacancy_id, candidate_id, created_by) values ($1, $2, $3) returning id', [v.id, k.id, adminId]);
-      await db.query(`insert into presentations(application_id, consent_id, presented_by, client_comment, analysis, can_view_resume) values ($1, $2, $3, 'Демо-комментарий рекрутера', '{"who":"Демо","opinion":"Рекомендуем"}', true)`, [a.id, cons.id, adminId]);
+      await db.query(`insert into presentations(application_id, consent_id, presented_by, client_comment, analysis, can_view_resume) values ($1, $2, $3, 'Демо-комментарий рекрутера', '{"who":"Демо","opinion":"Рекомендуем"}', false)`, [a.id, cons.id, adminId]);
       await db.query(`update applications set stage = 'offered' where id = $1`, [a.id]);
     }
     console.log(`Компания: ${name}`);

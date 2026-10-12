@@ -9,6 +9,9 @@ export type Actor = {
   userId: string; email: string; name: string;
   kind: 'admin' | 'client' | 'none';
   memberships: Membership[];
+  twoFactorEnabled: boolean;
+  needs2fa: boolean;            // администратор без 2FA: доступна только её настройка
+  sessionToken: string;
   setCookie: string[];
 };
 
@@ -29,6 +32,7 @@ export async function resolveActor(request: Request): Promise<Actor | null> {
   const info = await withUser(data.user.id, async (db) => {
     const r = await db.query(
       `select coalesce(s.is_blocked, false) as blocked,
+              coalesce((select "twoFactorEnabled" from "user" where id = $1), false) as two_factor,
               (select role from staff_roles where user_id = $1) as staff_role,
               coalesce((select json_agg(json_build_object('companyId', m.company_id, 'companyName', c.name, 'role', m.role) order by c.name)
                           from company_members m join companies c on c.id = m.company_id
@@ -42,9 +46,12 @@ export async function resolveActor(request: Request): Promise<Actor | null> {
     return null;
   }
   const memberships = info.memberships as Membership[];
+  const kind = info.staff_role === 'admin' ? 'admin' : memberships.length ? 'client' : 'none';
   return {
     userId: data.user.id, email: data.user.email, name: data.user.name,
-    kind: info.staff_role === 'admin' ? 'admin' : memberships.length ? 'client' : 'none',
-    memberships, setCookie,
+    kind, memberships, setCookie,
+    twoFactorEnabled: info.two_factor === true,
+    needs2fa: kind === 'admin' && env().ADMIN_2FA_REQUIRED && info.two_factor !== true,
+    sessionToken: data.session.token,
   };
 }

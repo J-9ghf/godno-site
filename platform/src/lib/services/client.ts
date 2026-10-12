@@ -55,3 +55,7 @@ export const addFeedback = (a: Actor, id: string, input: z.infer<typeof feedback
 
 export const metrics = (a: Actor, f: { vacancyId?: string; from?: string; to?: string }) => withUser(a.userId, async (db) =>
   (await db.query('select metrics(null, $1, $2, $3) as m', [f.vacancyId ?? null, f.from ?? null, f.to ?? null])).rows[0].m);
+
+// Воронка по каждой своей вакансии (для экрана «Вакансии»)
+export const vacancyMetrics = (a: Actor) => withUser(a.userId, async (db) => (await db.query(
+  `select v.id, v.title, v.status, v.opened_at, v.closed_at, metrics(null, v.id, null, null) as m from vacancies v order by v.opened_at desc`)).rows);

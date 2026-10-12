@@ -28,10 +28,17 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: z.string().optional(),
   S3_FORCE_PATH_STYLE: bool,
   MAX_UPLOAD_MB: z.coerce.number().min(1).max(50).default(15),
+  // 2FA обязательна для администраторов. Выключать только для локальной отладки.
+  ADMIN_2FA_REQUIRED: z.enum(['true', 'false']).default('true').transform((v) => v === 'true'),
+  // Антивирусная проверка файлов: clamav (свой сервер ClamAV) или off (только разработка и тесты)
+  FILE_SCAN_MODE: z.enum(['clamav', 'off']).default('clamav'),
+  CLAMAV_HOST: z.string().optional(),
+  CLAMAV_PORT: z.coerce.number().int().default(3310),
 }).superRefine((e, ctx) => {
   if (e.MAIL_TRANSPORT === 'smtp' && !e.SMTP_HOST) ctx.addIssue({ code: 'custom', message: 'SMTP_HOST обязателен для MAIL_TRANSPORT=smtp' });
   if (e.STORAGE_DRIVER === 's3' && !(e.S3_BUCKET && e.S3_ACCESS_KEY_ID && e.S3_SECRET_ACCESS_KEY))
     ctx.addIssue({ code: 'custom', message: 'Для STORAGE_DRIVER=s3 нужны S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY' });
+  if (e.FILE_SCAN_MODE === 'clamav' && !e.CLAMAV_HOST) ctx.addIssue({ code: 'custom', message: 'Для FILE_SCAN_MODE=clamav нужен CLAMAV_HOST (или FILE_SCAN_MODE=off для разработки)' });
   if (e.NODE_ENV === 'production' && !e.BASE_URL.startsWith('https://') && !/^http:\/\/(127\.0\.0\.1|localhost)/.test(e.BASE_URL))
     ctx.addIssue({ code: 'custom', message: 'В рабочем режиме BASE_URL должен начинаться с https://' });
 });

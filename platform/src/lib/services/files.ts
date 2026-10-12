@@ -13,9 +13,9 @@ export async function uploadCandidateFile(actor: string, candidateId: string, fi
   try {
     return await withUser(actor, async (db) => {
       const r = await db.query(
-        `insert into files(candidate_id, kind, storage_key, original_name, mime, size_bytes, sha256, page_count, uploaded_by)
-         values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning id, kind, original_name, mime, size_bytes, page_count, created_at`,
-        [candidateId, kind, f.storage_key, f.original_name, f.mime, f.size_bytes, f.sha256, f.page_count, actor]);
+        `insert into files(candidate_id, kind, storage_key, original_name, mime, size_bytes, sha256, page_count, scan_status, scanned_at, uploaded_by)
+         values ($1,$2,$3,$4,$5,$6,$7,$8,$9, case when $9 = 'clean' then now() end, $10) returning id, kind, original_name, mime, size_bytes, page_count, scan_status, created_at`,
+        [candidateId, kind, f.storage_key, f.original_name, f.mime, f.size_bytes, f.sha256, f.page_count, f.scan_status, actor]);
       await audit(db, { actorId: actor, action: 'file.uploaded', entityType: 'file', entityId: r.rows[0].id, details: { kind, size: f.size_bytes, candidate_id: candidateId } });
       return r.rows[0];
     });
