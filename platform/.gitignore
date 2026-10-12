@@ -6,3 +6,8 @@ dist
 !.env.example
 .dev
 .data
+*.pem
+*.key
+*.dump
+*.sql.gz
+backups/

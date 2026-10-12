@@ -40,6 +40,7 @@
     "create-admin": "tsx scripts/create-admin.ts",
     "seed:dev": "tsx scripts/seed-dev.ts",
     "test": "vitest run",
-    "reset-2fa": "tsx scripts/reset-2fa.ts"
+    "reset-2fa": "tsx scripts/reset-2fa.ts",
+    "rescan-files": "tsx scripts/rescan-files.ts"
   }
 }

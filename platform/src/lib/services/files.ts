@@ -1,6 +1,6 @@
 import { withUser } from '../db';
 import { audit } from '../audit';
-import { notFound } from '../errors';
+import { conflict, HttpError, notFound } from '../errors';
 import { acceptUpload, type Kind } from '../files';
 import { fileStore } from '../storage';
 import type { Actor } from '../session';
@@ -9,7 +9,17 @@ export async function uploadCandidateFile(actor: string, candidateId: string, fi
   // Сначала проверяем доступ к кандидату (RLS: только администратор), затем принимаем файл
   const exists = await withUser(actor, async (db) => (await db.query('select 1 from candidates where id = $1 and anonymized_at is null', [candidateId])).rowCount);
   if (!exists) throw notFound();
-  const f = await acceptUpload(file, kind, { candidateId });
+  let f: Awaited<ReturnType<typeof acceptUpload>>;
+  try { f = await acceptUpload(file, kind, { candidateId }); }
+  catch (e) {
+    // Заражённый файл не сохраняется; попытка записывается в журнал (имя файла и сигнатура, без содержимого)
+    if (e instanceof HttpError && e.code === 'infected') {
+      const signature = (e as HttpError & { signature?: string }).signature ?? '';
+      console.warn(`[scan] отклонён заражённый файл: кандидат ${candidateId}, сигнатура ${signature}`);
+      await withUser(actor, (db) => audit(db, { actorId: actor, action: 'file.rejected_infected', entityType: 'candidate', entityId: candidateId, details: { kind, signature, size: file.size } }));
+    }
+    throw e;
+  }
   try {
     return await withUser(actor, async (db) => {
       const r = await db.query(
@@ -35,8 +45,9 @@ export async function deleteFile(actor: string, id: string) {
 
 export async function adminReadFile(actor: string, id: string, download: boolean) {
   const f = await withUser(actor, async (db) => {
-    const r = await db.query('select storage_key, mime, original_name from files where id = $1 and deleted_at is null', [id]);
+    const r = await db.query('select storage_key, mime, original_name, scan_status from files where id = $1 and deleted_at is null', [id]);
     if (!r.rowCount) throw notFound();
+    if (r.rows[0].scan_status === 'infected') throw conflict('Файл в карантине: он не прошёл антивирусную проверку и не открывается');
     await audit(db, { actorId: actor, action: download ? 'file.downloaded' : 'file.viewed', entityType: 'file', entityId: id });
     return r.rows[0];
   });

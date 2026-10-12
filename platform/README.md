@@ -21,6 +21,7 @@ npm run build && npm start                     # http://localhost:4321
 npm run create-admin -- you@example.test       # ссылка приглашения выводится в консоль и сохраняется в .dev/mail
 npm run seed:dev                               # вымышленные данные и приглашение клиента client-demo@example.test
 npm run reset-2fa -- you@example.test          # аварийный сброс 2FA администратора из консоли сервера
+npm run rescan-files -- --as you@example.test  # повторная проверка файлов в ClamAV (карантин заражённых)
 ```
 
 Администратор после первого входа обязан включить 2FA (раздел «Безопасность и согласия»), до этого остальные разделы закрыты.
@@ -53,6 +54,9 @@ npm test
 | `file-security.test.ts` | явный выбор файла резюме, отказ от PDF с активным содержимым, ClamAV (чисто, заражён, недоступен) |
 | `metrics-isolation.test.ts` | показатели и фильтры не включают данные других клиентов |
 | `ui.test.ts` | экраны в браузере: вход с 2FA, разделы администратора, изоляция у клиента, просмотр PDF, отзывы и решения, наблюдатель, мобильная ширина |
+| `session-config.test.ts` | cookie в рабочем режиме (HTTPS), CSRF, утечка ключа сервера, ротация ключа без потери 2FA |
+| `repo-hygiene.test.ts` | в Git нет секретов, файлов окружения, ключей и выгрузок |
+| `clamav-real.test.ts` | настоящий ClamAV (нужен `CLAMAV_TEST_HOST`, см. `../docs/platform/clamav.md`) |
 | `s3-driver.test.ts` | драйвер S3 на эмуляторе |
 
 ## Безопасность

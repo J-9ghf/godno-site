@@ -8,7 +8,26 @@ const schema = z.object({
   NODE_ENV: z.string().default('development'),
   BASE_URL: z.url(),
   DATABASE_URL: z.string().startsWith('postgres'),
-  BETTER_AUTH_SECRET: z.string().min(32, 'BETTER_AUTH_SECRET: не короче 32 символов'),
+  // Ключ сессий и шифрования 2FA. Рабочий вариант — BETTER_AUTH_SECRETS с версиями: «2:новый,1:старый».
+  // Первый ключ подписывает cookie и шифрует новые данные, остальные только расшифровывают прежние.
+  // BETTER_AUTH_SECRET — ключ без версии: для разработки и для расшифровки данных, зашифрованных до перехода на версии.
+  BETTER_AUTH_SECRET: z.string().min(32, 'BETTER_AUTH_SECRET: не короче 32 символов').optional(),
+  BETTER_AUTH_SECRETS: z.string().optional().transform((v, ctx) => {
+    if (!v) return undefined;
+    const list = v.split(',').map((x) => x.trim()).filter(Boolean).map((x) => {
+      const i = x.indexOf(':');
+      return { version: Number(x.slice(0, i)), value: x.slice(i + 1).trim() };
+    });
+    const versions = new Set<number>();
+    for (const k of list) {
+      if (!Number.isInteger(k.version) || k.version < 0 || k.value.length < 32 || versions.has(k.version)) {
+        ctx.addIssue({ code: 'custom', message: 'BETTER_AUTH_SECRETS: формат «версия:ключ» через запятую, версии не повторяются, ключи не короче 32 символов' });
+        return z.NEVER;
+      }
+      versions.add(k.version);
+    }
+    return list;
+  }),
   SESSION_IDLE_MINUTES: z.coerce.number().int().min(5).max(720).default(30),
   SESSION_MAX_HOURS: z.coerce.number().int().min(1).max(72).default(12),
   TRUST_PROXY: bool,
@@ -35,6 +54,7 @@ const schema = z.object({
   CLAMAV_HOST: z.string().optional(),
   CLAMAV_PORT: z.coerce.number().int().default(3310),
 }).superRefine((e, ctx) => {
+  if (!e.BETTER_AUTH_SECRET && !e.BETTER_AUTH_SECRETS?.length) ctx.addIssue({ code: 'custom', message: 'Нужен BETTER_AUTH_SECRETS (рабочий режим) или BETTER_AUTH_SECRET' });
   if (e.MAIL_TRANSPORT === 'smtp' && !e.SMTP_HOST) ctx.addIssue({ code: 'custom', message: 'SMTP_HOST обязателен для MAIL_TRANSPORT=smtp' });
   if (e.STORAGE_DRIVER === 's3' && !(e.S3_BUCKET && e.S3_ACCESS_KEY_ID && e.S3_SECRET_ACCESS_KEY))
     ctx.addIssue({ code: 'custom', message: 'Для STORAGE_DRIVER=s3 нужны S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY' });

@@ -1,5 +1,6 @@
 import { inject } from 'vitest';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
+import { createServer } from 'node:net';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHmac, randomBytes, randomUUID } from 'node:crypto';
@@ -11,9 +12,11 @@ const rndIp = () => `10.${(Math.random() * 250) | 0}.${(Math.random() * 250) | 0
 // HTTP-клиент с собственными cookie и IP (сервер в тестах доверяет X-Real-IP)
 export class Client {
   cookies = new Map<string, string>();
-  constructor(public ip = rndIp()) {}
+  // url — адрес сервера (по умолчанию общий тестовый), origin — заголовок Origin (по умолчанию тот же адрес)
+  constructor(public ip = rndIp(), public url?: string, public origin?: string) {}
+  private get root() { return this.url ?? base(); }
   private headers(extra: Record<string, string> = {}) {
-    const h: Record<string, string> = { origin: base(), 'x-real-ip': this.ip, ...extra };
+    const h: Record<string, string> = { origin: this.origin ?? this.root, 'x-real-ip': this.ip, ...extra };
     if (this.cookies.size) h.cookie = [...this.cookies].map(([k, v]) => `${k}=${v}`).join('; ');
     return h;
   }
@@ -28,7 +31,7 @@ export class Client {
   async req(method: string, path: string, body?: unknown, extra: Record<string, string> = {}) {
     const init: RequestInit = { method, headers: this.headers(body !== undefined ? { 'content-type': 'application/json', ...extra } : extra), redirect: 'manual' };
     if (body !== undefined) init.body = JSON.stringify(body);
-    return this.keep(await fetch(base() + path, init));
+    return this.keep(await fetch(this.root + path, init));
   }
   get = (p: string) => this.req('GET', p);
   post = (p: string, b: unknown = {}) => this.req('POST', p, b);
@@ -44,9 +47,27 @@ export class Client {
     const fd = new FormData();
     fd.set('kind', kind);
     fd.set('file', new Blob([new Uint8Array(data)], { type: mime }), name);
-    return this.keep(await fetch(base() + path, { method: 'POST', headers: this.headers(), body: fd }));
+    return this.keep(await fetch(this.root + path, { method: 'POST', headers: this.headers(), body: fd }));
   }
   async login(email: string, password: string) { return this.post('/api/session/login', { email, password }); }
+}
+
+// Дополнительный сервер на той же базе с изменёнными настройками (HTTPS-адрес, другие ключи и т. п.).
+// По умолчанию его адрес сайта (BASE_URL) — собственный, поэтому клиенту достаточно new Client(undefined, srv.url).
+export async function startServer(overrides: Record<string, string | undefined>) {
+  const port = await new Promise<number>((res) => { const s = createServer(); s.listen(0, '127.0.0.1', () => { const p = (s.address() as any).port; s.close(() => res(p)); }); });
+  const env: Record<string, string | undefined> = { ...process.env, ...JSON.parse(inject('serverEnv')), NODE_ENV: 'production', HOST: '127.0.0.1', PORT: String(port), BASE_URL: `http://127.0.0.1:${port}`, TRUST_PROXY: 'true', ADMIN_2FA_REQUIRED: 'true', ...overrides };
+  for (const k of Object.keys(env)) if (env[k] === undefined) delete env[k];
+  const proc = spawn('node', ['dist/server/entry.mjs'], { env: env as NodeJS.ProcessEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  let log = '';
+  proc.stdout!.on('data', (d) => (log += d)); proc.stderr!.on('data', (d) => (log += d));
+  const url = `http://127.0.0.1:${port}`;
+  for (let i = 0; ; i++) {
+    try { if ((await fetch(url + '/login')).status < 500) break; } catch { /* ещё запускается */ }
+    if (i > 100 || proc.exitCode !== null) { proc.kill(); throw new Error('Сервер не запустился:\n' + log); }
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  return { url, log: () => log, stop: () => new Promise<void>((r) => { proc.once('exit', () => r()); proc.kill(); }) };
 }
 
 export function mails(to: string) {

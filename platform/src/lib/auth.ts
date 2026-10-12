@@ -14,6 +14,7 @@ function create() {
     baseURL: e.BASE_URL,
     basePath: '/api/auth',
     secret: e.BETTER_AUTH_SECRET,
+    secrets: e.BETTER_AUTH_SECRETS,
     database: pool(),
     trustedOrigins: [new URL(e.BASE_URL).origin],
     emailAndPassword: {

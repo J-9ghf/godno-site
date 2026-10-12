@@ -5,6 +5,9 @@ import { env } from './lib/env';
 import { resolveActor } from './lib/session';
 import { json } from './lib/errors';
 
+// Настройки проверяются при запуске: с ошибкой в окружении (нет ключа, адрес без HTTPS и т. п.) сервер не работает
+try { env(); } catch (e) { console.error((e as Error).message); process.exit(1); }
+
 const PUBLIC_API = ['/api/auth/', '/api/session/login', '/api/invitations/'];
 const UNSAFE = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 

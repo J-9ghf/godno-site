@@ -98,7 +98,11 @@ export async function acceptUpload(file: File, kind: Kind, owner: { candidateId?
     let r;
     try { r = await scanBuffer(buf, e.CLAMAV_HOST!, e.CLAMAV_PORT); }
     catch { throw new HttpError(503, 'scan_unavailable', 'Проверка файлов временно недоступна. Попробуйте позже.'); }
-    if (r.status === 'infected') throw new HttpError(422, 'infected', 'Файл не прошёл антивирусную проверку и не сохранён.');
+    if (r.status === 'infected') {
+      const err = new HttpError(422, 'infected', 'Файл не прошёл антивирусную проверку и не сохранён.');
+      (err as HttpError & { signature?: string }).signature = r.signature;
+      throw err;
+    }
     scanStatus = 'clean';
   }
   const prefix = owner.candidateId ? 'cand' : 'comp';
