@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { publicUrl } from '@/lib/public-url';
 import { ACTIVITY_COOKIE, SESSION_START_COOKIE, baseCookieOptions, maxSessionHours, sessionExpired } from '@/lib/session-config';
 
 /**
@@ -30,7 +31,7 @@ export async function guardSession(request: NextRequest): Promise<NextResponse> 
 
   if (!data.user) {
     if (isApi) return new NextResponse(null, { status: 401 });
-    const login = new URL('/login', request.url);
+    const login = publicUrl('/login');
     login.searchParams.set('next', path);
     return NextResponse.redirect(login);
   }
@@ -39,7 +40,7 @@ export async function guardSession(request: NextRequest): Promise<NextResponse> 
   const start = request.cookies.get(SESSION_START_COOKIE)?.value;
   if (sessionExpired(activity, start)) {
     if (isApi) return new NextResponse(null, { status: 401 });
-    return NextResponse.redirect(new URL('/auth/signout?reason=idle', request.url));
+    return NextResponse.redirect(publicUrl('/auth/signout?reason=idle'));
   }
 
   response.cookies.set(ACTIVITY_COOKIE, String(Date.now()), { ...baseCookieOptions, maxAge: maxSessionHours() * 3600 });

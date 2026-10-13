@@ -20,7 +20,7 @@ test('страница входа не раскрывает, есть ли та�
   await expect(page.getByRole('link', { name: /зарегистр/i })).toHaveCount(0);
 });
 
-test('клиент входит в свой кабинет, в кабинет команды не попадает, выходит', async ({ page }) => {
+test('клиент входит в свой кабинет, в кабинет команды не попадает, выходит', async ({ page, baseURL }) => {
   await login(page, 'alfa.lead@example.com');
   await expect(page).toHaveURL(/\/cabinet$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Анна Альфова');
@@ -28,6 +28,7 @@ test('клиент входит в свой кабинет, в кабинет к
   await expect(page).toHaveURL(/\/cabinet$/);
   await page.getByRole('button', { name: 'Выйти' }).click();
   await expect(page).toHaveURL(/\/login\?reason=logout/);
+  expect(new URL(page.url()).origin).toBe(new URL(baseURL!).origin);   // публичный адрес, не внутренний :3000
   await page.goto('/cabinet');
   await expect(page).toHaveURL(/\/login/);
   expect(Number(sql("select count(*) from audit_log where action = 'auth.login' and actor_email = 'alfa.lead@example.com'"))).toBeGreaterThan(0);
@@ -181,6 +182,25 @@ test('автовыход после 30 минут бездействия', async
   await page.goto('/cabinet');
   await expect(page).toHaveURL(/\/login\?reason=idle/);
   await expect(page.getByText('Вы вышли из кабинета после 30 минут бездействия')).toBeVisible();
+});
+
+test('выход и автовыход ведут на публичный адрес сайта (APP_URL), выход с чужого сайта запрещён', async ({ page, baseURL }) => {
+  // За прокси приложение видит внутренний адрес (http://localhost:3000). Переход должен вести на адрес сайта.
+  const site = new URL(baseURL!).origin;
+  await login(page, 'alfa.lead@example.com');
+  await expect(page).toHaveURL(/\/cabinet$/);
+
+  const foreign = await page.request.post('/auth/signout', { headers: { origin: 'https://evil.example' }, maxRedirects: 0 });
+  expect(foreign.status()).toBe(403);
+
+  const idle = await page.request.get('/auth/signout?reason=idle', { maxRedirects: 0 });
+  expect(idle.headers()['location']).toBe(`${site}/login?reason=idle`);
+
+  await login(page, 'alfa.lead@example.com');
+  await expect(page).toHaveURL(/\/cabinet$/);
+  const out = await page.request.post('/auth/signout', { headers: { origin: site }, maxRedirects: 0 });
+  expect(out.status()).toBe(303);
+  expect(out.headers()['location']).toBe(`${site}/login?reason=logout`);
 });
 
 test('cookie сессии недоступны скриптам страницы', async ({ page, context }) => {
