@@ -1,0 +1,166 @@
+# Вариант 1: самостоятельный Supabase на одной виртуальной машине — только нужные сервисы.
+#   db       — PostgreSQL 17 (образ Supabase с ролями anon/authenticated/service_role и схемами auth/storage)
+#   auth     — вход (GoTrue): пароли, приглашения ссылкой, TOTP-2FA
+#   rest     — API (PostgREST) поверх таблиц; доступ ограничивают права и политики RLS
+#   storage  — файлы (Storage API); сами файлы — в S3-совместимом бакете (Selectel или любой другой) из .env
+#   gateway  — Caddy: HTTPS (Let's Encrypt), маршруты /auth/v1, /rest/v1, /storage/v1, проверка ключа apikey
+# Нет: Studio (панель), Realtime, Edge Functions, imgproxy, аналитики, пула соединений, Envoy/Kong.
+# Наружу открыты только порты 80 и 443 у gateway. База и сервисы доступны только во внутренней сети Docker.
+# Версии образов — из официального docker-compose Supabase (ветка master, проверено 13.10.2026); обновлять вместе.
+name: ikr-supabase
+
+services:
+  db:
+    image: supabase/postgres:17.6.1.136
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: 5432
+      POSTGRES_PORT: 5432
+      PGPASSWORD: ${POSTGRES_PASSWORD:?нужен POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: postgres
+      POSTGRES_DB: postgres
+      JWT_EXP: ${JWT_EXPIRY:-1800}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - db-config:/etc/postgresql-custom
+      # Пароли служебных ролей и срок токенов — один раз при создании базы
+      - ./volumes/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
+      - ./volumes/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:ro
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "log_min_messages=fatal"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    shm_size: 256mb
+    mem_limit: 1g
+
+  auth:
+    image: supabase/gotrue:v2.196.0
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${PUBLIC_URL:?нужен PUBLIC_URL}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      GOTRUE_SITE_URL: ${SITE_URL:?нужен SITE_URL}
+      GOTRUE_URI_ALLOW_LIST: ${SITE_URL}/**
+      # Регистрации нет: пользователей создаёт администратор (приглашение ссылкой)
+      GOTRUE_DISABLE_SIGNUP: "true"
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: "false"
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-1800}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:?нужен JWT_SECRET}
+      GOTRUE_JWT_ISSUER: ${PUBLIC_URL}/auth/v1
+      GOTRUE_PASSWORD_MIN_LENGTH: 10
+      GOTRUE_MFA_TOTP_ENROLL_ENABLED: "false"
+      GOTRUE_MFA_TOTP_VERIFY_ENABLED: "false"
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: "true"
+      GOTRUE_RATE_LIMIT_TOKEN_REFRESH: 150
+      GOTRUE_RATE_LIMIT_VERIFY: 30
+      # Почта пока не подключена: письма не нужны, ссылки приглашений получает администратор
+      # (POST /auth/v1/admin/generate_link с ключом service_role). SMTP добавляется позже переменными GOTRUE_SMTP_*.
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:-no-reply@example.invalid}
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/v1/verify
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 256m
+
+  rest:
+    image: postgrest/postgrest:v14.17
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+      # Наружу через API — только схема public; служебные схемы auth и storage не публикуются
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_MAX_ROWS: 1000
+      PGRST_DB_EXTRA_SEARCH_PATH: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-1800}
+      PGRST_ADMIN_SERVER_PORT: 3001
+      PGRST_ADMIN_SERVER_HOST: localhost
+    healthcheck:
+      test: ["CMD", "postgrest", "--ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 256m
+
+  storage:
+    image: supabase/storage-api:v1.74.0
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+      rest: { condition: service_started }
+    environment:
+      ANON_KEY: ${ANON_KEY:?нужен ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY:?нужен SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      STORAGE_PUBLIC_URL: ${PUBLIC_URL}
+      REQUEST_ALLOW_X_FORWARDED_PATH: "true"
+      FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-15728640}
+      # Файлы — в любом S3-совместимом хранилище; всё задаётся в .env
+      STORAGE_BACKEND: s3
+      GLOBAL_S3_BUCKET: ${S3_BUCKET:?нужен S3_BUCKET}
+      GLOBAL_S3_ENDPOINT: ${S3_ENDPOINT:?нужен S3_ENDPOINT}
+      GLOBAL_S3_PROTOCOL: ${S3_PROTOCOL:-https}
+      GLOBAL_S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?нужен S3_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?нужен S3_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${S3_REGION:-ru-1}
+      REGION: ${S3_REGION:-ru-1}
+      TENANT_ID: ikr
+      ENABLE_IMAGE_TRANSFORMATION: "false"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 384m
+
+  gateway:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on: [auth, rest, storage]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?нужен DOMAIN}
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      APP_UPSTREAM: ${APP_UPSTREAM:-host.docker.internal:3000}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    mem_limit: 128m
+
+volumes:
+  db-data:
+  db-config:
+  caddy-data:
+  caddy-config:

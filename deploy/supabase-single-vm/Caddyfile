@@ -1,0 +1,53 @@
+# Шлюз вместо Kong/Envoy из официальной сборки: HTTPS (сертификат Let's Encrypt выпускается сам) и маршруты.
+# Правила ключа как в официальной сборке Supabase: /rest/v1 и /auth/v1 — только с заголовком apikey (anon или
+# service_role); ссылки из писем и приглашений (/auth/v1/verify и т. п.) — без ключа; /storage/v1 проверяет токены сам.
+# Остальные адреса — приложение ИКР (APP_UPSTREAM).
+{$DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "same-origin"
+		-Server
+	}
+
+	@auth_open path /auth/v1/verify /auth/v1/verify/* /auth/v1/callback /auth/v1/authorize /auth/v1/health
+	handle @auth_open {
+		uri strip_prefix /auth/v1
+		reverse_proxy auth:9999
+	}
+
+	@no_key {
+		path /auth/v1/* /rest/v1/*
+		not header apikey {$ANON_KEY}
+		not header apikey {$SERVICE_ROLE_KEY}
+	}
+	handle @no_key {
+		header Content-Type "application/json"
+		respond `{"message":"Нет ключа apikey или он неверный"}` 401
+	}
+
+	handle_path /auth/v1/* {
+		reverse_proxy auth:9999
+	}
+	handle_path /rest/v1/* {
+		reverse_proxy rest:3000
+	}
+	handle /storage/v1/* {
+		uri strip_prefix /storage/v1
+		reverse_proxy storage:5000 {
+			header_up X-Forwarded-Prefix /storage/v1
+		}
+	}
+
+	handle {
+		reverse_proxy {$APP_UPSTREAM}
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}

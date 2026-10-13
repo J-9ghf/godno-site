@@ -1,0 +1,11 @@
+# Ежедневно в 03:30 (время сервера), с разбросом до 15 минут; пропущенный запуск выполняется после включения
+[Unit]
+Description=IKR Supabase: daily database backup
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+RandomizedDelaySec=15min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

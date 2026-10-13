@@ -1,0 +1,10 @@
+# Копия базы Supabase в S3. Установка: /etc/systemd/system/ikr-supabase-backup.service
+[Unit]
+Description=IKR Supabase: daily database backup to S3
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /opt/ikr-supabase/scripts/backup-db.sh
+Nice=10
