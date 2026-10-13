@@ -78,15 +78,44 @@ test('бот: заполненное поле-ловушка — «успех» 
   expect(sql("select count(*) from requests where contact_name = 'E2E Спешка'")).toBe('0');
 });
 
-test('лимит: не больше 5 заявок в час с одного адреса', async ({ page }) => {
-  sql("insert into rate_limit_events (key) select 'lead:ip:' || ip from (values ('127.0.0.1'), ('::1'), ('unknown')) v(ip), generate_series(1, 5)");
+// Адрес, с которого браузер отправляет форму, определяется так же, как на сервере: за прокси (Caddy) — по
+// соединению, без доверия заголовку X-Forwarded-For из браузера. Поэтому тест не угадывает адрес (127.0.0.1, ::1),
+// а берёт тот, что записало приложение после первой заявки. E2E_VIA_PROXY=1 — проверить ещё и подмену заголовка.
+const VIA_PROXY = process.env.E2E_VIA_PROXY === '1';
+const FORGED_IP = '198.51.100.77';
+
+async function sendLead(page: Page, name: string, phone: string) {
   const form = await openLead(page);
-  await form.getByLabel('Имя').fill('E2E Лимит');
-  await form.getByLabel('Телефон или Telegram').fill('+7 900 000-00-03');
+  await form.getByLabel('Имя').fill(name);
+  await form.getByLabel('Телефон или Telegram').fill(phone);
   await form.getByLabel(/Я даю согласие/).check();
   await page.waitForTimeout(HUMAN_DELAY);
   await form.getByRole('button', { name: 'Оставить заявку' }).click();
+  return form;
+}
+
+test('лимит: не больше 5 заявок в час с одного адреса; адрес — настоящий адрес клиента', async ({ page }) => {
+  if (VIA_PROXY) await page.setExtraHTTPHeaders({ 'x-forwarded-for': FORGED_IP });
+
+  await sendLead(page, 'E2E Лимит 1', '+7 900 000-00-03');
+  await expect(page.getByText('Спасибо. Мы свяжемся с вами.')).toBeVisible();
+  const keys = sql("select string_agg(key, ',') from rate_limit_events where key like 'lead:ip:%'").split(',');
+  expect(keys).toHaveLength(1);
+  const ip = keys[0].slice('lead:ip:'.length);
+  expect(ip).toMatch(/^[0-9a-fA-F:.]+$/);   // адрес определён, не 'unknown'
+  if (VIA_PROXY) expect(ip).not.toBe(FORGED_IP);   // подменённый заголовок прокси не пропустил
+
+  // Ещё 4 отправки с этого адреса уже были — шестая получает отказ
+  sql(`insert into rate_limit_events (key) select 'lead:ip:${ip}' from generate_series(1, 4)`);
+  const form = await sendLead(page, 'E2E Лимит 6', '+7 900 000-00-04');
   await expect(form.getByText(/Слишком много отправок/)).toBeVisible();
+  expect(sql("select count(*) from requests where contact_name = 'E2E Лимит 6'")).toBe('0');
+
+  // С другого адреса лимит не действует: события чужого адреса не мешают
+  sql("delete from rate_limit_events");
+  sql(`insert into rate_limit_events (key) select 'lead:ip:203.0.113.5' from generate_series(1, 5)`);
+  await sendLead(page, 'E2E Лимит другой', '+7 900 000-00-05');
+  await expect(page.getByText('Спасибо. Мы свяжемся с вами.')).toBeVisible();
 });
 
 async function fillResume(page: Page, name: string, contact: string, file: string) {

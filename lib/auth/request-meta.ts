@@ -1,7 +1,7 @@
 import 'server-only';
 import { headers } from 'next/headers';
 
-/** IP и user-agent запроса. На Vercel и за nginx IP клиента — первый адрес в x-forwarded-for. */
+/** IP и user-agent запроса. За прокси (Caddy, nginx, Vercel) IP клиента — первый адрес в x-forwarded-for; Caddy из deploy/ записывает туда только адрес соединения. */
 export async function requestMeta(): Promise<{ ip: string | null; userAgent: string | null }> {
   const h = await headers();
   const forwarded = h.get('x-forwarded-for')?.split(',')[0]?.trim();

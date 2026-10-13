@@ -40,8 +40,13 @@
 		}
 	}
 
+	# Адрес клиента приложение берёт из X-Forwarded-For. Заголовок из запроса браузера не передаём:
+	# только адрес, с которого реально пришло соединение, — иначе лимиты обходятся подменой.
 	handle {
-		reverse_proxy {$APP_UPSTREAM}
+		reverse_proxy {$APP_UPSTREAM} {
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Real-IP {remote_host}
+		}
 	}
 
 	log {
