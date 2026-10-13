@@ -261,13 +261,35 @@ export interface InvitationInput {
   isCompanyLead: boolean;
 }
 
-export type InvitationResult = { kind: 'ok' } | { kind: 'exists' } | { kind: 'forbidden' } | { kind: 'error'; message: string };
+export type InvitationResult =
+  | { kind: 'ok'; delivery: 'email' }
+  | { kind: 'ok'; delivery: 'manual'; link: string; expiresAt: string }
+  | { kind: 'exists' }
+  | { kind: 'forbidden' }
+  | { kind: 'error'; message: string };
+
+/** Письма уходят только при EMAIL_PROVIDER=smtp. Иначе (console) — разработка или почта ещё не настроена. */
+export function emailConfigured(): boolean {
+  return env().EMAIL_PROVIDER === 'smtp';
+}
 
 /**
- * Создать приглашение и отправить письмо. Запись идёт от имени приглашающего (RLS проверяет,
- * что админ может всё, а руководитель клиента — только рядовых коллег в свою компанию).
+ * Создать приглашение. Запись идёт от имени приглашающего (RLS проверяет, что админ может всё,
+ * а руководитель клиента — только рядовых коллег в свою компанию).
+ *
+ * Почта настроена — ссылка уходит письмом. Не настроена — письмо не отправляется и нигде не пишется,
+ * а ссылка один раз возвращается приглашающему (только админу: manualLinkAllowed), чтобы он передал её сам.
+ * В базе и журнале хранится только SHA-256 токена.
  */
-export async function createInvitation(input: InvitationInput, inviterId: string): Promise<InvitationResult> {
+export async function createInvitation(
+  input: InvitationInput,
+  inviterId: string,
+  { manualLinkAllowed = false }: { manualLinkAllowed?: boolean } = {},
+): Promise<InvitationResult> {
+  const viaEmail = emailConfigured();
+  if (!viaEmail && !manualLinkAllowed) {
+    return { kind: 'error', message: 'Почта не настроена: пригласить может только администратор.' };
+  }
   if (await findProfileByEmail(input.email)) return { kind: 'exists' };
 
   const token = randomToken();
@@ -280,7 +302,8 @@ export async function createInvitation(input: InvitationInput, inviterId: string
     .is('used_at', null)
     .is('revoked_at', null);
 
-  const { error } = await supabase.from('invitations').insert({
+  const expiresAt = new Date(Date.now() + INVITATION_TTL_HOURS * 3_600_000).toISOString();
+  const { data: created, error } = await supabase.from('invitations').insert({
     email: input.email,
     full_name: input.fullName || null,
     role: input.role,
@@ -288,15 +311,27 @@ export async function createInvitation(input: InvitationInput, inviterId: string
     is_company_lead: input.role === 'client' && input.isCompanyLead,
     token_hash: sha256(token),
     invited_by: inviterId,
-    expires_at: new Date(Date.now() + INVITATION_TTL_HOURS * 3_600_000).toISOString(),
-  });
+    expires_at: expiresAt,
+  }).select('id').single<{ id: string }>();
   if (error) {
     if (error.code === '42501') return { kind: 'forbidden' };
     return { kind: 'error', message: error.message };
   }
 
-  await sendEmail(invitationEmail(input.email, `${env().APP_URL}/invite/${token}`));
-  return { kind: 'ok' };
+  const link = `${env().APP_URL}/invite/${token}`;
+  if (viaEmail) {
+    await sendEmail(invitationEmail(input.email, link));
+    return { kind: 'ok', delivery: 'email' };
+  }
+  // В журнал — только факт, что ссылку показали приглашающему. Самой ссылки там нет.
+  await audit({
+    action: 'auth.invitation_link_shown',
+    actorId: inviterId,
+    entity: 'invitations',
+    entityId: created.id,
+    details: { email: input.email, expires_at: expiresAt },
+  });
+  return { kind: 'ok', delivery: 'manual', link, expiresAt };
 }
 
 interface InvitationRow {

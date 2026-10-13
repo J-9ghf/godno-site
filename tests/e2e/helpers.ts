@@ -27,6 +27,16 @@ export async function lastEmail(to: string, since: number): Promise<{ subject: s
   throw new Error(`Нет письма на ${to}`);
 }
 
+/** Все письма на адрес после момента since (без ожидания). */
+export function emailsTo(to: string, since: number): { subject: string; text: string }[] {
+  if (!existsSync(OUTBOX)) return [];
+  return readFileSync(OUTBOX, 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((l) => JSON.parse(l))
+    .filter((m) => m.to === to && m.at >= since);
+}
+
 export function linkFrom(text: string): string {
   const m = text.match(/https?:\/\/\S+/);
   if (!m) throw new Error('В письме нет ссылки');

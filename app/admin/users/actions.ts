@@ -35,7 +35,10 @@ const inviteSchema = z
   })
   .refine((v) => v.role !== 'client' || Boolean(v.company_id), { message: 'Для клиента выберите компанию', path: ['company_id'] });
 
-export async function inviteAction(_prev: FormState, formData: FormData): Promise<FormState> {
+/** Ответ формы приглашения. inviteLink — только когда почта не настроена: ссылку видит один раз админ. */
+export type InviteState = FormState & { inviteLink?: string; expiresAt?: string };
+
+export async function inviteAction(_prev: InviteState, formData: FormData): Promise<InviteState> {
   const access = await requireRole(['admin']);
   const parsed = inviteSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { status: 'error', fieldErrors: fieldErrors(parsed.error) };
@@ -43,10 +46,19 @@ export async function inviteAction(_prev: FormState, formData: FormData): Promis
   const result = await createInvitation(
     { email: v.email, fullName: v.full_name, role: v.role, companyId: v.company_id || null, isCompanyLead: v.is_company_lead === 'on' },
     access.userId,
+    { manualLinkAllowed: access.role === 'admin' },
   );
   if (result.kind === 'exists') return { status: 'error', fieldErrors: { email: 'Пользователь с этой почтой уже есть' } };
   if (result.kind !== 'ok') return { status: 'error', message: 'Не удалось создать приглашение.' };
   revalidatePath('/admin/users');
+  if (result.delivery === 'manual') {
+    return {
+      status: 'success',
+      message: `Приглашение для ${v.email} создано. Почта пока не настроена: скопируйте ссылку и отправьте её сами.`,
+      inviteLink: result.link,
+      expiresAt: result.expiresAt,
+    };
+  }
   return { status: 'success', message: `Приглашение отправлено на ${v.email}. Ссылка действует 72 часа.` };
 }
 

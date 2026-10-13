@@ -49,10 +49,19 @@
 		}
 	}
 
+	# В журнал не попадают одноразовые ссылки: токен приглашения и сброса пароля заменяется на ***,
+	# заголовок Referer (в нём может быть та же ссылка) не пишется. Cookie и Authorization Caddy не пишет сам.
 	log {
 		output file /data/access.log {
 			roll_size 20MiB
 			roll_keep 5
+		}
+		format filter {
+			wrap json
+			fields {
+				request>uri regexp ^/(invite|reset)/[^/?#]+ /${1}/***
+				request>headers>Referer delete
+			}
 		}
 	}
 }

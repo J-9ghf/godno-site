@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { DEMO_PASSWORD, lastEmail, linkFrom, login, loginAdmin, resetAuthState, sql } from './helpers';
+import { DEMO_PASSWORD, emailsTo, lastEmail, linkFrom, login, loginAdmin, resetAuthState, sql } from './helpers';
 
 test.beforeEach(() => resetAuthState());
 
@@ -77,7 +77,7 @@ test('менеджер входит без кода и не видит разд�
   await expect(page).toHaveURL(/\/admin$/);
 });
 
-test('приглашение: одноразовая ссылка, пароль не короче 10 символов, вход в кабинет', async ({ page, browser }) => {
+test('приглашение без почты: ссылку видит только админ, 72 часа, одноразовая; пароль не короче 10 символов, вход в кабинет', async ({ page, browser, baseURL }) => {
   const email = `invitee-${Date.now()}@example.com`;
   await loginAdmin(page);
   await page.goto('/admin/users');
@@ -87,11 +87,26 @@ test('приглашение: одноразовая ссылка, пароль 
   await invite.getByLabel('Имя').fill('Новый Клиент');
   await invite.getByLabel('Компания').selectOption({ label: 'Демо-компания «Альфа»' });
   await invite.getByRole('button', { name: 'Отправить приглашение' }).click();
-  await expect(page.getByText(`Приглашение отправлено на ${email}`)).toBeVisible();
+  // e2e идут с EMAIL_PROVIDER=console — как на сервере, где почта ещё не настроена
+  await expect(page.getByText(`Приглашение для ${email} создано. Почта пока не настроена`)).toBeVisible();
+  const shown = await page.getByLabel('Ссылка-приглашение').inputValue();
+  expect(new URL(shown).origin).toBe(new URL(baseURL!).origin);
+  const token = shown.split('/invite/')[1];
+  expect(token).toMatch(/^[A-Za-z0-9_-]{20,100}$/);
+  await expect(page.getByText(/Действует до .*\(72 часа\)/)).toBeVisible();
+  const link = new URL(shown).pathname;
 
-  const mail = await lastEmail(email, since);
-  expect(mail.subject).toBe('Ваш личный кабинет в Институте кадровых решений');
-  const link = linkFrom(mail.text);
+  // Письмо не отправлено и не записано; в базе и журнале нет самой ссылки, только хэш
+  expect(emailsTo(email, since)).toHaveLength(0);
+  expect(sql(`select count(*) from audit_log where details::text like '%${token}%' or coalesce(entity_id, '') like '%${token}%'`)).toBe('0');
+  expect(sql(`select count(*) from invitations where token_hash = '${token}'`)).toBe('0');
+  expect(sql(`select abs(extract(epoch from expires_at - created_at) - 72 * 3600) < 60 from invitations where email = '${email}'`)).toBe('t');
+  expect(sql(`select count(*) from audit_log where action = 'auth.invitation_link_shown' and details ->> 'email' = '${email}'`)).toBe('1');
+
+  // Ссылка показывается один раз: после обновления страницы её нет
+  await page.reload();
+  await expect(page.getByLabel('Ссылка-приглашение')).toHaveCount(0);
+  expect(await page.content()).not.toContain(token);
 
   const ctx = await browser.newContext();
   const guest = await ctx.newPage();
