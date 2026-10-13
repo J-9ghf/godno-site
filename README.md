@@ -8,6 +8,9 @@ Next.js (App Router) + TypeScript + Tailwind, PostgreSQL через Supabase (Au
 | `docs/PLAN.md` | структура и план по этапам |
 | `docs/DB.md` | схема, роли, показатели, тесты изоляции, проверка на локальном Supabase |
 | `docs/AUTH.md` | вход, приглашения, двойная проверка, автовыход, e2e |
+| `docs/DEPLOY-SELECTEL.md` | установка на машину Selectel — для неспециалиста |
+| `docs/RESTORE.md` | восстановление из копии — для неспециалиста |
+| `deploy/supabase-single-vm/README.md` | состав сервисов, скрипты, что проверено |
 
 ```bash
 npm install

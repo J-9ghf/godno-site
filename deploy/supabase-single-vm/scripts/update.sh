@@ -7,7 +7,8 @@
 # Смена основной версии PostgreSQL (например, 17 → 18) так НЕ делается: нужна отдельная процедура pg_upgrade.
 set -euo pipefail
 DIR="${COMPOSE_DIR:-/opt/ikr-supabase}"
-dc() { docker compose --project-directory "$DIR" -f "$DIR/docker-compose.yml" "$@"; }
+# Запуск из папки сборки: docker compose сам подхватит docker-compose.override.yml, если он есть
+dc() { (cd "$DIR" && docker compose "$@"); }
 echo "1/3 копия базы перед обновлением"
 bash "$DIR/scripts/backup-db.sh"
 echo "2/3 новые образы и перезапуск"

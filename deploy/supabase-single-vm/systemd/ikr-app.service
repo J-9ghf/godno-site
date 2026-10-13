@@ -1,0 +1,24 @@
+[Unit]
+Description=Платформа ИКР (сайт и кабинеты, Next.js)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+User=ikr
+Group=ikr
+WorkingDirectory=/opt/ikr/app
+# Настройки и ключи — только в этом файле (права 600, владелец root)
+EnvironmentFile=/etc/ikr/app.env
+# Слушает все адреса машины, но порт 3000 закрыт брандмауэром снаружи: к приложению ходит только Caddy
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -H 0.0.0.0 -p 3000
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/ikr/app/.next
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target

@@ -30,14 +30,12 @@ docker run -d --name "$CHECK" --network none -v "$CHECK-data:/var/lib/postgresql
   postgres -c config_file=/etc/postgresql/postgresql.conf >/dev/null
 for i in $(seq 1 60); do docker exec "$CHECK" pg_isready -U postgres -h localhost >/dev/null 2>&1 && break; sleep 2; done
 sleep 3
-# Пустой экземпляр того же образа уже содержит схемы auth и storage: заменяем их содержимым копии
-docker exec -i "$CHECK" pg_restore -U supabase_admin -d postgres --clean --if-exists --no-comments --exit-on-error < "$TMP/db.dump" \
+# Пустой экземпляр того же образа уже содержит схемы auth и storage: базу удаляем и создаём из копии целиком
+# (так же, как restore-db.sh восстанавливает рабочую базу)
+docker exec "$CHECK" psql -X -q -U supabase_admin -d template1 -v ON_ERROR_STOP=1 -c "drop database if exists postgres with (force)" \
+  && docker exec -i "$CHECK" pg_restore -U supabase_admin -d template1 --create --no-comments --exit-on-error < "$TMP/db.dump" \
   || { log "ОШИБКА: восстановление не удалось"; exit 1; }
-GOT=$(docker exec "$CHECK" psql -U supabase_admin -d postgres -Atc "
-  select json_object_agg(t, n) from (
-    select 'auth.users' t, count(*) n from auth.users union all
-    select 'storage.objects', count(*) from storage.objects union all
-    select 'public.tables', count(*) from pg_tables where schemaname = 'public') x")
+GOT=$(docker exec -i "$CHECK" psql -X -U supabase_admin -d postgres -At -f - < "$COMPOSE_DIR/scripts/counts.sql")
 WANT=$(cat "$TMP/${LAST%.age}.counts.json")
 norm() { echo "$1" | jq -S -c .; }
 if [ "$(norm "$GOT")" = "$(norm "$WANT")" ]; then log "ВОССТАНОВЛЕНИЕ: ПРОВЕРКА ПРОЙДЕНА $(norm "$GOT")"; else log "ОШИБКА: ожидали $(norm "$WANT"), получили $(norm "$GOT")"; exit 2; fi

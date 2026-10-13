@@ -13,25 +13,49 @@ CONF="${BACKUP_ENV:-/etc/ikr-supabase/backup.env}"
 : "${COMPOSE_DIR:=/opt/ikr-supabase}" "${BACKUP_BUCKET:?нет BACKUP_BUCKET}" "${AGE_RECIPIENT:?нет AGE_RECIPIENT (открытый ключ age)}"
 : "${BACKUP_KEEP_DAYS:=14}" "${BACKUP_PREFIX:=supabase-db}" "${WORK:=/var/backups/ikr-supabase}" "${KEEP_LOCAL:=2}"
 log() { echo "[$(date '+%F %T')] $*"; }
-dc() { docker compose --project-directory "$COMPOSE_DIR" -f "$COMPOSE_DIR/docker-compose.yml" "$@"; }
+# Запуск из папки сборки: docker compose сам подхватит docker-compose.override.yml, если он есть
+dc() { (cd "$COMPOSE_DIR" && docker compose "$@"); }
 
 install -d -m 0700 "$WORK"
 STAMP=$(date -u +%Y%m%d-%H%M%S)
 NAME="ikr-$STAMP.dump"
 TMP="$WORK/$NAME.tmp"
-trap 'rm -f "$TMP"' EXIT
+HOLDER=""
+cleanup() {
+  rm -f "$TMP"
+  [ -n "$HOLDER" ] && { kill "$HOLDER" 2>/dev/null || true; wait "$HOLDER" 2>/dev/null || true; }
+  dc exec -T db psql -X -q -U supabase_admin -d postgres -c \
+    "select pg_terminate_backend(pid) from pg_stat_activity where application_name = 'ikr-backup-snapshot'" >/dev/null 2>&1 || true
+  dc exec -T db rm -f /tmp/ikr-snap /tmp/ikr-counts >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
 
-log "копия базы: pg_dump"
-dc exec -T db pg_dump -U supabase_admin -d postgres -Fc -Z 6 > "$TMP"
+# Копия и подсчёт записей берутся из одного снимка базы: открываем транзакцию, экспортируем снимок,
+# считаем записи и держим транзакцию открытой, пока pg_dump снимает копию по этому же снимку.
+# Так проверка восстановления не даёт ложной ошибки, если ночью кто-то отправил заявку.
+dc exec -T db rm -f /tmp/ikr-snap /tmp/ikr-counts
+{ echo "begin isolation level repeatable read read only;"
+  echo "\\o /tmp/ikr-snap"
+  echo "select pg_export_snapshot();"
+  echo "\\o /tmp/ikr-counts"
+  cat "$COMPOSE_DIR/scripts/counts.sql"
+  echo "\\o"
+  echo "select pg_sleep(3600);"
+} | dc exec -T -e PGAPPNAME=ikr-backup-snapshot db psql -X -q -At -U supabase_admin -d postgres >/dev/null 2>&1 &
+HOLDER=$!
+for i in $(seq 1 60); do
+  dc exec -T db test -s /tmp/ikr-counts 2>/dev/null && break
+  sleep 1
+done
+SNAP=$(dc exec -T db cat /tmp/ikr-snap 2>/dev/null | tr -d '[:space:]')
+COUNTS=$(dc exec -T db cat /tmp/ikr-counts 2>/dev/null | tr -d '\n')
+[ -n "$SNAP" ] && [ -n "$COUNTS" ] || { log "ОШИБКА: не удалось открыть снимок базы"; exit 1; }
+
+log "копия базы: pg_dump (снимок $SNAP)"
+# --create: в копии есть и сама база с её настройками — восстановление создаёт её заново целиком
+dc exec -T db pg_dump -U supabase_admin -d postgres --create --snapshot="$SNAP" -Fc -Z 6 > "$TMP"
 [ -s "$TMP" ] || { log "ОШИБКА: пустая копия"; exit 1; }
 dc exec -T db pg_restore --list < "$TMP" > /dev/null || { log "ОШИБКА: копия не читается pg_restore"; exit 1; }
-
-# Сколько строк было в момент копии — по этому числу проверка восстановления сверяет результат
-COUNTS=$(dc exec -T db psql -U supabase_admin -d postgres -Atc "
-  select json_object_agg(t, n) from (
-    select 'auth.users' t, count(*) n from auth.users union all
-    select 'storage.objects', count(*) from storage.objects union all
-    select 'public.tables', count(*) from pg_tables where schemaname = 'public') x")
 
 age -r "$AGE_RECIPIENT" -o "$WORK/$NAME.age" "$TMP"
 sha256sum "$WORK/$NAME.age" | awk '{print $1}' > "$WORK/$NAME.age.sha256"
